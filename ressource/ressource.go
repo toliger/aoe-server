@@ -1,6 +1,6 @@
 package ressource
 
-import "fmt"
+//import "fmt"
 
 type Ressource struct{
 
@@ -11,15 +11,13 @@ type Ressource struct{
 
 }
 //Crée la Ressource
-func new(x int, y int, pv int, type int) Ressource {
-    return (Ressource{x,y,pv,tp})
+func new(x int, y int, pv int, typ int) Ressource {
+    return (Ressource{x,y,pv,typ})
 }
 
 func Create(class string, x int, y int) Ressource {
     var res Ressource
     switch class{
-        case "water":
-            res=new(x, y, 100,  0)
         case "tree":
             res=new(x, y, 100,  1)
         case "rock":
@@ -27,11 +25,23 @@ func Create(class string, x int, y int) Ressource {
         case "food":
             res=new(x, y, 100, 3)
         default:
-            return -1, errors.New("Class of Ressource not specified correctly")
+            res=new(x, y, 100,  0) //water
     }
     return res
 }
 
-func IsHarvestable(Ressource res) bool{
-	return res.typ!="water"
+func GetType(res Ressource) int{
+	return res.typ
+}
+
+func GetX(res Ressource) int{
+	return res.x
+}
+
+func GetY(res Ressource) int{
+	return res.y
+}
+
+func IsHarvestable(res Ressource) bool{
+	return res.typ!=0
 }
