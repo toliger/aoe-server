@@ -1,7 +1,7 @@
 package main
 
 import "fmt"
-import npc "aoe/npc"
+import npc "server/npc"
 
 func main() {
 	fmt.Println("test")
