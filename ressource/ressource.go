@@ -2,7 +2,7 @@ package ressource
 
 import "fmt"
 
-type ressource struct{
+type Ressource struct{
 
     x int
     y int
@@ -10,14 +10,14 @@ type ressource struct{
     type int // 0:water, 1:tree, 2:rock, 3 food,
 
 }
-//Crée la ressource
-func New(x int, y int, pv int, type int) ressource {
-    res:=ressource{x,y,pv,tp}
+//Crée la Ressource
+func New(x int, y int, pv int, type int) Ressource {
+    res:=Ressource{x,y,pv,tp}
     return res
 }
 
-func Create(class string, x int, y int) ressource {
-    var res ressource
+func Create(class string, x int, y int) Ressource {
+    var res Ressource
     switch class{
         case "water":
             res=New(x, y, 100,  0)
@@ -28,7 +28,7 @@ func Create(class string, x int, y int) ressource {
         case "food":
             res=New(x, y, 100, 3)
         default:
-            return -1, errors.New("Class of ressource not specified correctly")
+            return -1, errors.New("Class of Ressource not specified correctly")
     }
     return res
 }
