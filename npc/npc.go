@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-type npc struct {
+type Npc struct {
     x int
     y int
     pv int
@@ -16,14 +16,14 @@ type npc struct {
     damage int
     selectable bool //false=villager
 }
-//Crée un nouveau npc avec les paramètres fourni
-func New(x int,y int,pv int, vitesse int, vue int, portee int, offensive bool,size int, damage int,selectable bool) npc{
-	pnj:=npc{x,y,pv,vitesse,vue,portee,offensive,size,damage,selectable}
+//Crée un nouveau Npc avec les paramètres fourni
+func New(x int,y int,pv int, vitesse int, vue int, portee int, offensive bool,size int, damage int,selectable bool) Npc{
+	pnj:=Npc{x,y,pv,vitesse,vue,portee,offensive,size,damage,selectable}
 	return pnj
 }
-//Crée un npc du type fourni
-func create(class string,x int,y int) npc{
-    var pnj npc
+//Crée un Npc du type fourni
+func create(class string,x int,y int) Npc{
+    var pnj Npc
 	switch class{
 		case "soldier":
 			pnj=New(x,y,8,3,10,2,true,1,2,true)
