@@ -18,6 +18,11 @@ func New(size int) Carte{
 	}
 	return mat
 }
+//check si il n'y a pas d'objet -- Methode de la struct Carte
+// c.IsFree()
+func (c Carte) IsFree(x int, y int) bool{
+		return tuile.GetType(c.matrice[x][y]) ==0
+}
 //Affichage sur terminal
 func Debug(mat Carte){
 	for i:=0;i<mat.size;i++{

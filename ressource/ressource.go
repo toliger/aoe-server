@@ -19,7 +19,7 @@ func Create(class string, x int, y int) Ressource {
     var res Ressource
     switch class{
         case "water":
-            res=new(x, y, 100, 0); 
+            res=new(x, y, 100, 0)
         case "tree":
             res=new(x, y, 100,  1)
         case "rock":

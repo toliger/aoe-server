@@ -10,3 +10,8 @@ Specs :
             ▪ type : int
             ▪ pv : int
             ▪ propriétaire : uuid
+
+![schema1](/spec0.jpg)
+
+
+![schema2](/spec2.jpg)

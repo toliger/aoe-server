@@ -10,14 +10,21 @@ func main() {
 	carte.Debug(mat)
 	fmt.Println("test")
 	npc.Test()
+	fmt.Println("La case 0 0 est elle libre ?")
+	if mat.IsFree(0,0) {
+		fmt.Println("oui")
+	} else {
+		fmt.Println("non")
+	}
+
 	testsAlpha.AlphaTest()
-	
+
 	gameLoop(mat,&loopBoolean)
 }
 
 func gameLoop(Terrain carte.Carte, gameRunning *bool){
 	for *gameRunning{
-		
+
 	}
-	
+
 }
