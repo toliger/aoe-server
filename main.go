@@ -11,7 +11,7 @@ func main() {
 	fmt.Println("test")
 	npc.Test()
 	fmt.Println("La case 0 0 est elle libre ?")
-	if mat.IsFree(0,0) {
+	if mat.IsEmpty(0,0) {
 		fmt.Println("oui")
 	} else {
 		fmt.Println("non")

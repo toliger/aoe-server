@@ -20,7 +20,7 @@ func New(size int) Carte{
 }
 //check si il n'y a pas d'objet -- Methode de la struct Carte
 // c.IsFree()
-func (c Carte) IsFree(x int, y int) bool{
+func (c Carte) IsEmpty(x int, y int) bool{
 		return tuile.GetType(c.matrice[x][y]) ==0
 }
 //Affichage sur terminal
