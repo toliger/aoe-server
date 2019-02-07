@@ -7,7 +7,7 @@ type Ressource struct{
     x int
     y int
     pv int
-    typ int // 0:water, 1:tree, 2:rock, 3 food,
+    typ int // 0:water, 1:tree, 2:rock, 3 food ...
 
 }
 //Crée la Ressource
@@ -18,6 +18,8 @@ func new(x int, y int, pv int, typ int) Ressource {
 func Create(class string, x int, y int) Ressource {
     var res Ressource
     switch class{
+        case "water":
+            res=new(x, y, 100, 0); 
         case "tree":
             res=new(x, y, 100,  1)
         case "rock":
