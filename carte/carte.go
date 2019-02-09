@@ -82,12 +82,15 @@ func attribuerPoids(weightMatrix [][]int,x int,y int, step int) [][]int{
 }
 
 func shortestPathAux(weightMatrix [][]int,c Carte, x int, y int, currX *int, currY *int, step int, path []Case) bool{
-	if(weightMatrix[x][y]==step-1){
-		path[step-1]=(Case{x,y,c.GetTile(x,y)})
-		*currX=x
-		*currY=y
-		if(step==1){
-			return true
+	if(validCoords(x,y,len(weightMatrix))){
+		if(weightMatrix[x][y]==step-1){
+			fmt.Println(step)
+			path[step-1]=(Case{x,y,c.GetTile(x,y)})
+			*currX=x
+			*currY=y
+			if(step==1){
+				return true
+			}
 		}
 	}
 	return false
@@ -102,7 +105,7 @@ func shortestPath(weightMatrix [][]int,destx int, desty int,c Carte,path []Case)
 	path[len(path)-1]=(Case{destx,desty,c.GetTile(destx,desty)})
 	currX:=destx
 	currY:=desty
-	for step:=weightMatrix[destx][desty]+1;step>0;step--{
+	for step:=weightMatrix[destx][desty]+1;step>=0;step--{
 		if(shortestPathAux(weightMatrix,c, currX, currY+1, &currX, &currY, step,path) || shortestPathAux(weightMatrix,c, currX, currY-1, &currX, &currY, step,path) ||shortestPathAux(weightMatrix,c, currX+1, currY, &currX, &currY, step,path) || shortestPathAux(weightMatrix,c, currX-1, currY, &currX, &currY, step,path)){
 			break
 		}
@@ -130,10 +133,10 @@ func (c Carte) GetPathFromTo(x int, y int, destx int, desty int) []Case{
 		for i:=0;i<c.size;i++{
 			for j:=0;j<c.size;j++{
 				if(weightMatrix[i][j]==step){
-					weightMatrix=attribuerPoids(weightMatrix,x,y+1,step) //Haut
-					weightMatrix=attribuerPoids(weightMatrix,x+1,y,step) //Droite
-					weightMatrix=attribuerPoids(weightMatrix,x,y-1,step) //Bas
-					weightMatrix=attribuerPoids(weightMatrix,x-1,y,step) //Gauche
+					weightMatrix=attribuerPoids(weightMatrix,i,j+1,step) //Haut
+					weightMatrix=attribuerPoids(weightMatrix,i+1,j,step) //Droite
+					weightMatrix=attribuerPoids(weightMatrix,i,j-1,step) //Bas
+					weightMatrix=attribuerPoids(weightMatrix,i-1,j,step) //Gauche
 				}
 			}
 		}
