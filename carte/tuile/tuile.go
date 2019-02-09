@@ -15,5 +15,12 @@ func New() Tuile{
 func GetType(tuil Tuile) int{
 	return tuil.typ
 }
-func Actualise(tuile Tuile){
+func (t Tuile)AddBuilding(bat *batiment.Batiment){
+	t.typ=1
+	t.bat=bat
+}
+
+func (t Tuile)AddRessource(res *ressource.Ressource){
+	t.typ=2
+	t.res=res
 }
