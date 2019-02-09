@@ -44,9 +44,30 @@ type Case struct{
 	y int
 	tile tuile.Tuile
 }
+//Getters
+func (c Case) GetPathX() int{
+	return c.x
+}
 
+func (c Case) GetPathY() int{
+	return c.y
+}
+
+func (c Case) GetPathTile() tuile.Tuile{
+	return c.tile
+}
 func validCoords(x int,y int, size int) bool{
 	return ((x>=0 && x<size) && (y>=0 && y<size))
+}
+
+func  printMatrix(weightMatrix [][]int){
+	for i:=0;i<len(weightMatrix);i++{
+		for j:=0;j<len(weightMatrix);j++{
+			fmt.Print(weightMatrix[i][j])
+			fmt.Print(" ")
+		}
+		fmt.Println("")
+	}
 }
 
 const UNVISITED=-1 //case non parcourue
@@ -117,6 +138,7 @@ func (c Carte) GetPathFromTo(x int, y int, destx int, desty int) []Case{
 			}
 		}
 	}
+	printMatrix(weightMatrix)
 	//Une matrice de poids est cree
 	return shortestPath(weightMatrix,destx, desty,c,path)
 }

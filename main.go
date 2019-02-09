@@ -17,7 +17,7 @@ func main() {
 		fmt.Println("non")
 	}
 
-	testsAlpha.AlphaTest()
+	testsAlpha.AlphaTest(mat)
 
 	gameLoop(mat,&loopBoolean)
 }
