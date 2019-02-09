@@ -6,8 +6,8 @@ import carte "server/carte"
 import testsAlpha "server/alpha"
 func main() {
 	loopBoolean:=false;
-	mat:=carte.New(4)
-	carte.Debug(mat)
+	mat:=carte.New(10)
+	//carte.Debug(mat)
 	fmt.Println("test")
 	npc.Test()
 	fmt.Println("La case 0 0 est elle libre ?")

@@ -84,7 +84,6 @@ func attribuerPoids(weightMatrix [][]int,x int,y int, step int) [][]int{
 func shortestPathAux(weightMatrix [][]int,c Carte, x int, y int, currX *int, currY *int, step int, path []Case) bool{
 	if(validCoords(x,y,len(weightMatrix))){
 		if(weightMatrix[x][y]==step-1){
-			fmt.Println(step)
 			path[step-1]=(Case{x,y,c.GetTile(x,y)})
 			*currX=x
 			*currY=y
@@ -106,7 +105,7 @@ func shortestPath(weightMatrix [][]int,destx int, desty int,c Carte,path []Case)
 	currX:=destx
 	currY:=desty
 	for step:=weightMatrix[destx][desty]+1;step>=0;step--{
-		if(shortestPathAux(weightMatrix,c, currX, currY+1, &currX, &currY, step,path) || shortestPathAux(weightMatrix,c, currX, currY-1, &currX, &currY, step,path) ||shortestPathAux(weightMatrix,c, currX+1, currY, &currX, &currY, step,path) || shortestPathAux(weightMatrix,c, currX-1, currY, &currX, &currY, step,path)){
+		if(shortestPathAux(weightMatrix,c, currX, currY+1, &currX, &currY, step,path) || shortestPathAux(weightMatrix,c, currX, currY-1, &currX, &currY, step,path) ||shortestPathAux(weightMatrix,c, currX+1, currY, &currX, &currY, step,path) || shortestPathAux(weightMatrix,c, currX-1, currY, &currX, &currY, step,path) || shortestPathAux(weightMatrix,c, currX-1, currY+1, &currX, &currY, step,path) || shortestPathAux(weightMatrix,c, currX-1, currY-1, &currX, &currY, step,path) || shortestPathAux(weightMatrix,c, currX+1, currY+1, &currX, &currY, step,path) || shortestPathAux(weightMatrix,c, currX+1, currY-1, &currX, &currY, step,path)){
 			break
 		}
 	}
@@ -137,11 +136,15 @@ func (c Carte) GetPathFromTo(x int, y int, destx int, desty int) []Case{
 					weightMatrix=attribuerPoids(weightMatrix,i+1,j,step) //Droite
 					weightMatrix=attribuerPoids(weightMatrix,i,j-1,step) //Bas
 					weightMatrix=attribuerPoids(weightMatrix,i-1,j,step) //Gauche
+					weightMatrix=attribuerPoids(weightMatrix,i-1,j+1,step)//Gauch Bas
+					weightMatrix=attribuerPoids(weightMatrix,i-1,j-1,step)//Gauche Haut
+					weightMatrix=attribuerPoids(weightMatrix,i+1,j+1,step)//Droite Bas
+					weightMatrix=attribuerPoids(weightMatrix,i+1,j-1,step)//Droite Haut
 				}
 			}
 		}
 	}
-	printMatrix(weightMatrix)
+	//printMatrix(weightMatrix)
 	//Une matrice de poids est cree
 	return shortestPath(weightMatrix,destx, desty,c,path)
 }
