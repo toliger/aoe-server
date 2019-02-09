@@ -16,5 +16,4 @@ func GetType(tuil Tuile) int{
 	return tuil.typ
 }
 func Actualise(tuile Tuile){
-
 }
