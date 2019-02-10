@@ -26,5 +26,3 @@ func Create(faction bool,nom string) Joueur{
 func GetFaction(j Joueur){
 	return j.faction
 }
-
-func add

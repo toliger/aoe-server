@@ -2,6 +2,8 @@ package carte
 
 import tuile "server/carte/tuile"
 import "fmt"
+import "server/batiment"
+import "server/ressource"
 
 type Carte struct{
 	size int
@@ -27,8 +29,36 @@ func (c Carte) IsEmpty(x int, y int) bool{
 func (c Carte) GetTile(x int, y int) tuile.Tuile{
 	return c.matrice[x][y]
 }
+//Ajouter une ressource a la carte
+func (c Carte)AddNewRessource(res *ressource.Ressource) bool{
+	x:=(*res).GetX()
+	y:=(*res).GetY()
+	if(!c.IsEmpty(x,y)){
+		return false
+	}
+	(c.GetTile(x,y)).AddRessource(res)
+	return true
+}
+//Ajouter un Batiment a la carte
+func (c Carte)AddNewBuilding(bat *batiment.Batiment) bool{
+	x:=(*bat).GetX()
+	y:=(*bat).GetY()
+	for i:=0;i<(*bat).GetLongueur();i++{
+		for j:=0;j<(*bat).GetLargeur();j++{
+			if(!c.IsEmpty(x+i,y+j)){
+				return false
+			}
+		}
+	}
+	for i:=0;i<(*bat).GetLongueur();i++{
+		for j:=0;j<(*bat).GetLargeur();j++{
+			(c.GetTile(x+i,y+j)).AddBuilding(bat)
+		}
+	}
+	return true
+}
 
-//Affichage sur terminal
+//Affichage de debuguage sur terminal
 func Debug(mat Carte){
 	for i:=0;i<mat.size;i++{
 		for j:=0;j<mat.size;j++{
@@ -74,7 +104,7 @@ const UNVISITED=-1 //case non parcourue
 const OBSTACLE=-2
 func attribuerPoids(weightMatrix [][]int,x int,y int, step int) [][]int{
 	if(validCoords(x,y,len(weightMatrix))){
-		if(weightMatrix[x][y]==UNVISITED && weightMatrix[x][y]!=OBSTACLE){
+		if(weightMatrix[x][y]==UNVISITED){
 			weightMatrix[x][y]=step+1
 		}
 	}
@@ -123,6 +153,7 @@ func (c Carte) GetPathFromTo(x int, y int, destx int, desty int) []Case{
 				weightMatrix[i][j]=UNVISITED
 			}else{
 				weightMatrix[i][j]=OBSTACLE
+				fmt.Printf("Obstacle sur la case (%d,%d)!\n",i,j)
 			}
 		}
 	}
@@ -144,7 +175,7 @@ func (c Carte) GetPathFromTo(x int, y int, destx int, desty int) []Case{
 			}
 		}
 	}
-	//printMatrix(weightMatrix)
+	printMatrix(weightMatrix)
 	//Une matrice de poids est cree
 	return shortestPath(weightMatrix,destx, desty,c,path)
 }

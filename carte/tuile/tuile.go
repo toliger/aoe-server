@@ -18,9 +18,11 @@ func GetType(tuil Tuile) int{
 func (t Tuile)AddBuilding(bat *batiment.Batiment){
 	t.typ=1
 	t.bat=bat
+	t.res=nil
 }
 
 func (t Tuile)AddRessource(res *ressource.Ressource){
 	t.typ=2
 	t.res=res
+	t.bat=nil
 }

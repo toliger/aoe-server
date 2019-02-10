@@ -32,18 +32,18 @@ func Create(class string, x int, y int) Ressource {
     return res
 }
 
-func GetType(res Ressource) int{
+func (res Ressource)GetType() int{
 	return res.typ
 }
 
-func GetX(res Ressource) int{
+func (res Ressource)GetX() int{
 	return res.x
 }
 
-func GetY(res Ressource) int{
+func (res Ressource)GetY() int{
 	return res.y
 }
 
-func IsHarvestable(res Ressource) bool{
+func (res Ressource)IsHarvestable() bool{
 	return res.typ!=0
 }

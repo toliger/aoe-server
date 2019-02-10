@@ -38,19 +38,15 @@ func create(class string,x int,y int) Npc{
 }
 
 func (pnj Npc)deplacement(path []carte.Case){
-	ndep:=len(path)
-	for i:=0;i<ndep;i+=pnj.vitesse{
-		time.Sleep(1*time.Second)
+	ndep:=len(path)-1
+	vdep:=(1000000000/pnj.vitesse)
+	for i:=0;i<ndep;i++{
+		time.Sleep(time.Duration(vdep))
 		pnj.x=path[i].GetPathX()
 		pnj.y=path[i].GetPathY()
 		fmt.Println("déplacement")
 	}
-	if(pnj.x!=path[ndep-1].GetPathX() || pnj.y!=path[ndep-1].GetPathY()){
-		time.Sleep(1*time.Second)
-		fmt.Println("déplacement")
-		pnj.x=path[ndep-1].GetPathX()
-		pnj.y=path[ndep-1].GetPathY()
-	}
+	
 	
 }
 func (pnj Npc) MoveTo(c carte.Carte, destx int, desty int) []carte.Case{
