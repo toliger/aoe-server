@@ -2,6 +2,8 @@ package npc
 
 import (
 	"fmt"
+	"server/carte"
+	"time"
 )
 
 type Npc struct {
@@ -35,8 +37,32 @@ func create(class string,x int,y int) Npc{
     return pnj
 }
 
-func Test() {
+func (pnj Npc)deplacement(path []carte.Case){
+	ndep:=len(path)
+	for i:=0;i<ndep;i+=pnj.vitesse{
+		time.Sleep(1*time.Second)
+		pnj.x=path[i].GetPathX()
+		pnj.y=path[i].GetPathY()
+		fmt.Println("déplacement")
+	}
+	if(pnj.x!=path[ndep-1].GetPathX() || pnj.y!=path[ndep-1].GetPathY()){
+		time.Sleep(1*time.Second)
+		fmt.Println("déplacement")
+		pnj.x=path[ndep-1].GetPathX()
+		pnj.y=path[ndep-1].GetPathY()
+	}
+	
+}
+func (pnj Npc) MoveTo(c carte.Carte, destx int, desty int) []carte.Case{
+	path:= c.GetPathFromTo(pnj.x,pnj.y,destx,desty)
+	go pnj.deplacement(path)
+	return path
+}
+
+func Test(c carte.Carte) {
 	entity:=create("soldier",1,1)
 	fmt.Println("Hello, playground")
 	fmt.Println(entity.pv)
+	path:=entity.MoveTo(c,5,8)
+	fmt.Printf("Path len=%d\n",len(path))
 }
