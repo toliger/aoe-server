@@ -16,6 +16,7 @@ func AlphaTest(c carte.Carte){
 		fmt.Printf("%d:(%d,%d)\n",i,path[i].GetPathX(),path[i].GetPathY())
 	}
 	fmt.Println("La ressource est ajoutée sur la case x:", res.GetX(), "y:",res.GetY()," ->",c.AddNewRessource(&res))
+	carte.Debug(c)
 	fmt.Println("On recalcule le chemin:\n")
 	path= c.GetPathFromTo(0,0,5,3)
 	fmt.Printf("Chemin de (0,0) à (5,3) l=%d\n",len(path))

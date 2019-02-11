@@ -38,16 +38,16 @@ func create(class string,x int,y int) Npc{
 }
 
 func (pnj Npc)deplacement(path []carte.Case){
-	ndep:=len(path)-1
-	vdep:=(1000000000/pnj.vitesse)
-	for i:=0;i<ndep;i++{
-		time.Sleep(time.Duration(vdep))
-		pnj.x=path[i].GetPathX()
-		pnj.y=path[i].GetPathY()
-		fmt.Println("déplacement")
+	if(path!=nil){
+		ndep:=len(path)-1
+		vdep:=(1000000000/pnj.vitesse)
+		for i:=0;i<ndep;i++{
+			time.Sleep(time.Duration(vdep))
+			pnj.x=path[i].GetPathX()
+			pnj.y=path[i].GetPathY()
+			fmt.Println("déplacement")
+		}
 	}
-	
-	
 }
 func (pnj Npc) MoveTo(c carte.Carte, destx int, desty int) []carte.Case{
 	path:= c.GetPathFromTo(pnj.x,pnj.y,destx,desty)

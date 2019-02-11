@@ -26,8 +26,8 @@ func (c Carte) IsEmpty(x int, y int) bool{
 }
 
 //Renvoie la tuile pour la position demandee
-func (c Carte) GetTile(x int, y int) tuile.Tuile{
-	return c.matrice[x][y]
+func (c Carte) GetTile(x int, y int) *tuile.Tuile{
+	return &(c.matrice[x][y])
 }
 //Ajouter une ressource a la carte
 func (c Carte)AddNewRessource(res *ressource.Ressource) bool{
@@ -114,7 +114,7 @@ func attribuerPoids(weightMatrix [][]int,x int,y int, step int) [][]int{
 func shortestPathAux(weightMatrix [][]int,c Carte, x int, y int, currX *int, currY *int, step int, path []Case) bool{
 	if(validCoords(x,y,len(weightMatrix))){
 		if(weightMatrix[x][y]==step-1){
-			path[step-1]=(Case{x,y,c.GetTile(x,y)})
+			path[step-1]=(Case{x,y,*(c.GetTile(x,y))})
 			*currX=x
 			*currY=y
 			if(step==1){
@@ -131,7 +131,7 @@ func shortestPath(weightMatrix [][]int,destx int, desty int,c Carte,path []Case)
 		return (nil)
 	}
 	path=make([]Case,weightMatrix[destx][desty]+1)
-	path[len(path)-1]=(Case{destx,desty,c.GetTile(destx,desty)})
+	path[len(path)-1]=(Case{destx,desty,*(c.GetTile(destx,desty))})
 	currX:=destx
 	currY:=desty
 	for step:=weightMatrix[destx][desty]+1;step>=0;step--{
@@ -153,7 +153,6 @@ func (c Carte) GetPathFromTo(x int, y int, destx int, desty int) []Case{
 				weightMatrix[i][j]=UNVISITED
 			}else{
 				weightMatrix[i][j]=OBSTACLE
-				fmt.Printf("Obstacle sur la case (%d,%d)!\n",i,j)
 			}
 		}
 	}
