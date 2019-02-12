@@ -22,7 +22,7 @@ func New(size int) Carte{
 }
 // Verifie si la cade est vide
 func (c Carte) IsEmpty(x int, y int) bool{
-		return tuile.GetType(c.matrice[x][y]) ==0
+		return c.matrice[x][y].GetType() ==0
 }
 
 //Renvoie la tuile pour la position demandee
@@ -62,7 +62,7 @@ func (c Carte)AddNewBuilding(bat *batiment.Batiment) bool{
 func Debug(mat Carte){
 	for i:=0;i<mat.size;i++{
 		for j:=0;j<mat.size;j++{
-			fmt.Print(tuile.GetType(mat.matrice[i][j]))
+			fmt.Print(mat.matrice[i][j].GetType())
 			fmt.Print(" ");
 		}
 		fmt.Println("")

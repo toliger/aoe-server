@@ -12,8 +12,8 @@ type Tuile struct{//Batiment, ressource ou vide
 func New() Tuile{
 	return (Tuile{0,nil,nil})
 }
-func GetType(tuil Tuile) int{
-	return tuil.typ
+func (t Tuile) GetType() int{
+	return t.typ
 }
 
 func (t Tuile)ExtractData(typ *int,bat *batiment.Batiment,res *ressource.Ressource){
