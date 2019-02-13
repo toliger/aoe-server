@@ -3,7 +3,7 @@ package main
 import "fmt"
 //import npc "server/npc"
 import carte "server/carte"
-import testsAlpha "server/alpha"
+import tests "server/test"
 func main() {
 	loopBoolean:=true;
 	mat:=carte.New(10)
@@ -17,14 +17,14 @@ func main() {
 		fmt.Println("non")
 	}
 
-	testsAlpha.AlphaTest(mat)
+	tests.Test(mat)
 
 	gameLoop(mat,&loopBoolean)
 }
 
 func gameLoop(Terrain carte.Carte, gameRunning *bool){
 	for *gameRunning{
-		
+
 	}
 
 }
