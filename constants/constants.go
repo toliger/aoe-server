@@ -19,12 +19,6 @@ const LargeurEtabli=2
 const PVAuberge=100
 const PVCaserne=100
 const PVEtabli=100
-<<<<<<< Updated upstream
-
-
-
-
-
 
 //Couts de construction d'un Batiment par Ressource (à déterminer)
 const PrixStoneAuberge=5
@@ -33,7 +27,7 @@ const PrixStoneCaserne=5
 const PrixWoodCaserne=5
 const PrixStoneEtabli=5
 const PrixWoodEtabli=5
-=======
+
 //DataRecup consts
 const DATAFILENAME="server/data/Gamedata.json"
 //Default PNJ values
@@ -43,4 +37,4 @@ const HarvesterRayon=8
 const SoldierPortee=1
 const HarvesterPortee=1
 const VillagerPortee=0
->>>>>>> Stashed changes
+
