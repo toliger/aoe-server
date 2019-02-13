@@ -1,4 +1,4 @@
-// à remplir et vérifier la correcte implémentation des fonctions pour l'alpha.
+// Ces tests permetent de vérifier la correcte implémentation des fonctions..
 package alpha
 
 import "fmt"
