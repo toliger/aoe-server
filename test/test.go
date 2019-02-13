@@ -1,5 +1,5 @@
 // Ces tests permetent de vérifier la correcte implémentation des fonctions..
-package test
+package tests
 
 import "fmt"
 //import npc "server/npc"
