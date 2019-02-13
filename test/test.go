@@ -1,12 +1,12 @@
 // Ces tests permetent de vérifier la correcte implémentation des fonctions..
-package alpha
+package tests
 
 import "fmt"
 //import npc "server/npc"
 import ressource "server/ressource"
 import carte "server/carte"
 
-func AlphaTest(c carte.Carte){
+func Test(c carte.Carte){
     res := ressource.Create("tree",1,1)
     fmt.Println("Une ressource de type :", res.GetType(),"est crée de coordonées x:", res.GetX(), "y:",res.GetY())
     fmt.Println("Ajout de cette ressource à la tuile correspondante")
