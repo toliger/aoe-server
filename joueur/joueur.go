@@ -22,7 +22,37 @@ var model byte =0//Permet d'obtenir des id uniques lors d'une partie
 func Create(faction bool,nom string) Joueur{
 	return Joueur{faction,nom,0,make([]batiment.Batiment,constants.MaxBuildings),0,make([]npc.Npc,constants.MaxEntities),model++,StartingStone,StartingWood,StartingFood}
 }
-
-func GetFaction(j Joueur){
+//Retourne la faction
+func (j Joueur) GetFaction() bool{
 	return j.faction
+}
+//Retourne le Nom
+func (j Joueur) GetNom() string{
+	return j.nom
+}
+//Retourne l'id jouer
+func (j Joueur) GetId() byte{
+	return j.byte
+}
+
+//Retourne la quantité de d'une ressource d'un joueur
+func (j Joueur) GetStone() int{
+	return j.stone
+}
+func (j Joueur) GetWood() int{
+	return j.wood
+}
+func (j Joueur) GetFood() int{
+	return j.food
+}
+
+//ajout de ressources
+func (j *Joueur) AddStone(s int){
+	(*j).stone +=s
+}
+func (j *Joueur) AddWood(w int){
+	(*j).wood +=w
+}
+func (j *Joueur) AddFood(f int){
+	(*j).food+= f
 }

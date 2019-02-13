@@ -1,14 +1,13 @@
 package main
 
-import{
+import(
 	"fmt"
-	//"server/npc"
 	"server/carte"
-	testsAlpha "server/alpha"
-	“encoding/json”
+	testsA "server/alpha"
+	"encoding/json"
 	"server/joueur"
-	
-}
+
+)
 
 type Game struct{
 	players []joueur.Joueur
@@ -33,7 +32,7 @@ func (g *Game)EndOfGame(){
 
 func (g *Game)gameLoop(){
 	for (*g).GameRunning{
-		
+
 	}
 
 }
@@ -45,5 +44,5 @@ func (g *Game)ExtractGameData(){
 	}
 	// defer the closing of our jsonFile so that we can parse it later on
 	defer jsonFile.Close()
-	
+
 }

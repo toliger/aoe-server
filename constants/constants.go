@@ -19,3 +19,16 @@ const LargeurEtabli=2
 const PVAuberge=100
 const PVCaserne=100
 const PVEtabli=100
+
+
+
+
+
+
+//Couts de construction d'un Batiment par Ressource (à déterminer)
+const PrixStoneAuberge=5
+const PrixWoodAuberge=5
+const PrixStoneCaserne=5
+const PrixWoodCaserne=5
+const PrixStoneEtabli=5
+const PrixWoodEtabli=5
