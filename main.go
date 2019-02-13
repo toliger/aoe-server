@@ -1,18 +1,16 @@
 package main
 
-import(
-	"fmt"
-	"server/carte"
-	testsA "server/alpha"
-	"encoding/json"
-	"server/joueur"
+import "fmt"
+//import npc "server/npc"
+import carte "server/carte"
+import tests "server/test"
+import "encoding/json"
+import "io/ioutil"
+import "server/joueur"
 
-)
-
-type Game struct{
-	players []joueur.Joueur
-	carte care.Carte
-	GameRunning bool
+type Data struct{
+	size int
+	joueurs []joueur.Joueur
 }
 
 func main() {
@@ -22,7 +20,6 @@ func main() {
 	//npc.Test(mat)
 
 	tests.Test(mat)
-
 	gameLoop(mat,&loopBoolean)
 }
 
@@ -37,12 +34,6 @@ func (g *Game)gameLoop(){
 
 }
 
-func (g *Game)ExtractGameData(){
-	jsonFile, err := os.Open("GameData.json")
-	if err != nil {
-		fmt.Println(err)
-	}
-	// defer the closing of our jsonFile so that we can parse it later on
-	defer jsonFile.Close()
+func ExtractData Game(){
 
 }
