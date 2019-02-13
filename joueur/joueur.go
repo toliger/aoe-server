@@ -16,7 +16,7 @@ type Joueur struct{
 	wood int
 	food int
 }
-var model byte =1//Permet d'obtenir des id uniques lors d'une partie
+var model byte =0//Permet d'obtenir des id uniques lors d'une partie
 
 //Crée un joueur
 func Create(faction bool,nom string) Joueur{

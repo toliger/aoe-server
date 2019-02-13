@@ -4,7 +4,7 @@ import tuile "server/carte/tuile"
 import "fmt"
 import "server/batiment"
 import "server/ressource"
-
+import "encoding/json"
 type Carte struct{
 	size int
 	matrice[][] tuile.Tuile

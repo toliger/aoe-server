@@ -1,30 +1,49 @@
 package main
 
-import "fmt"
-//import npc "server/npc"
-import carte "server/carte"
-import tests "server/test"
+import{
+	"fmt"
+	//"server/npc"
+	"server/carte"
+	testsAlpha "server/alpha"
+	“encoding/json”
+	"server/joueur"
+	
+}
+
+type Game struct{
+	players []joueur.Joueur
+	carte care.Carte
+	GameRunning bool
+}
+
 func main() {
 	loopBoolean:=true;
 	mat:=carte.New(10)
 	//carte.Debug(mat)
-	fmt.Println("test")
 	//npc.Test(mat)
-	fmt.Println("La case 0 0 est elle libre ?")
-	if mat.IsEmpty(0,0) {
-		fmt.Println("oui")
-	} else {
-		fmt.Println("non")
-	}
 
 	tests.Test(mat)
 
 	gameLoop(mat,&loopBoolean)
 }
 
-func gameLoop(Terrain carte.Carte, gameRunning *bool){
-	for *gameRunning{
+func (g *Game)EndOfGame(){
+	(*g).GameRunning=false
+}
 
+func (g *Game)gameLoop(){
+	for (*g).GameRunning{
+		
 	}
 
+}
+
+func (g *Game)ExtractGameData(){
+	jsonFile, err := os.Open("GameData.json")
+	if err != nil {
+		fmt.Println(err)
+	}
+	// defer the closing of our jsonFile so that we can parse it later on
+	defer jsonFile.Close()
+	
 }
