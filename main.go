@@ -10,7 +10,7 @@ import "server/batiment"
 import "os"
 import "server/ressource"
 import "server/joueur"
-
+import "server/affichage"
 
 type Data struct{
 	Size int
@@ -30,7 +30,9 @@ func main() {
 	//tests.Test(mat)
 	(&game).GetPlayerData()
 	data:=ExtractData()
+	(&game).generateMap(data)
 	fmt.Println("Data struct extracted from json:",data)
+	affichage.ImprimerCarte(game.carte)
 }
 
 func (g *Game)EndOfGame(){

@@ -24,6 +24,10 @@ func (c Carte) IsEmpty(x int, y int) bool{
 		return c.matrice[x][y].GetType() ==0
 }
 
+func (c Carte)GetSize() int{
+	return c.size
+}
+
 //Renvoie la tuile pour la position demandee
 func (c Carte) GetTile(x int, y int) *tuile.Tuile{
 	return &(c.matrice[x][y])
