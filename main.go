@@ -36,7 +36,6 @@ func (g Game)GetPlayerFromUID(uid string) *joueur.Joueur{
 func main() {
 	var game Game
 	game.GameRunning=true
-	//tests.Test(mat)
 	(&game).GetPlayerData()
 	data:=ExtractData()
 	(&game).generateMap(data)

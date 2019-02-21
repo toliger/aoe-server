@@ -1,7 +1,7 @@
+//Contient les fonctions nécessaires pour la gestion des batiments
 package batiment
 
 import cst "server/constants"
-
 type Batiment struct{
 	X int
 	Y int
@@ -10,11 +10,11 @@ type Batiment struct{
 	Longueur int
 	Largeur int
 }
-//Crée un nouveau bâtiment, pv = 100
+//Constructeur de l'objet Batiment
 func New(x int,y int, typ int, long int, larg int, pv int) Batiment{
 	return (Batiment{x,y,pv,typ,long,larg})
 }
-
+//Crée une Instance de batiment
 func Create(class string, x int, y int ) Batiment{
 	var bat Batiment
 	switch class{
@@ -29,19 +29,19 @@ func Create(class string, x int, y int ) Batiment{
 	}
 	return bat
 }
-
+//Retourne la longueur d'un batiment
 func (bat Batiment)GetLongueur() int{
 	return bat.Longueur
 }
-
+//Retourne la largeur d'un batiment
 func (bat Batiment)GetLargeur() int{
 	return bat.Largeur
 }
-
+//Retourne un coordonnée x de Batiment
 func (bat Batiment)GetX() int{
 	return bat.X
 }
-
+//Retourne un coordonnée y de Batiment
 func (bat Batiment)GetY() int{
 	return bat.Y
 }
