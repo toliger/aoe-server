@@ -7,6 +7,7 @@ import constants "server/constants"
 type Joueur struct{
 	faction bool //true: faction 1, false: faction 2
 	nom string
+	uid string
 	nbats int
 	batiments[] batiment.Batiment
 	nelems int
@@ -19,8 +20,8 @@ type Joueur struct{
 var model byte =0//Permet d'obtenir des id uniques lors d'une partie
 
 //Crée un joueur
-func Create(faction bool,nom string) Joueur{
-	res :=Joueur{faction,nom,0,make([]batiment.Batiment,constants.MaxBuildings),0,make([]npc.Npc,constants.MaxEntities),model,constants.StartingStone,constants.StartingWood,constants.StartingFood}
+func Create(faction bool,nom string,uid string) Joueur{
+	res :=Joueur{faction,nom,uid,0,make([]batiment.Batiment,constants.MaxBuildings),0,make([]npc.Npc,constants.MaxEntities),model,constants.StartingStone,constants.StartingWood,constants.StartingFood}
 	model++
 	return res
 }

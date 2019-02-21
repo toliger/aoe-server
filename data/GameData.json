@@ -1,1 +1,1 @@
-{"Size":512,"Camps":[{"X":0,"Y":0,"Pv":100,"Typ":0,"Longueur":2,"Largeur":2},{"X":500,"Y":500,"Pv":100,"Typ":0,"Longueur":2,"Largeur":2}],"ressources":[{"X":5,"Y":5,"Pv":100,"Typ":3},{"X":10,"Y":5,"Pv":100,"Typ":2},{"X":10,"Y":25,"Pv":100,"Typ":1}]}
+{"Size":512,"Buildings":[{"X":0,"Y":0,"Pv":100,"Typ":0,"Longueur":2,"Largeur":2},{"X":500,"Y":500,"Pv":100,"Typ":0,"Longueur":2,"Largeur":2}],"Ressources":[{"X":5,"Y":5,"Pv":100,"Typ":3},{"X":10,"Y":5,"Pv":100,"Typ":2},{"X":10,"Y":25,"Pv":100,"Typ":1}]}
