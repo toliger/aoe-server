@@ -4,11 +4,10 @@ package ressource
 
 type Ressource struct{
 
-    x int
-    y int
-    pv int
-    typ int // 0:water, 1:tree, 2:rock, 3 food ...
-
+    X int
+    Y int
+    Pv int
+    Typ int // 0:water, 1:tree, 2:rock, 3 food ...
 }
 //Crée la Ressource
 func new(x int, y int, pv int, typ int) Ressource {
@@ -33,17 +32,17 @@ func Create(class string, x int, y int) Ressource {
 }
 
 func (res Ressource)GetType() int{
-	return res.typ
+	return res.Typ
 }
 
 func (res Ressource)GetX() int{
-	return res.x
+	return res.X
 }
 
 func (res Ressource)GetY() int{
-	return res.y
+	return res.Y
 }
 
 func (res Ressource)IsHarvestable() bool{
-	return res.typ!=0
+	return res.Typ!=0
 }

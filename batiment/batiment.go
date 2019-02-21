@@ -3,13 +3,12 @@ package batiment
 import cst "server/constants"
 
 type Batiment struct{
-	x int
-	y int
-	pv int
-	typ int //auberge: 0, caserne:1, établi:2 ...
-	longueur int
-	largeur int
-	
+	X int
+	Y int
+	Pv int
+	Typ int //auberge: 0, caserne:1, établi:2 ...
+	Longueur int
+	Largeur int
 }
 //Crée un nouveau bâtiment, pv = 100
 func New(x int,y int, typ int, long int, larg int, pv int) Batiment{
@@ -32,17 +31,17 @@ func Create(class string, x int, y int ) Batiment{
 }
 
 func (bat Batiment)GetLongueur() int{
-	return bat.longueur
+	return bat.Longueur
 }
 
 func (bat Batiment)GetLargeur() int{
-	return bat.largeur
+	return bat.Largeur
 }
 
 func (bat Batiment)GetX() int{
-	return bat.x
+	return bat.X
 }
 
 func (bat Batiment)GetY() int{
-	return bat.y
+	return bat.Y
 }
