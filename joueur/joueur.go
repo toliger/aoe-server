@@ -7,7 +7,7 @@ import constants "server/constants"
 type Joueur struct{
 	faction bool //true: faction 1, false: faction 2
 	nom string
-	uid string
+	Uid string
 	nbats int
 	batiments[] batiment.Batiment
 	nelems int
@@ -58,4 +58,8 @@ func (j *Joueur) AddWood(w int){
 }
 func (j *Joueur) AddFood(f int){
 	(*j).food+= f
+}
+
+func (j *Joueur)AddBuilding(b batiment.Batiment){
+	(*j).batiments=append(j.batiments,b)
 }

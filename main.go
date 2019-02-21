@@ -24,6 +24,15 @@ type Game struct{
 	GameRunning bool
 }
 
+func (g Game)GetPlayerFromUID(uid string) *joueur.Joueur{
+	for i:=0;i<len(g.joueurs);i++{
+		if(g.joueurs[i].Uid==uid){
+			return &(g.joueurs[i])
+		}
+	}
+	return nil
+}
+
 func main() {
 	var game Game
 	game.GameRunning=true
@@ -49,7 +58,32 @@ func (g *Game)gameLoop(){
 func (g *Game)generateMap(data Data){
 	(*g).carte =carte.New(data.Size)
 	//On attribue les auberges
-	
+	if(len((*g).joueurs)==2){
+		(*g).joueurs[0].AddBuilding(data.Buildings[0])
+		if((*g).carte.AddNewBuilding(&(data.Buildings[0]))==false){
+			fmt.Println("Erreur lors du placement d'une auberge")
+			os.Exit(1)
+		}
+		(*g).joueurs[1].AddBuilding(data.Buildings[2])
+		if((*g).carte.AddNewBuilding(&(data.Buildings[2]))==false){
+			fmt.Println("Erreur lors du placement d'une auberge")
+			os.Exit(1)
+		}
+	}else{//sinon 4 joueurs classiques
+		for i:=0;i<4;i++{
+			(*g).joueurs[i].AddBuilding(data.Buildings[i])
+			if((*g).carte.AddNewBuilding(&(data.Buildings[i]))==false){
+				fmt.Println("Erreur lors du placement d'une auberge")
+				os.Exit(1)
+			}
+		}
+	}
+	for i:=0;i<len(data.Ressources);i++{
+		if((*g).carte.AddNewRessource(&(data.Ressources[i]))==false){
+			fmt.Println("Erreur lors du placement d'une ressource")
+			os.Exit(1)
+		}
+	}
 }
 
 func (g *Game)GetPlayerData(){
