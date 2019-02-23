@@ -11,6 +11,7 @@ import "os"
 import "server/ressource"
 import "server/joueur"
 import "server/affichage"
+import "server/constants"
 
 type Data struct{
 	Size int
@@ -57,7 +58,7 @@ func (g *Game)gameLoop(){
 func (g *Game)generateMap(data Data){
 	(*g).carte =carte.New(data.Size)
 	//On attribue les auberges
-	if(len((*g).joueurs)==2){
+	if(len((*g).joueurs)==2){//Si Seulement 2 joueurs fournis, fait en sorte de leur donner des bases adverses
 		(*g).joueurs[0].AddBuilding(data.Buildings[0])
 		if((*g).carte.AddNewBuilding(&(data.Buildings[0]))==false){
 			fmt.Println("Erreur lors du placement d'une auberge")
@@ -68,7 +69,7 @@ func (g *Game)generateMap(data Data){
 			fmt.Println("Erreur lors du placement d'une auberge")
 			os.Exit(1)
 		}
-	}else{//sinon 4 joueurs classiques
+	}else{//sinon 4 joueurs classiques dans l'ordre des bases fournies (blue blue red red)
 		for i:=0;i<4;i++{
 			(*g).joueurs[i].AddBuilding(data.Buildings[i])
 			if((*g).carte.AddNewBuilding(&(data.Buildings[i]))==false){
@@ -106,7 +107,11 @@ func (g *Game)GetPlayerData(){
 }
 
 func ExtractData() Data{
-	jsonFile, err:= os.Open("data/GameData.json")
+	datafileName:="data/GameData.json"
+	if(constants.UseSmallMap){
+		datafileName="data/SmallTestMap.json"
+	}
+	jsonFile, err:= os.Open(datafileName)
 	if err!=nil{
 		fmt.Println(err)
 		os.Exit(1)
