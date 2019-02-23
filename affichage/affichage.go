@@ -1,7 +1,7 @@
 package affichage
 
 import "server/carte"
-import "server/fogleman/gg"
+import "server/github.com/fogleman/gg"
 
 func ImprimerCarte(c carte.Carte){
 	const TCase=10
