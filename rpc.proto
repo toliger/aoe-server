@@ -1,0 +1,137 @@
+syntax = "proto3";
+
+package communication;
+
+///////////////////////////////////////////////////////////////////////////////
+// Service de gestion des clients
+///////////////////////////////////////////////////////////////////////////////
+
+service Client {
+}
+
+
+message Joueur {
+  bytes id = 1;
+  bool estFaction = 2;
+  string nom = 3;
+  int32 nombreBatiment = 4;
+  int32 nombreElement = 5;
+  int32 pierre = 6;
+  int32 bois = 7;
+  int32 nourriture = 8;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// Service de gestion du contenu de la carte
+///////////////////////////////////////////////////////////////////////////////
+
+service Carte {
+  // Fonction permettant au client de demander une zone de carte
+  rpc getZoneCarte (getZoneCarteRequest) returns (getZoneCarteReply) {}
+
+  // Fonction permettant au client de faire une modification d'une zone de carte
+  rpc setZoneCarte (setZoneCarteRequest) returns (setZoneCarteReply) {}
+
+  // Fonction permettant au serveur de mettre à jour une zone de carte du client
+  rpc updateZoneCarte(updateZoneCarteRequest) returns (updateZoneCarteReply) {}
+
+}
+
+// Messages liés à getZoneCarte
+message getZoneCarteRequest {
+  int32 x = 1;
+  int32 y = 2;
+  int32 longueur = 3;
+  int32 largeur = 4;
+}
+message getZoneCarteReply {
+  repeated Tuile carte = 1;
+}
+
+// Messages liés à setZoneCarte
+message setZoneCarteRequest {
+  int32 x = 1;
+  int32 y = 2;
+  int32 longueur = 3;
+  int32 largeur = 4;
+  repeated Tuile carte = 5;
+}
+message setZoneCarteReply {}
+
+// Messages liés à updateZoneCarte
+message updateZoneCarteRequest {
+  int32 x = 1;
+  int32 y = 2;
+  int32 longueur = 3;
+  int32 largeur = 4;
+  repeated Tuile carte = 5;
+}
+message updateZoneCarteReply {}
+
+// Message de structure d'organisation de la carte
+message Tuile {
+  int32 type = 1;
+  Ressource ressource = 2;
+  Batiment batiment = 3;
+}
+message Ressource {
+  int32 pv = 1;
+  int32 type = 2;
+}
+message Batiment {
+  int32 pv = 1;
+  int32 type = 2;
+  int32 longueur = 3;
+  int32 largeur = 4;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// Service de gestion des NPC
+///////////////////////////////////////////////////////////////////////////////
+
+service Entite {
+  // Fonction permettant au client de demander un NPC
+  rpc getNPC (getNPCRequest) returns (getNPCReply) {}
+
+  // Fonction permettant au client de demander le chemin à un endroit
+  rpc moveTo (moveToRequest) returns (moveToReply) {}
+
+  // Fonction permettant au client de demander la position d'un NPC tier
+  rpc getNPCPosition (getNPCPositionRequest) returns (getNPCPositionReply) {}
+}
+
+// Messages liés à getNPC
+message getNPCRequest {}
+message getNPCReply {
+  NPC entite = 1;
+}
+
+// Message liés à moveTo
+message moveToRequest {
+  coordonnee actuel = 1;
+  coordonnee destionation = 2;
+}
+message moveToReply {
+  repeated coordonnee chemin = 1;
+}
+
+// Message liés à getNPCPosition
+message getNPCPositionRequest {}
+message getNPCPositionReply {}
+
+// Message utilisé comme structure dans le service NPC
+message NPC {
+  int32 x = 1;
+  int32 y = 2;
+  int32 pv = 3;
+  int32 vitesse = 4;
+  int32 vue = 5;
+  int32 portee = 6;
+  bool estOffensif = 7;
+  int32 degat = 8;
+  bool estSelectinable = 9;
+}
+message coordonnee {
+  int32 x = 1;
+  int32 y = 2;
+}
