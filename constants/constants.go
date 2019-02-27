@@ -49,4 +49,4 @@ const HarvesterRayon=8
 const SoldierPortee=1
 const HarvesterPortee=1
 const VillagerPortee=0
-
+const TauxRecolte=2
