@@ -1,1 +1,10 @@
+# MacOS
+.DS_Store
+
+# General
+.log
+
+*.exe
+
 .gitignore
+perso/

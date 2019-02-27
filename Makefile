@@ -1,2 +1,2 @@
 build:
-	protoc -I . server.proto --go_out=plugins=grpc:serveur
+	protoc --proto_path=. --go_out=./rpc rpc.proto
