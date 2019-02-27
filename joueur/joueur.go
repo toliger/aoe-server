@@ -1,8 +1,8 @@
 package joueur
 
-import npc "server/npc"
-import batiment "server/batiment"
-import constants "server/constants"
+import npc "git.unistra.fr/AOEINT/server/npc"
+import batiment "git.unistra.fr/AOEINT/server/batiment"
+import constants "git.unistra.fr/AOEINT/server/constants"
 
 type Joueur struct{
 	faction bool //true: faction 1, false: faction 2

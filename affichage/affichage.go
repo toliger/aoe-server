@@ -1,7 +1,7 @@
 package affichage
 
-import "server/carte"
-import "server/github.com/fogleman/gg"
+import "git.unistra.fr/AOEINT/server/carte"
+import "github.com/fogleman/gg"
 
 func ImprimerCarte(c carte.Carte){
 	const TCase=10
@@ -21,7 +21,7 @@ func ImprimerCarte(c carte.Carte){
 			canvas.Fill()
 		}
 	}
-	
+
 	canvas.SetRGB(0, 0, 0)
 	canvas.SetLineWidth(1.0)
 	for i:=0;i<c.GetSize();i++{

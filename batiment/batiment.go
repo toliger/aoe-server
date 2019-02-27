@@ -1,7 +1,6 @@
-//Contient les fonctions nécessaires pour la gestion des batiments
 package batiment
 
-import cst "server/constants"
+import cst "git.unistra.fr/AOEINT/server/constants"
 type Batiment struct{
 	X int
 	Y int
@@ -28,6 +27,10 @@ func Create(class string, x int, y int ) Batiment{
 		bat=New(x, y, 0,cst.LongueurAuberge,cst.LargeurAuberge,cst.PVAuberge)
 	}
 	return bat
+}
+//Retourne les pv d'un bâtiment
+func (bat Batiment)GetPv() int{
+	return bat.Pv
 }
 //Retourne la longueur d'un batiment
 func (bat Batiment)GetLongueur() int{
