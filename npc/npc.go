@@ -17,24 +17,42 @@ type Npc struct {
     size int
     damage int
     selectable bool //false=villager
+	typ int // 0:villager, 1:harvester, 2:soldier
 }
 //Crée un nouveau Npc avec les paramètres fourni
-func New(x int,y int,pv int, vitesse int, vue int, portee int, offensive bool,size int, damage int,selectable bool) Npc{
-	pnj:=Npc{x,y,pv,vitesse,vue,portee,offensive,size,damage,selectable}
+func New(x int,y int,pv int, vitesse int, vue int, portee int, offensive bool,size int, damage int,selectable bool, typ int) Npc{
+	pnj:=Npc{x,y,pv,vitesse,vue,portee,offensive,size,damage,selectable,typ}
 	return pnj
 }
 //Crée un Npc du type fourni
 func create(class string,x int,y int) Npc{
-    var pnj Npc
+	var pnj Npc
 	switch class{
 		case "soldier":
-			pnj=New(x,y,8,3,10,2,true,1,2,true)
+			pnj=New(x,y,8,3,10,2,true,1,2,true,2)
 		case "harvester":
-			pnj=New(x,y,4,4,10,2,false,1,10,true)
+			pnj=New(x,y,4,4,10,2,false,1,10,true,1)
 		default:
-			pnj=New(x,y,4,4,10,2,false,1,0,false)
-    }
-    return pnj
+			pnj=New(x,y,4,4,10,2,false,1,0,false,0)
+	}
+	return pnj
+}
+
+//Npc
+func (pnj Npc) GetX() int{
+	return pnj.x
+}
+
+func (pnj Npc) GetY() int{
+	return pnj.y
+}
+
+func (pnj Npc) GetVue() int{
+	return pnj.vue
+}
+
+func (pnj Npc) GetType() int{
+	return pnj.typ
 }
 
 func (pnj Npc)deplacement(path []carte.Case){
