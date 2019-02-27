@@ -2,12 +2,10 @@ package main
 
 import "fmt"
 //import npc "server/npc"
-<<<<<<< HEAD
 //import tests "server/test"
-import "server/affichage"
+import "git.unistra.fr/AOEINT/server/affichage"
 import simulateClient "server/falseclient"
-import "server/game"
-=======
+import "git.unistra.fr/AOEINT/server/game"
 import carte "git.unistra.fr/AOEINT/server/carte"
 //import tests "server/test"
 import "encoding/json"
@@ -39,7 +37,6 @@ func (g Game)GetPlayerFromUID(uid string) *joueur.Joueur{
 	}
 	return nil
 }
->>>>>>> 17f6f0a3a254cc712e95624fb549226c9e71bd86
 
 func main() {
 	var g game.Game
@@ -48,14 +45,11 @@ func main() {
 	data:=game.ExtractData()
 	(&g).GenerateMap(data)
 	fmt.Println("Data struct extracted from json:",data)
-<<<<<<< HEAD
+
 	//On lance le faux client pour tester les fonctions de liaison
 	go simulateClient.StartClient(&(g.GameRunning))
 	affichage.ImprimerCarte(g.Carte)
 	(&g).GameLoop()
-}
-=======
-	affichage.ImprimerCarte(game.carte)
 }
 
 func (g *Game)EndOfGame(){
@@ -136,4 +130,3 @@ func ExtractData() Data{
 	json.Unmarshal(byteValue, &newGame)
 	return newGame
 }
->>>>>>> 17f6f0a3a254cc712e95624fb549226c9e71bd86
