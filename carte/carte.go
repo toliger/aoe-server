@@ -1,9 +1,9 @@
 package carte
 
-import tuile "server/carte/tuile"
+import tuile "git.unistra.fr/AOEINT/server/carte/tuile"
 import "fmt"
-import "server/batiment"
-import "server/ressource"
+import "git.unistra.fr/AOEINT/server/batiment"
+import "git.unistra.fr/AOEINT/server/ressource"
 type Carte struct{
 	size int
 	matrice[][] tuile.Tuile

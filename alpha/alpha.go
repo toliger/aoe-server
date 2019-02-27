@@ -3,8 +3,8 @@ package alpha
 
 import "fmt"
 //import npc "server/npc"
-import ressource "server/ressource"
-import carte "server/carte"
+import ressource "git.unistra.fr/AOEINT/server/ressource"
+import carte "git.unistra.fr/AOEINT/server/carte"
 
 func AlphaTest(c carte.Carte){
     res := ressource.Create("tree",1,1)

@@ -2,16 +2,16 @@ package main
 
 import "fmt"
 //import npc "server/npc"
-import carte "server/carte"
+import carte "git.unistra.fr/AOEINT/server/carte"
 //import tests "server/test"
 import "encoding/json"
 import "io/ioutil"
-import "server/batiment"
+import "git.unistra.fr/AOEINT/server/batiment"
 import "os"
-import "server/ressource"
-import "server/joueur"
-import "server/affichage"
-import "server/constants"
+import "git.unistra.fr/AOEINT/server/ressource"
+import "git.unistra.fr/AOEINT/server/joueur"
+import "git.unistra.fr/AOEINT/server/affichage"
+import "git.unistra.fr/AOEINT/server/constants"
 
 type Data struct{
 	Size int
@@ -50,7 +50,7 @@ func (g *Game)EndOfGame(){
 
 func (g *Game)gameLoop(){
 	for (*g).GameRunning{
-		
+
 	}
 
 }
