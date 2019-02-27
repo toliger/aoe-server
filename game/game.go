@@ -1,14 +1,14 @@
 package game
 
-import Carte "server/carte"
+import Carte "git.unistra.fr/AOEINT/server/carte"
 import "os"
-import "server/joueur"
-import "server/ressource"
-import "server/batiment"
+import "git.unistra.fr/AOEINT/server/joueur"
+import "git.unistra.fr/AOEINT/server/ressource"
+import "git.unistra.fr/AOEINT/server/batiment"
 import "time"
 import "fmt"
 import "encoding/json"
-import "server/constants"
+import "git.unistra.fr/AOEINT/server/constants"
 import "io/ioutil"
 
 //Structure contenant les donnees principales d'une partie

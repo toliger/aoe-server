@@ -1,5 +1,5 @@
 package falseclient
-import tl "server/github.com/JoelOtter/termloop"
+import tl "github.com/JoelOtter/termloop"
 
 func StartClient(gameLoop *bool){
 	game:=tl.NewGame()
