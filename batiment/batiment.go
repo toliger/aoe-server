@@ -29,6 +29,10 @@ func Create(class string, x int, y int ) Batiment{
 	}
 	return bat
 }
+//Retourne les pv d'un bâtiment
+func (bat Batiement)GetPv() int{
+	return bat.Pv
+}
 //Retourne la longueur d'un batiment
 func (bat Batiment)GetLongueur() int{
 	return bat.Longueur

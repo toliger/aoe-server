@@ -52,3 +52,7 @@ func EraseBuilding(playerUID string, x int, y int){
 func AddNewNpc(playerUID string, x int, y int, typ int) bool{
 	return false
 }
+//Enleve des Pv a un batiment
+func  DamageBuilding(playerUID string, x int, y int, attack int){
+	
+}
