@@ -2,7 +2,7 @@ package npc
 
 import (
 	"fmt"
-	"server/carte"
+	"git.unistra.fr/AOEINT/server/carte"
 	"time"
 )
 

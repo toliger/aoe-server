@@ -2,38 +2,24 @@ package main
 
 import "fmt"
 //import npc "server/npc"
-import carte "server/carte"
-import tests "server/test"
-import "encoding/json"
-import "io/ioutil"
-import "server/joueur"
+//import tests "server/test"
+import "git.unistra.fr/AOEINT/server/affichage"
+import simulateClient "git.unistra.fr/AOEINT/server/falseclient"
+import "git.unistra.fr/AOEINT/server/game"
+//import tests "server/test"
 
-type Data struct{
-	size int
-	joueurs []joueur.Joueur
-}
 
 func main() {
-	loopBoolean:=true;
-	mat:=carte.New(10)
-	//carte.Debug(mat)
-	//npc.Test(mat)
+	var g game.Game
+	g.GameRunning=true
+	(&g).GetPlayerData()
+	data:=game.ExtractData()
+	(&g).GenerateMap(data)
+	fmt.Println("Data struct extracted from json:",data)
 
-	tests.Test(mat)
-	gameLoop(mat,&loopBoolean)
+	//On lance le faux client pour tester les fonctions de liaison
+	go simulateClient.StartClient(&(g.GameRunning))
+	affichage.ImprimerCarte(g.Carte)
+	(&g).GameLoop()
 }
 
-func (g *Game)EndOfGame(){
-	(*g).GameRunning=false
-}
-
-func (g *Game)gameLoop(){
-	for (*g).GameRunning{
-
-	}
-
-}
-
-func ExtractData Game(){
-
-}

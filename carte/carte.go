@@ -1,10 +1,9 @@
 package carte
 
-import tuile "server/carte/tuile"
+import tuile "git.unistra.fr/AOEINT/server/carte/tuile"
 import "fmt"
-import "server/batiment"
-import "server/ressource"
-import "encoding/json"
+import "git.unistra.fr/AOEINT/server/batiment"
+import "git.unistra.fr/AOEINT/server/ressource"
 type Carte struct{
 	size int
 	matrice[][] tuile.Tuile
@@ -23,6 +22,10 @@ func New(size int) Carte{
 // Verifie si la cade est vide
 func (c Carte) IsEmpty(x int, y int) bool{
 		return c.matrice[x][y].GetType() ==0
+}
+
+func (c Carte)GetSize() int{
+	return c.size
 }
 
 //Renvoie la tuile pour la position demandee

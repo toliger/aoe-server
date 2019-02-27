@@ -1,21 +1,19 @@
 package batiment
 
-import cst "server/constants"
-
+import cst "git.unistra.fr/AOEINT/server/constants"
 type Batiment struct{
-	x int
-	y int
-	pv int
-	typ int //auberge: 0, caserne:1, établi:2 ...
-	longueur int
-	largeur int
-	
+	X int
+	Y int
+	Pv int
+	Typ int //auberge: 0, caserne:1, établi:2 ...
+	Longueur int
+	Largeur int
 }
-//Crée un nouveau bâtiment, pv = 100
+//Constructeur de l'objet Batiment
 func New(x int,y int, typ int, long int, larg int, pv int) Batiment{
 	return (Batiment{x,y,pv,typ,long,larg})
 }
-
+//Crée une Instance de batiment
 func Create(class string, x int, y int ) Batiment{
 	var bat Batiment
 	switch class{
@@ -30,19 +28,27 @@ func Create(class string, x int, y int ) Batiment{
 	}
 	return bat
 }
-
+//"Detruit" l'objet batiment si il n'y a plus de pv
+func (bat *Batiment)DestroyBuilding(){
+	bat = nil //nil permet assigner la valeur nul à un pointeur
+}
+//Retourne les pv d'un bâtiment
+func (bat Batiment)GetPv() int{
+	return bat.Pv
+}
+//Retourne la longueur d'un batiment
 func (bat Batiment)GetLongueur() int{
-	return bat.longueur
+	return bat.Longueur
 }
-
+//Retourne la largeur d'un batiment
 func (bat Batiment)GetLargeur() int{
-	return bat.largeur
+	return bat.Largeur
 }
-
+//Retourne un coordonnée x de Batiment
 func (bat Batiment)GetX() int{
-	return bat.x
+	return bat.X
 }
-
+//Retourne un coordonnée y de Batiment
 func (bat Batiment)GetY() int{
-	return bat.y
+	return bat.Y
 }
