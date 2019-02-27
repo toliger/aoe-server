@@ -14,7 +14,7 @@ import (
 //Envoie toutes les donnees necessaires à la mise en place de la partie en debut de jeu
 //A envoyer: donnees des joueurs, structure data(map), entites de depart..
 func initGameState(){
-
+	
 }
 
 //Maj les ressources du joueur à partir de l'uid correspondant
