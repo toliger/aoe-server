@@ -28,6 +28,10 @@ func Create(class string, x int, y int ) Batiment{
 	}
 	return bat
 }
+//"Detruit" l'objet batiment si il n'y a plus de pv
+func (bat *Batiment)DestroyBuilding(){
+	bat = nil //nil permet assigner la valeur nul à un pointeur
+}
 //Retourne les pv d'un bâtiment
 func (bat Batiment)GetPv() int{
 	return bat.Pv
