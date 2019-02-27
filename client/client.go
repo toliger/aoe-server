@@ -2,11 +2,11 @@
 package client
 
 import (
-	"server/npc"
-	"server/carte"
-	"server/ressource"
-	"server/joueur"
-	"server/batiment"
+	"git.unistra.fr/AOEINT/server/npc"
+	"git.unistra.fr/AOEINT/server/carte"
+	"git.unistra.fr/AOEINT/server/ressource"
+	"git.unistra.fr/AOEINT/server/joueur"
+	"git.unistra.fr/AOEINT/server/batiment"
 )
 
 //serveur vers client
@@ -54,5 +54,5 @@ func AddNewNpc(playerUID string, x int, y int, typ int) bool{
 }
 //Enleve des Pv a un batiment
 func  DamageBuilding(playerUID string, x int, y int, attack int){
-	
+
 }

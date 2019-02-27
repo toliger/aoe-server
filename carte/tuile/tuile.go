@@ -1,7 +1,7 @@
 package tuile
 
-import batiment "server/batiment"
-import ressource "server/ressource"
+import batiment "git.unistra.fr/AOEINT/server/batiment"
+import ressource "git.unistra.fr/AOEINT/server/ressource"
 
 type Tuile struct{//Batiment, ressource ou vide
 	typ int //0 vide 1 batiment 2 ressource
