@@ -7,13 +7,13 @@ import ressource "git.unistra.fr/AOEINT/server/ressource"
 //Verifie si la carte creee est de la bonne taille et vide
 func TestCreation(t *testing.T){
 	c :=New(10)
-	typ int
-	bat *batiment.Batiment
-	res *ressource.Ressource
+	var typ int
+	var bat *batiment.Batiment
+	var res *ressource.Ressource
 	if(c.GetSize()!=10){
 		t.Error("Expected size 10, got ",c.GetSize())
 	}
-	for _,arr := range c{
+	for _,arr := range c.matrice{
 		for _,tile :=range arr{
 			tile.ExtractData(&typ,bat,res)
 			if(typ!=0 || bat!=nil || res!=nil){
@@ -34,7 +34,7 @@ func TestPlacement(t *testing.T){
 	if(c.GetTile(1,1).GetType()!=2){
 		t.Error("ressource wasn't added")
 	}
-	if(c.AddNewBuilding(&res)!=true){
+	if(c.AddNewBuilding(&bat)!=true){
 		t.Error("cannot add building")
 	}
 	if(c.GetTile(2,2).GetType()!=1 || c.GetTile(3,2).GetType()!=1 || c.GetTile(3,3).GetType()!=1 || c.GetTile(2,3).GetType()!=1){
