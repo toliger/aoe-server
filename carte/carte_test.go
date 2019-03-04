@@ -1,8 +1,10 @@
 package carte
 
 import "testing"
+import "time"
 import batiment "git.unistra.fr/AOEINT/server/batiment"
 import ressource "git.unistra.fr/AOEINT/server/ressource"
+import "math/rand"
 
 //Verifie si la carte creee est de la bonne taille et vide
 func TestCreation(t *testing.T){
@@ -39,5 +41,28 @@ func TestPlacement(t *testing.T){
 	}
 	if(c.GetTile(2,2).GetType()!=1 || c.GetTile(3,2).GetType()!=1 || c.GetTile(3,3).GetType()!=1 || c.GetTile(2,3).GetType()!=1){
 		t.Error("building wasn't added")
+	}
+}
+
+func TestChemin(t *testing.T){
+	s1 := rand.NewSource(time.Now().UnixNano())
+    r1 := rand.New(s1)
+	c :=New(50)
+	for k:=0;k<10;k++{
+		px:=0
+		py:=0
+		x:=r1.Intn(50)
+		y:=r1.Intn(50)
+		path:=c.GetPathFromTo(0,0,x,y)
+		if(path==nil){
+			t.Error("Pas de chemin pour (0,0)->(",x,",",y,")")
+		}
+		for i:=0;i<len(path);i++{
+			if path[i].x>px+1 || path[i].x <px-1 || path[i].y >py+1 || path[i].y<py-1 {
+				t.Error("Chemin discontinu:",k," ",i," (",px,",",py,") -> (",path[i].x,",",path[i].y,") L=",len(path))
+			}
+			px=path[i].x
+			py=path[i].y
+		}
 	}
 }
