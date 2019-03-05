@@ -4,8 +4,10 @@
 package communication
 
 import (
+	context "context"
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
+	grpc "google.golang.org/grpc"
 	math "math"
 )
 
@@ -20,100 +22,67 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
-type Player struct {
-	Id                   []byte   `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	IsFaction            bool     `protobuf:"varint,2,opt,name=isFaction,proto3" json:"isFaction,omitempty"`
-	Name                 string   `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
-	NumberOfBuilding     int32    `protobuf:"varint,4,opt,name=numberOfBuilding,proto3" json:"numberOfBuilding,omitempty"`
-	NumberOfEntities     int32    `protobuf:"varint,5,opt,name=numberOfEntities,proto3" json:"numberOfEntities,omitempty"`
-	Stone                int32    `protobuf:"varint,6,opt,name=stone,proto3" json:"stone,omitempty"`
-	Wood                 int32    `protobuf:"varint,7,opt,name=wood,proto3" json:"wood,omitempty"`
-	Food                 int32    `protobuf:"varint,8,opt,name=food,proto3" json:"food,omitempty"`
+type HelloRequest struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Player) Reset()         { *m = Player{} }
-func (m *Player) String() string { return proto.CompactTextString(m) }
-func (*Player) ProtoMessage()    {}
-func (*Player) Descriptor() ([]byte, []int) {
+func (m *HelloRequest) Reset()         { *m = HelloRequest{} }
+func (m *HelloRequest) String() string { return proto.CompactTextString(m) }
+func (*HelloRequest) ProtoMessage()    {}
+func (*HelloRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_77a6da22d6a3feb1, []int{0}
 }
 
-func (m *Player) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Player.Unmarshal(m, b)
+func (m *HelloRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_HelloRequest.Unmarshal(m, b)
 }
-func (m *Player) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Player.Marshal(b, m, deterministic)
+func (m *HelloRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_HelloRequest.Marshal(b, m, deterministic)
 }
-func (m *Player) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Player.Merge(m, src)
+func (m *HelloRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_HelloRequest.Merge(m, src)
 }
-func (m *Player) XXX_Size() int {
-	return xxx_messageInfo_Player.Size(m)
+func (m *HelloRequest) XXX_Size() int {
+	return xxx_messageInfo_HelloRequest.Size(m)
 }
-func (m *Player) XXX_DiscardUnknown() {
-	xxx_messageInfo_Player.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Player proto.InternalMessageInfo
-
-func (m *Player) GetId() []byte {
-	if m != nil {
-		return m.Id
-	}
-	return nil
+func (m *HelloRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_HelloRequest.DiscardUnknown(m)
 }
 
-func (m *Player) GetIsFaction() bool {
-	if m != nil {
-		return m.IsFaction
-	}
-	return false
+var xxx_messageInfo_HelloRequest proto.InternalMessageInfo
+
+type HelloReply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Player) GetName() string {
-	if m != nil {
-		return m.Name
-	}
-	return ""
+func (m *HelloReply) Reset()         { *m = HelloReply{} }
+func (m *HelloReply) String() string { return proto.CompactTextString(m) }
+func (*HelloReply) ProtoMessage()    {}
+func (*HelloReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_77a6da22d6a3feb1, []int{1}
 }
 
-func (m *Player) GetNumberOfBuilding() int32 {
-	if m != nil {
-		return m.NumberOfBuilding
-	}
-	return 0
+func (m *HelloReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_HelloReply.Unmarshal(m, b)
+}
+func (m *HelloReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_HelloReply.Marshal(b, m, deterministic)
+}
+func (m *HelloReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_HelloReply.Merge(m, src)
+}
+func (m *HelloReply) XXX_Size() int {
+	return xxx_messageInfo_HelloReply.Size(m)
+}
+func (m *HelloReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_HelloReply.DiscardUnknown(m)
 }
 
-func (m *Player) GetNumberOfEntities() int32 {
-	if m != nil {
-		return m.NumberOfEntities
-	}
-	return 0
-}
-
-func (m *Player) GetStone() int32 {
-	if m != nil {
-		return m.Stone
-	}
-	return 0
-}
-
-func (m *Player) GetWood() int32 {
-	if m != nil {
-		return m.Wood
-	}
-	return 0
-}
-
-func (m *Player) GetFood() int32 {
-	if m != nil {
-		return m.Food
-	}
-	return 0
-}
+var xxx_messageInfo_HelloReply proto.InternalMessageInfo
 
 // Messages liés à getMap
 type GetMapRequest struct {
@@ -130,7 +99,7 @@ func (m *GetMapRequest) Reset()         { *m = GetMapRequest{} }
 func (m *GetMapRequest) String() string { return proto.CompactTextString(m) }
 func (*GetMapRequest) ProtoMessage()    {}
 func (*GetMapRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_77a6da22d6a3feb1, []int{1}
+	return fileDescriptor_77a6da22d6a3feb1, []int{2}
 }
 
 func (m *GetMapRequest) XXX_Unmarshal(b []byte) error {
@@ -190,7 +159,7 @@ func (m *GetMapReply) Reset()         { *m = GetMapReply{} }
 func (m *GetMapReply) String() string { return proto.CompactTextString(m) }
 func (*GetMapReply) ProtoMessage()    {}
 func (*GetMapReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_77a6da22d6a3feb1, []int{2}
+	return fileDescriptor_77a6da22d6a3feb1, []int{3}
 }
 
 func (m *GetMapReply) XXX_Unmarshal(b []byte) error {
@@ -234,7 +203,7 @@ func (m *SetMapRequest) Reset()         { *m = SetMapRequest{} }
 func (m *SetMapRequest) String() string { return proto.CompactTextString(m) }
 func (*SetMapRequest) ProtoMessage()    {}
 func (*SetMapRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_77a6da22d6a3feb1, []int{3}
+	return fileDescriptor_77a6da22d6a3feb1, []int{4}
 }
 
 func (m *SetMapRequest) XXX_Unmarshal(b []byte) error {
@@ -300,7 +269,7 @@ func (m *SetMapReply) Reset()         { *m = SetMapReply{} }
 func (m *SetMapReply) String() string { return proto.CompactTextString(m) }
 func (*SetMapReply) ProtoMessage()    {}
 func (*SetMapReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_77a6da22d6a3feb1, []int{4}
+	return fileDescriptor_77a6da22d6a3feb1, []int{5}
 }
 
 func (m *SetMapReply) XXX_Unmarshal(b []byte) error {
@@ -337,7 +306,7 @@ func (m *UpdateMapRequest) Reset()         { *m = UpdateMapRequest{} }
 func (m *UpdateMapRequest) String() string { return proto.CompactTextString(m) }
 func (*UpdateMapRequest) ProtoMessage()    {}
 func (*UpdateMapRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_77a6da22d6a3feb1, []int{5}
+	return fileDescriptor_77a6da22d6a3feb1, []int{6}
 }
 
 func (m *UpdateMapRequest) XXX_Unmarshal(b []byte) error {
@@ -403,7 +372,7 @@ func (m *UpdateMapReply) Reset()         { *m = UpdateMapReply{} }
 func (m *UpdateMapReply) String() string { return proto.CompactTextString(m) }
 func (*UpdateMapReply) ProtoMessage()    {}
 func (*UpdateMapReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_77a6da22d6a3feb1, []int{6}
+	return fileDescriptor_77a6da22d6a3feb1, []int{7}
 }
 
 func (m *UpdateMapReply) XXX_Unmarshal(b []byte) error {
@@ -438,7 +407,7 @@ func (m *Zone) Reset()         { *m = Zone{} }
 func (m *Zone) String() string { return proto.CompactTextString(m) }
 func (*Zone) ProtoMessage()    {}
 func (*Zone) Descriptor() ([]byte, []int) {
-	return fileDescriptor_77a6da22d6a3feb1, []int{7}
+	return fileDescriptor_77a6da22d6a3feb1, []int{8}
 }
 
 func (m *Zone) XXX_Unmarshal(b []byte) error {
@@ -492,7 +461,7 @@ func (m *Resource) Reset()         { *m = Resource{} }
 func (m *Resource) String() string { return proto.CompactTextString(m) }
 func (*Resource) ProtoMessage()    {}
 func (*Resource) Descriptor() ([]byte, []int) {
-	return fileDescriptor_77a6da22d6a3feb1, []int{8}
+	return fileDescriptor_77a6da22d6a3feb1, []int{9}
 }
 
 func (m *Resource) XXX_Unmarshal(b []byte) error {
@@ -541,7 +510,7 @@ func (m *Building) Reset()         { *m = Building{} }
 func (m *Building) String() string { return proto.CompactTextString(m) }
 func (*Building) ProtoMessage()    {}
 func (*Building) Descriptor() ([]byte, []int) {
-	return fileDescriptor_77a6da22d6a3feb1, []int{9}
+	return fileDescriptor_77a6da22d6a3feb1, []int{10}
 }
 
 func (m *Building) XXX_Unmarshal(b []byte) error {
@@ -590,76 +559,76 @@ func (m *Building) GetHeight() int32 {
 	return 0
 }
 
-// Messages liés à click
-type ClickRequest struct {
+// Messages liés à rightClick
+type RightClickRequest struct {
 	Coordinates          *Coordinates `protobuf:"bytes,1,opt,name=coordinates,proto3" json:"coordinates,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}     `json:"-"`
 	XXX_unrecognized     []byte       `json:"-"`
 	XXX_sizecache        int32        `json:"-"`
 }
 
-func (m *ClickRequest) Reset()         { *m = ClickRequest{} }
-func (m *ClickRequest) String() string { return proto.CompactTextString(m) }
-func (*ClickRequest) ProtoMessage()    {}
-func (*ClickRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_77a6da22d6a3feb1, []int{10}
+func (m *RightClickRequest) Reset()         { *m = RightClickRequest{} }
+func (m *RightClickRequest) String() string { return proto.CompactTextString(m) }
+func (*RightClickRequest) ProtoMessage()    {}
+func (*RightClickRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_77a6da22d6a3feb1, []int{11}
 }
 
-func (m *ClickRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ClickRequest.Unmarshal(m, b)
+func (m *RightClickRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_RightClickRequest.Unmarshal(m, b)
 }
-func (m *ClickRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ClickRequest.Marshal(b, m, deterministic)
+func (m *RightClickRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_RightClickRequest.Marshal(b, m, deterministic)
 }
-func (m *ClickRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ClickRequest.Merge(m, src)
+func (m *RightClickRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_RightClickRequest.Merge(m, src)
 }
-func (m *ClickRequest) XXX_Size() int {
-	return xxx_messageInfo_ClickRequest.Size(m)
+func (m *RightClickRequest) XXX_Size() int {
+	return xxx_messageInfo_RightClickRequest.Size(m)
 }
-func (m *ClickRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_ClickRequest.DiscardUnknown(m)
+func (m *RightClickRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_RightClickRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_ClickRequest proto.InternalMessageInfo
+var xxx_messageInfo_RightClickRequest proto.InternalMessageInfo
 
-func (m *ClickRequest) GetCoordinates() *Coordinates {
+func (m *RightClickRequest) GetCoordinates() *Coordinates {
 	if m != nil {
 		return m.Coordinates
 	}
 	return nil
 }
 
-type ClickReply struct {
+type RightClickReply struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *ClickReply) Reset()         { *m = ClickReply{} }
-func (m *ClickReply) String() string { return proto.CompactTextString(m) }
-func (*ClickReply) ProtoMessage()    {}
-func (*ClickReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_77a6da22d6a3feb1, []int{11}
+func (m *RightClickReply) Reset()         { *m = RightClickReply{} }
+func (m *RightClickReply) String() string { return proto.CompactTextString(m) }
+func (*RightClickReply) ProtoMessage()    {}
+func (*RightClickReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_77a6da22d6a3feb1, []int{12}
 }
 
-func (m *ClickReply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ClickReply.Unmarshal(m, b)
+func (m *RightClickReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_RightClickReply.Unmarshal(m, b)
 }
-func (m *ClickReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ClickReply.Marshal(b, m, deterministic)
+func (m *RightClickReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_RightClickReply.Marshal(b, m, deterministic)
 }
-func (m *ClickReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ClickReply.Merge(m, src)
+func (m *RightClickReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_RightClickReply.Merge(m, src)
 }
-func (m *ClickReply) XXX_Size() int {
-	return xxx_messageInfo_ClickReply.Size(m)
+func (m *RightClickReply) XXX_Size() int {
+	return xxx_messageInfo_RightClickReply.Size(m)
 }
-func (m *ClickReply) XXX_DiscardUnknown() {
-	xxx_messageInfo_ClickReply.DiscardUnknown(m)
+func (m *RightClickReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_RightClickReply.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_ClickReply proto.InternalMessageInfo
+var xxx_messageInfo_RightClickReply proto.InternalMessageInfo
 
 // Message liés à moveTo
 type MoveToRequest struct {
@@ -674,7 +643,7 @@ func (m *MoveToRequest) Reset()         { *m = MoveToRequest{} }
 func (m *MoveToRequest) String() string { return proto.CompactTextString(m) }
 func (*MoveToRequest) ProtoMessage()    {}
 func (*MoveToRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_77a6da22d6a3feb1, []int{12}
+	return fileDescriptor_77a6da22d6a3feb1, []int{13}
 }
 
 func (m *MoveToRequest) XXX_Unmarshal(b []byte) error {
@@ -720,7 +689,7 @@ func (m *MoveToReply) Reset()         { *m = MoveToReply{} }
 func (m *MoveToReply) String() string { return proto.CompactTextString(m) }
 func (*MoveToReply) ProtoMessage()    {}
 func (*MoveToReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_77a6da22d6a3feb1, []int{13}
+	return fileDescriptor_77a6da22d6a3feb1, []int{14}
 }
 
 func (m *MoveToReply) XXX_Unmarshal(b []byte) error {
@@ -760,7 +729,7 @@ func (m *Coordinates) Reset()         { *m = Coordinates{} }
 func (m *Coordinates) String() string { return proto.CompactTextString(m) }
 func (*Coordinates) ProtoMessage()    {}
 func (*Coordinates) Descriptor() ([]byte, []int) {
-	return fileDescriptor_77a6da22d6a3feb1, []int{14}
+	return fileDescriptor_77a6da22d6a3feb1, []int{15}
 }
 
 func (m *Coordinates) XXX_Unmarshal(b []byte) error {
@@ -796,7 +765,8 @@ func (m *Coordinates) GetY() int32 {
 }
 
 func init() {
-	proto.RegisterType((*Player)(nil), "communication.Player")
+	proto.RegisterType((*HelloRequest)(nil), "communication.HelloRequest")
+	proto.RegisterType((*HelloReply)(nil), "communication.HelloReply")
 	proto.RegisterType((*GetMapRequest)(nil), "communication.getMapRequest")
 	proto.RegisterType((*GetMapReply)(nil), "communication.getMapReply")
 	proto.RegisterType((*SetMapRequest)(nil), "communication.setMapRequest")
@@ -806,8 +776,8 @@ func init() {
 	proto.RegisterType((*Zone)(nil), "communication.Zone")
 	proto.RegisterType((*Resource)(nil), "communication.Resource")
 	proto.RegisterType((*Building)(nil), "communication.Building")
-	proto.RegisterType((*ClickRequest)(nil), "communication.clickRequest")
-	proto.RegisterType((*ClickReply)(nil), "communication.clickReply")
+	proto.RegisterType((*RightClickRequest)(nil), "communication.rightClickRequest")
+	proto.RegisterType((*RightClickReply)(nil), "communication.rightClickReply")
 	proto.RegisterType((*MoveToRequest)(nil), "communication.moveToRequest")
 	proto.RegisterType((*MoveToReply)(nil), "communication.moveToReply")
 	proto.RegisterType((*Coordinates)(nil), "communication.Coordinates")
@@ -816,44 +786,350 @@ func init() {
 func init() { proto.RegisterFile("rpc.proto", fileDescriptor_77a6da22d6a3feb1) }
 
 var fileDescriptor_77a6da22d6a3feb1 = []byte{
-	// 612 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xc4, 0x55, 0xcf, 0x6f, 0xd3, 0x30,
-	0x14, 0x9e, 0xdb, 0x25, 0xb4, 0x2f, 0xed, 0x34, 0x19, 0x04, 0xa1, 0x0c, 0x51, 0x45, 0x42, 0x2a,
-	0x1c, 0x7a, 0xc8, 0x38, 0x22, 0xa4, 0x31, 0x40, 0x42, 0x62, 0x02, 0x59, 0x5c, 0x98, 0xb8, 0x64,
-	0x89, 0xb7, 0x5a, 0x24, 0x76, 0x88, 0x1d, 0xb6, 0xde, 0x90, 0xe0, 0x7f, 0xe0, 0xdf, 0xdb, 0x9f,
-	0x82, 0xec, 0xfc, 0x68, 0x92, 0x75, 0x65, 0x1c, 0x10, 0x37, 0xfb, 0xbd, 0xcf, 0x9f, 0xbf, 0x97,
-	0xf7, 0x3d, 0x07, 0x86, 0x59, 0x1a, 0xce, 0xd3, 0x4c, 0x28, 0x81, 0xc7, 0xa1, 0x48, 0x92, 0x9c,
-	0xb3, 0x30, 0x50, 0x4c, 0x70, 0xef, 0x12, 0x81, 0xfd, 0x21, 0x0e, 0x96, 0x34, 0xc3, 0x3b, 0xd0,
-	0x63, 0x91, 0x8b, 0xa6, 0x68, 0x36, 0x22, 0x3d, 0x16, 0xe1, 0x3d, 0x18, 0x32, 0xf9, 0x26, 0x08,
-	0x35, 0xce, 0xed, 0x4d, 0xd1, 0x6c, 0x40, 0x56, 0x01, 0x8c, 0x61, 0x9b, 0x07, 0x09, 0x75, 0xfb,
-	0x53, 0x34, 0x1b, 0x12, 0xb3, 0xc6, 0x4f, 0x61, 0x97, 0xe7, 0xc9, 0x09, 0xcd, 0xde, 0x9f, 0xbe,
-	0xcc, 0x59, 0x1c, 0x31, 0x7e, 0xe6, 0x6e, 0x4f, 0xd1, 0xcc, 0x22, 0x57, 0xe2, 0x4d, 0xec, 0x6b,
-	0xae, 0x98, 0x62, 0x54, 0xba, 0x56, 0x1b, 0x5b, 0xc5, 0xf1, 0x1d, 0xb0, 0xa4, 0x12, 0x9c, 0xba,
-	0xb6, 0x01, 0x14, 0x1b, 0xad, 0xe0, 0x5c, 0x88, 0xc8, 0xbd, 0x65, 0x82, 0x66, 0xad, 0x63, 0xa7,
-	0x3a, 0x36, 0x28, 0x62, 0x7a, 0xed, 0x7d, 0x82, 0xf1, 0x19, 0x55, 0x47, 0x41, 0x4a, 0xe8, 0xd7,
-	0x9c, 0x4a, 0x85, 0x47, 0x80, 0x2e, 0x4c, 0x9d, 0x16, 0x41, 0x17, 0x7a, 0xb7, 0x34, 0xe5, 0x59,
-	0x04, 0x2d, 0xf5, 0x55, 0xe7, 0x2c, 0x52, 0x0b, 0x53, 0x97, 0x45, 0x8a, 0x0d, 0xbe, 0x0b, 0xf6,
-	0x82, 0xb2, 0xb3, 0x85, 0x2a, 0xcb, 0x29, 0x77, 0xde, 0x33, 0x70, 0x2a, 0xea, 0x34, 0x5e, 0xe2,
-	0xc7, 0xd0, 0x4f, 0x82, 0xd4, 0x45, 0xd3, 0xfe, 0xcc, 0xf1, 0x6f, 0xcf, 0x5b, 0x5f, 0x7a, 0x7e,
-	0x2c, 0x38, 0x25, 0x3a, 0xef, 0x7d, 0x47, 0x30, 0x96, 0xff, 0x46, 0x51, 0x25, 0xc1, 0xfa, 0x83,
-	0x84, 0x31, 0x38, 0x72, 0x25, 0xdc, 0xfb, 0x81, 0x60, 0x37, 0x4f, 0xa3, 0x40, 0xd1, 0xff, 0x29,
-	0x6a, 0x17, 0x76, 0x1a, 0x22, 0xb4, 0xae, 0x9f, 0x08, 0xb6, 0x8f, 0xcb, 0x5e, 0xab, 0x65, 0x4a,
-	0x4b, 0x39, 0x66, 0x8d, 0xf7, 0x61, 0x90, 0x51, 0x29, 0xf2, 0x2c, 0xa4, 0x46, 0x98, 0xe3, 0xdf,
-	0xeb, 0x50, 0x93, 0x32, 0x4d, 0x6a, 0xa0, 0x3e, 0x74, 0x52, 0x59, 0xb3, 0xbf, 0xf6, 0x50, 0xe5,
-	0x50, 0x52, 0x03, 0xbd, 0x39, 0x0c, 0x2a, 0x2a, 0x3d, 0x25, 0xe9, 0xa2, 0xd4, 0xd1, 0x4b, 0x17,
-	0xb5, 0xb2, 0xde, 0x4a, 0x99, 0xf7, 0x19, 0x06, 0xb5, 0xcf, 0x6f, 0x80, 0xff, 0x4b, 0xd3, 0xbd,
-	0x83, 0x51, 0x18, 0xb3, 0xf0, 0x4b, 0xd5, 0xa7, 0xe7, 0xe0, 0x84, 0x42, 0x64, 0x11, 0xe3, 0x81,
-	0xa2, 0xd2, 0x5c, 0xe5, 0xf8, 0x93, 0x4e, 0x55, 0x87, 0x2b, 0x04, 0x69, 0xc2, 0xbd, 0x11, 0x40,
-	0xc9, 0x56, 0x1a, 0x61, 0x9c, 0x88, 0x6f, 0xf4, 0xa3, 0xa8, 0xd8, 0x7d, 0xb0, 0x83, 0x50, 0xe5,
-	0x34, 0xbe, 0x01, 0x71, 0x89, 0xc4, 0x2f, 0x60, 0x14, 0x51, 0xa9, 0xd3, 0x41, 0xfd, 0x78, 0x6c,
-	0x3e, 0xd9, 0xc2, 0x7b, 0x07, 0xe0, 0x54, 0x22, 0xf4, 0x58, 0xf9, 0x60, 0x87, 0x0b, 0x9a, 0x30,
-	0x5e, 0x4e, 0xd6, 0x46, 0x09, 0x05, 0xd2, 0x7b, 0x02, 0x4e, 0x23, 0xbc, 0xc9, 0xcb, 0xfe, 0x00,
-	0xec, 0xc3, 0x98, 0x51, 0xae, 0xfc, 0x4b, 0x04, 0xfd, 0xa3, 0x20, 0xc5, 0xaf, 0xc0, 0x2e, 0xc6,
-	0x1a, 0xef, 0x75, 0xae, 0x6a, 0x3d, 0x24, 0x93, 0xc9, 0x35, 0x59, 0xfd, 0x25, 0xb7, 0x34, 0x8b,
-	0x5c, 0xcf, 0x22, 0x37, 0xb2, 0xc8, 0x16, 0xcb, 0x11, 0x0c, 0xeb, 0xa1, 0xc0, 0x8f, 0x3a, 0xd0,
-	0xee, 0xcc, 0x4e, 0x1e, 0x5e, 0x0f, 0x30, 0x74, 0xfe, 0x2f, 0x04, 0xa3, 0xb7, 0x5c, 0xd1, 0xac,
-	0x78, 0xc6, 0x25, 0x3e, 0x00, 0xcb, 0xf4, 0x1f, 0x3f, 0xe8, 0x1c, 0x6d, 0x7a, 0x6c, 0x72, 0x7f,
-	0x7d, 0xb2, 0x2e, 0xb4, 0x68, 0xd7, 0x95, 0x42, 0x5b, 0x56, 0xba, 0x52, 0x68, 0xa3, 0xc7, 0xde,
-	0xd6, 0x89, 0x6d, 0xfe, 0x4f, 0xfb, 0xbf, 0x03, 0x00, 0x00, 0xff, 0xff, 0x5f, 0x19, 0xeb, 0x82,
-	0xac, 0x06, 0x00, 0x00,
+	// 541 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xc4, 0x95, 0xcf, 0x6f, 0xd3, 0x30,
+	0x14, 0xc7, 0xe7, 0x76, 0xad, 0xba, 0x97, 0xb6, 0x6c, 0x06, 0x41, 0x09, 0xbf, 0x2a, 0x4b, 0x48,
+	0xe3, 0xd2, 0x43, 0xc6, 0x11, 0x21, 0xc1, 0x76, 0x80, 0x43, 0x25, 0x88, 0xb8, 0x80, 0xb8, 0x64,
+	0x89, 0xd5, 0x44, 0x24, 0xb1, 0x89, 0x1d, 0x58, 0x6e, 0x48, 0xf0, 0xb7, 0xf0, 0x77, 0xf1, 0xa7,
+	0x20, 0x3b, 0x4e, 0x9a, 0xa4, 0x5b, 0x18, 0x07, 0xc4, 0xcd, 0xcf, 0xef, 0xeb, 0x6f, 0x3e, 0xaf,
+	0x7e, 0x7e, 0x85, 0x83, 0x8c, 0xfb, 0x2b, 0x9e, 0x31, 0xc9, 0xf0, 0xcc, 0x67, 0x49, 0x92, 0xa7,
+	0x91, 0xef, 0xc9, 0x88, 0xa5, 0x64, 0x0e, 0xd3, 0x57, 0x34, 0x8e, 0x99, 0x4b, 0x3f, 0xe7, 0x54,
+	0x48, 0x32, 0x05, 0x30, 0x31, 0x8f, 0x0b, 0xf2, 0x1e, 0x66, 0x1b, 0x2a, 0xd7, 0x1e, 0x37, 0x69,
+	0x3c, 0x05, 0x74, 0xb1, 0x40, 0x4b, 0x74, 0x3c, 0x72, 0xd1, 0x85, 0x8a, 0x8a, 0xc5, 0xa0, 0x8c,
+	0x0a, 0x7c, 0x0b, 0x46, 0x5f, 0xa3, 0x40, 0x86, 0x8b, 0xa1, 0xde, 0x29, 0x03, 0x7c, 0x1b, 0xc6,
+	0x21, 0x8d, 0x36, 0xa1, 0x5c, 0xec, 0xeb, 0x6d, 0x13, 0x91, 0xa7, 0x60, 0x55, 0xd6, 0x3c, 0x2e,
+	0xf0, 0x63, 0x18, 0x26, 0x1e, 0x5f, 0xa0, 0xe5, 0xf0, 0xd8, 0x72, 0x6e, 0xae, 0x5a, 0x90, 0xab,
+	0x0f, 0x2c, 0xa5, 0xae, 0xca, 0x93, 0x6f, 0x08, 0x66, 0xe2, 0xdf, 0x10, 0x55, 0x08, 0xa3, 0x3f,
+	0x20, 0xcc, 0xc0, 0x12, 0x5b, 0x70, 0xf2, 0x1d, 0xc1, 0x61, 0xce, 0x03, 0x4f, 0xd2, 0xff, 0x09,
+	0x75, 0x08, 0xf3, 0x06, 0x84, 0xe2, 0xfa, 0x81, 0x60, 0x5f, 0xe5, 0x31, 0x86, 0x7d, 0x59, 0x70,
+	0x6a, 0x70, 0xf4, 0x1a, 0x9f, 0xc0, 0x24, 0xa3, 0x82, 0xe5, 0x99, 0x4f, 0x35, 0x98, 0xe5, 0xdc,
+	0xe9, 0x58, 0xbb, 0x26, 0xed, 0xd6, 0x42, 0x75, 0xe8, 0x3c, 0x8f, 0xe2, 0x20, 0x4a, 0x37, 0x9a,
+	0x7d, 0xf7, 0xd0, 0x4b, 0x93, 0x76, 0x6b, 0x21, 0x59, 0xc1, 0xa4, 0xb2, 0xc2, 0x73, 0x18, 0xf0,
+	0xd0, 0x70, 0x0c, 0x78, 0x58, 0x93, 0x0d, 0xb6, 0x64, 0xe4, 0x23, 0x4c, 0x2a, 0x97, 0xeb, 0xe8,
+	0xff, 0xb2, 0xe9, 0xde, 0xc2, 0x51, 0xa6, 0x16, 0xa7, 0x71, 0xe4, 0x7f, 0xaa, 0x2e, 0xeb, 0x19,
+	0x58, 0x3e, 0x63, 0x59, 0x10, 0xa5, 0x9e, 0xa4, 0x42, 0x7f, 0xcf, 0x72, 0xec, 0x4e, 0x69, 0xa7,
+	0x5b, 0x85, 0xdb, 0x94, 0x93, 0x23, 0xb8, 0xd1, 0xb4, 0x34, 0x2d, 0x31, 0x4b, 0xd8, 0x17, 0xfa,
+	0xae, 0x7a, 0x55, 0xd8, 0x81, 0xb1, 0xe7, 0xcb, 0x9c, 0xc6, 0xd7, 0x70, 0x37, 0x4a, 0xfc, 0x1c,
+	0xa6, 0x01, 0x15, 0x2a, 0xad, 0x35, 0xe6, 0x9e, 0xfa, 0x4e, 0xb6, 0xf4, 0xe4, 0x05, 0x58, 0x15,
+	0x84, 0x7a, 0x60, 0x0e, 0x8c, 0xfd, 0x90, 0x26, 0x51, 0x6a, 0xde, 0x58, 0x2f, 0x42, 0xa9, 0x24,
+	0x4f, 0xc0, 0x6a, 0x6c, 0xf7, 0x75, 0xb5, 0xb3, 0x86, 0x91, 0x9e, 0x1b, 0xf8, 0x0c, 0x26, 0xc2,
+	0x2b, 0xca, 0xf5, 0xbd, 0xce, 0x37, 0x9a, 0x93, 0xc6, 0xbe, 0x7b, 0x79, 0x52, 0xfd, 0x80, 0x7b,
+	0xce, 0x2f, 0x04, 0xc3, 0xb5, 0xc7, 0xf1, 0x19, 0x8c, 0xcb, 0x29, 0x81, 0xef, 0x77, 0xe4, 0xad,
+	0xb9, 0x64, 0xdb, 0x57, 0x64, 0xb5, 0x9b, 0x72, 0x11, 0x97, 0xbb, 0x88, 0x5e, 0x17, 0xd1, 0x72,
+	0x59, 0xc3, 0x41, 0xfd, 0xc6, 0xf0, 0xa3, 0x8e, 0xb4, 0x3b, 0x02, 0xec, 0x07, 0x57, 0x0b, 0xca,
+	0x12, 0x7f, 0x22, 0x98, 0xbe, 0x4e, 0x25, 0xcd, 0x3c, 0x5f, 0x09, 0x04, 0x7e, 0x03, 0xb0, 0xed,
+	0x24, 0xbc, 0xec, 0x9c, 0xdf, 0xe9, 0x5b, 0xfb, 0x61, 0x8f, 0xa2, 0xae, 0xbb, 0x6c, 0x81, 0x9d,
+	0xba, 0x5b, 0xed, 0xb9, 0x53, 0x77, 0xa3, 0x6f, 0xc8, 0xde, 0xf9, 0x58, 0xff, 0x71, 0x9c, 0xfc,
+	0x0e, 0x00, 0x00, 0xff, 0xff, 0xbd, 0xa8, 0x7e, 0x68, 0x45, 0x06, 0x00, 0x00,
+}
+
+// Reference imports to suppress errors if they are not otherwise used.
+var _ context.Context
+var _ grpc.ClientConn
+
+// This is a compile-time assertion to ensure that this generated file
+// is compatible with the grpc package it is being compiled against.
+const _ = grpc.SupportPackageIsVersion4
+
+// HelloClient is the client API for Hello service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
+type HelloClient interface {
+	// Fonction servant juste au test de connection
+	SayHello(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloReply, error)
+}
+
+type helloClient struct {
+	cc *grpc.ClientConn
+}
+
+func NewHelloClient(cc *grpc.ClientConn) HelloClient {
+	return &helloClient{cc}
+}
+
+func (c *helloClient) SayHello(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloReply, error) {
+	out := new(HelloReply)
+	err := c.cc.Invoke(ctx, "/communication.Hello/sayHello", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// HelloServer is the server API for Hello service.
+type HelloServer interface {
+	// Fonction servant juste au test de connection
+	SayHello(context.Context, *HelloRequest) (*HelloReply, error)
+}
+
+func RegisterHelloServer(s *grpc.Server, srv HelloServer) {
+	s.RegisterService(&_Hello_serviceDesc, srv)
+}
+
+func _Hello_SayHello_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(HelloRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HelloServer).SayHello(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/communication.Hello/SayHello",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HelloServer).SayHello(ctx, req.(*HelloRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+var _Hello_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "communication.Hello",
+	HandlerType: (*HelloServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "sayHello",
+			Handler:    _Hello_SayHello_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "rpc.proto",
+}
+
+// MapClient is the client API for Map service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
+type MapClient interface {
+	// Fonction permettant au client de demander une zone de carte
+	GetMap(ctx context.Context, in *GetMapRequest, opts ...grpc.CallOption) (*GetMapReply, error)
+	// Fonction permettant au client de faire une modification d'une zone de carte
+	SetMap(ctx context.Context, in *SetMapRequest, opts ...grpc.CallOption) (*SetMapReply, error)
+	// Fonction permettant au serveur de mettre à jour une zone de carte du client
+	UpdateMap(ctx context.Context, in *UpdateMapRequest, opts ...grpc.CallOption) (*UpdateMapReply, error)
+}
+
+type mapClient struct {
+	cc *grpc.ClientConn
+}
+
+func NewMapClient(cc *grpc.ClientConn) MapClient {
+	return &mapClient{cc}
+}
+
+func (c *mapClient) GetMap(ctx context.Context, in *GetMapRequest, opts ...grpc.CallOption) (*GetMapReply, error) {
+	out := new(GetMapReply)
+	err := c.cc.Invoke(ctx, "/communication.Map/getMap", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *mapClient) SetMap(ctx context.Context, in *SetMapRequest, opts ...grpc.CallOption) (*SetMapReply, error) {
+	out := new(SetMapReply)
+	err := c.cc.Invoke(ctx, "/communication.Map/setMap", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *mapClient) UpdateMap(ctx context.Context, in *UpdateMapRequest, opts ...grpc.CallOption) (*UpdateMapReply, error) {
+	out := new(UpdateMapReply)
+	err := c.cc.Invoke(ctx, "/communication.Map/updateMap", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// MapServer is the server API for Map service.
+type MapServer interface {
+	// Fonction permettant au client de demander une zone de carte
+	GetMap(context.Context, *GetMapRequest) (*GetMapReply, error)
+	// Fonction permettant au client de faire une modification d'une zone de carte
+	SetMap(context.Context, *SetMapRequest) (*SetMapReply, error)
+	// Fonction permettant au serveur de mettre à jour une zone de carte du client
+	UpdateMap(context.Context, *UpdateMapRequest) (*UpdateMapReply, error)
+}
+
+func RegisterMapServer(s *grpc.Server, srv MapServer) {
+	s.RegisterService(&_Map_serviceDesc, srv)
+}
+
+func _Map_GetMap_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetMapRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MapServer).GetMap(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/communication.Map/GetMap",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MapServer).GetMap(ctx, req.(*GetMapRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Map_SetMap_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SetMapRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MapServer).SetMap(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/communication.Map/SetMap",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MapServer).SetMap(ctx, req.(*SetMapRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Map_UpdateMap_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateMapRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MapServer).UpdateMap(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/communication.Map/UpdateMap",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MapServer).UpdateMap(ctx, req.(*UpdateMapRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+var _Map_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "communication.Map",
+	HandlerType: (*MapServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "getMap",
+			Handler:    _Map_GetMap_Handler,
+		},
+		{
+			MethodName: "setMap",
+			Handler:    _Map_SetMap_Handler,
+		},
+		{
+			MethodName: "updateMap",
+			Handler:    _Map_UpdateMap_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "rpc.proto",
+}
+
+// InteractionsClient is the client API for Interactions service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
+type InteractionsClient interface {
+	// Fonction transmettant un click du client au serveur
+	RightClick(ctx context.Context, in *RightClickRequest, opts ...grpc.CallOption) (*RightClickReply, error)
+	// Fonction permettant au client de demander le chemin à un endroit
+	MoveTo(ctx context.Context, in *MoveToRequest, opts ...grpc.CallOption) (*MoveToReply, error)
+}
+
+type interactionsClient struct {
+	cc *grpc.ClientConn
+}
+
+func NewInteractionsClient(cc *grpc.ClientConn) InteractionsClient {
+	return &interactionsClient{cc}
+}
+
+func (c *interactionsClient) RightClick(ctx context.Context, in *RightClickRequest, opts ...grpc.CallOption) (*RightClickReply, error) {
+	out := new(RightClickReply)
+	err := c.cc.Invoke(ctx, "/communication.Interactions/rightClick", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *interactionsClient) MoveTo(ctx context.Context, in *MoveToRequest, opts ...grpc.CallOption) (*MoveToReply, error) {
+	out := new(MoveToReply)
+	err := c.cc.Invoke(ctx, "/communication.Interactions/moveTo", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// InteractionsServer is the server API for Interactions service.
+type InteractionsServer interface {
+	// Fonction transmettant un click du client au serveur
+	RightClick(context.Context, *RightClickRequest) (*RightClickReply, error)
+	// Fonction permettant au client de demander le chemin à un endroit
+	MoveTo(context.Context, *MoveToRequest) (*MoveToReply, error)
+}
+
+func RegisterInteractionsServer(s *grpc.Server, srv InteractionsServer) {
+	s.RegisterService(&_Interactions_serviceDesc, srv)
+}
+
+func _Interactions_RightClick_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RightClickRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(InteractionsServer).RightClick(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/communication.Interactions/RightClick",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(InteractionsServer).RightClick(ctx, req.(*RightClickRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Interactions_MoveTo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MoveToRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(InteractionsServer).MoveTo(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/communication.Interactions/MoveTo",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(InteractionsServer).MoveTo(ctx, req.(*MoveToRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+var _Interactions_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "communication.Interactions",
+	HandlerType: (*InteractionsServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "rightClick",
+			Handler:    _Interactions_RightClick_Handler,
+		},
+		{
+			MethodName: "moveTo",
+			Handler:    _Interactions_MoveTo_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "rpc.proto",
 }

@@ -8,7 +8,7 @@ package communication;
 
 service Hello {
   // Fonction servant juste au test de connection
-  rpc sayHello (HelloRequest) returns (HelloReply) {}
+  rpc SayHello (HelloRequest) returns (HelloReply) {}
 }
 
 message HelloRequest {}
@@ -20,48 +20,48 @@ message HelloReply {}
 
 service Map {
   // Fonction permettant au client de demander une zone de carte
-  rpc getMap (getMapRequest) returns (getMapReply) {}
+  rpc GetMap (GetMapRequest) returns (GetMapReply) {}
 
   // Fonction permettant au client de faire une modification d'une zone de carte
-  rpc setMap (setMapRequest) returns (setMapReply) {}
+  rpc SetMap (SetMapRequest) returns (SetMapReply) {}
 
   // Fonction permettant au serveur de mettre à jour une zone de carte du client
-  rpc updateMap(updateMapRequest) returns (updateMapReply) {}
+  rpc UpdateMap(UpdateMapRequest) returns (UpdateMapReply) {}
 
 }
 
 // Messages liés à getMap
-message getMapRequest {
+message GetMapRequest {
   int32 x = 1;
   int32 y = 2;
   int32 width = 3;
   int32 height = 4;
 }
-message getMapReply {
+message GetMapReply {
   repeated Zone map = 1;
 }
 
 // Messages liés à setMap
-message setMapRequest {
+message SetMapRequest {
   int32 x = 1;
   int32 y = 2;
   int32 width = 3;
   int32 height = 4;
   repeated Zone map = 5;
 }
-message setMapReply {}
+message SetMapReply {}
 
 // Messages liés à updateMap
-message updateMapRequest {
+message UpdateMapRequest {
   int32 x = 1;
   int32 y = 2;
   int32 width = 3;
   int32 height = 4;
   repeated Zone map = 5;
 }
-message updateMapReply {}
+message UpdateMapReply {}
 
-// Message de structure d'organisation de la carte
+// Message de structure du service Map
 message Zone {
   int32 type = 1;
   Resource resource = 2;
@@ -84,28 +84,29 @@ message Building {
 
 service Interactions {
   // Fonction transmettant un click du client au serveur
-  rpc rightClick (rightClickRequest) returns (rightClickReply) {}
+  rpc RightClick (RightClickRequest) returns (RightClickReply) {}
 
   // Fonction permettant au client de demander le chemin à un endroit
-  rpc moveTo (moveToRequest) returns (moveToReply) {}
+  rpc MoveTo (MoveToRequest) returns (MoveToReply) {}
 
 }
 
-// Messages liés à rightClick
-message rightClickRequest {
+// Messages liés à RightClick
+message RightClickRequest {
   Coordinates coordinates = 1;
 }
-message rightClickReply {}
+message RightClickReply {}
 
-// Message liés à moveTo
-message moveToRequest {
+// Message liés à MoveTo
+message MoveToRequest {
   Coordinates actuel = 1;
   Coordinates destionation = 2;
 }
-message moveToReply {
+message MoveToReply {
   repeated Coordinates chemin = 1;
 }
 
+// Message de structure du service Interactions
 message Coordinates {
   int32 x = 1;
   int32 y = 2;
