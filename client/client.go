@@ -39,7 +39,6 @@ func InitListenerServer(adress string) {
 
 	// Enregistement des services Hello, Map et Interactions sur le serveur
 	pb.RegisterHelloServer(server, &Server{})
-	pb.RegisterMapServer(server, &Server{})
 	pb.RegisterInteractionsServer(server, &Server{})
 
 	// Mise en écoute du serveur
@@ -90,35 +89,16 @@ func (s *Server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloRe
 	return &pb.HelloReply{}, nil
 }
 
-// Fonction du service Map: GetMap
-func (s *Server) GetMap(ctx context.Context, in *pb.GetMapRequest) (*pb.GetMapReply, error) {
-	fmt.Println("Reception d'un GetMapRequest et envoie d'un GetMapReply")
-	return &pb.GetMapReply{}, nil
-}
-
-// Fonction du service Map: SetMap
-func (s *Server) SetMap(ctx context.Context, in *pb.SetMapRequest) (*pb.SetMapReply, error) {
-	fmt.Println("Reception d'un SetMapRequest et envoie d'un SetMapReply")
-	return &pb.SetMapReply{}, nil
-}
-
-// Fonction du service Map: UpdateMap
-func (s *Server) UpdateMap(ctx context.Context, in *pb.UpdateMapRequest) (*pb.UpdateMapReply, error) {
-	fmt.Println("Reception d'un UpdateMapRequest et envoie d'un UpdateMapReply")
-	return &pb.UpdateMapReply{}, nil
-}
-
-
 // Fonction du service Interactions: RightClick
 func (s *Server) RightClick(ctx context.Context, in *pb.RightClickRequest) (*pb.RightClickReply, error) {
 	fmt.Println("Reception d'un RightClickRequest et envoie d'un RightClickReply")
 	return &pb.RightClickReply{}, nil
 }
 
-// Fonction du service Map: MoveTo
-func (s *Server) MoveTo(ctx context.Context, in *pb.MoveToRequest) (*pb.MoveToReply, error) {
-	fmt.Println("Reception d'un MoveToRequest et envoie d'un MoveToReply")
-	return &pb.MoveToReply{}, nil
+// Fonction du service Interactions: AskUpdate
+func (s *Server) AskUpdate(ctx context.Context, in *pb.AskUpdateRequest) (*pb.AskUpdateReply, error) {
+	fmt.Println("Reception d'un AskUpdateRequest et envoie d'un AskUpdateReply")
+	return &pb.AskUpdateReply{}, nil
 }
 
 //demande la creation d'un batiment à partir de l'uid du joueur, une position et un type de batiment
