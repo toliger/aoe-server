@@ -139,7 +139,7 @@ func shortestPath(weightMatrix [][]int,destx int, desty int,c Carte,path []Case)
 	currX:=destx
 	currY:=desty
 	modif:=false
-	for step:=weightMatrix[destx][desty]+1;step>=0;step--{
+	for step:=weightMatrix[destx][desty]+1;step>0;step--{
 		modif=false
 		if(shortestPathAux(weightMatrix,c, currX, currY+1, &currX, &currY, step,path, &modif)){
 			break
@@ -159,6 +159,7 @@ func shortestPath(weightMatrix [][]int,destx int, desty int,c Carte,path []Case)
 			break
 		}
 	}
+	path[len(path)-1]=(Case{destx,desty,*(c.GetTile(destx,desty))})
 	return path
 }
 //Renvoie le chemin le plus court entre deux cases ou nil si inatteignable

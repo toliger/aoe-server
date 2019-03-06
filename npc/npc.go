@@ -24,7 +24,7 @@ func New(x int,y int,pv int, vitesse int, vue int, portee int, offensive bool,si
 	return pnj
 }
 //Crée un Npc du type fourni
-func create(class string,x int,y int) Npc{
+func Create(class string,x int,y int) Npc{
     var pnj Npc
 	switch class{
 		case "soldier":
@@ -37,28 +37,27 @@ func create(class string,x int,y int) Npc{
     return pnj
 }
 
-func (pnj Npc)deplacement(path []carte.Case){
+func (pnj *Npc)deplacement(path []carte.Case){
 	if(path!=nil){
 		ndep:=len(path)-1
 		vdep:=(1000000000/pnj.vitesse)
-		for i:=0;i<ndep;i++{
+		for i:=0;i<=ndep;i++{
 			time.Sleep(time.Duration(vdep))
 			pnj.x=path[i].GetPathX()
 			pnj.y=path[i].GetPathY()
-			fmt.Println("déplacement")
 		}
 	}
 }
-func (pnj Npc) MoveTo(c carte.Carte, destx int, desty int) []carte.Case{
+func (pnj *Npc) MoveTo(c carte.Carte, destx int, desty int) []carte.Case{
 	path:= c.GetPathFromTo(pnj.x,pnj.y,destx,desty)
 	go pnj.deplacement(path)
 	return path
 }
 
 func Test(c carte.Carte) {
-	entity:=create("soldier",1,1)
+	entity:=Create("soldier",1,1)
 	fmt.Println("Hello, playground")
 	fmt.Println(entity.pv)
-	path:=entity.MoveTo(c,5,8)
+	path:=(&entity).MoveTo(c,5,8)
 	fmt.Printf("Path len=%d\n",len(path))
 }
