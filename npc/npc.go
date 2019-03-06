@@ -25,7 +25,7 @@ func New(x int,y int,pv int, vitesse int, vue int, portee int, offensive bool,si
 	return pnj
 }
 //Crée un Npc du type fourni
-func create(class string,x int,y int) Npc{
+func Create(class string,x int,y int) Npc{
 	var pnj Npc
 	switch class{
 		case "soldier":
@@ -33,7 +33,7 @@ func create(class string,x int,y int) Npc{
 		case "harvester":
 			pnj=New(x,y,4,4,10,2,false,1,10,true,1)
 		default:
-			pnj=New(x,y,4,4,10,2,false,1,0,false,0)
+			pnj=New(x,y,4,4,5,2,false,1,0,false,0)
 	}
 	return pnj
 }
@@ -74,7 +74,7 @@ func (pnj Npc) MoveTo(c carte.Carte, destx int, desty int) []carte.Case{
 }
 
 func Test(c carte.Carte) {
-	entity:=create("soldier",1,1)
+	entity:=Create("soldier",1,1)
 	fmt.Println("Hello, playground")
 	fmt.Println(entity.pv)
 	path:=entity.MoveTo(c,5,8)
