@@ -84,484 +84,11 @@ func (m *HelloReply) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_HelloReply proto.InternalMessageInfo
 
-// Messages liés à getMap
-type GetMapRequest struct {
-	X                    int32    `protobuf:"varint,1,opt,name=x,proto3" json:"x,omitempty"`
-	Y                    int32    `protobuf:"varint,2,opt,name=y,proto3" json:"y,omitempty"`
-	Width                int32    `protobuf:"varint,3,opt,name=width,proto3" json:"width,omitempty"`
-	Height               int32    `protobuf:"varint,4,opt,name=height,proto3" json:"height,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *GetMapRequest) Reset()         { *m = GetMapRequest{} }
-func (m *GetMapRequest) String() string { return proto.CompactTextString(m) }
-func (*GetMapRequest) ProtoMessage()    {}
-func (*GetMapRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_77a6da22d6a3feb1, []int{2}
-}
-
-func (m *GetMapRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GetMapRequest.Unmarshal(m, b)
-}
-func (m *GetMapRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GetMapRequest.Marshal(b, m, deterministic)
-}
-func (m *GetMapRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetMapRequest.Merge(m, src)
-}
-func (m *GetMapRequest) XXX_Size() int {
-	return xxx_messageInfo_GetMapRequest.Size(m)
-}
-func (m *GetMapRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_GetMapRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GetMapRequest proto.InternalMessageInfo
-
-func (m *GetMapRequest) GetX() int32 {
-	if m != nil {
-		return m.X
-	}
-	return 0
-}
-
-func (m *GetMapRequest) GetY() int32 {
-	if m != nil {
-		return m.Y
-	}
-	return 0
-}
-
-func (m *GetMapRequest) GetWidth() int32 {
-	if m != nil {
-		return m.Width
-	}
-	return 0
-}
-
-func (m *GetMapRequest) GetHeight() int32 {
-	if m != nil {
-		return m.Height
-	}
-	return 0
-}
-
-type GetMapReply struct {
-	Map                  []*Zone  `protobuf:"bytes,1,rep,name=map,proto3" json:"map,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *GetMapReply) Reset()         { *m = GetMapReply{} }
-func (m *GetMapReply) String() string { return proto.CompactTextString(m) }
-func (*GetMapReply) ProtoMessage()    {}
-func (*GetMapReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_77a6da22d6a3feb1, []int{3}
-}
-
-func (m *GetMapReply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GetMapReply.Unmarshal(m, b)
-}
-func (m *GetMapReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GetMapReply.Marshal(b, m, deterministic)
-}
-func (m *GetMapReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetMapReply.Merge(m, src)
-}
-func (m *GetMapReply) XXX_Size() int {
-	return xxx_messageInfo_GetMapReply.Size(m)
-}
-func (m *GetMapReply) XXX_DiscardUnknown() {
-	xxx_messageInfo_GetMapReply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GetMapReply proto.InternalMessageInfo
-
-func (m *GetMapReply) GetMap() []*Zone {
-	if m != nil {
-		return m.Map
-	}
-	return nil
-}
-
-// Messages liés à setMap
-type SetMapRequest struct {
-	X                    int32    `protobuf:"varint,1,opt,name=x,proto3" json:"x,omitempty"`
-	Y                    int32    `protobuf:"varint,2,opt,name=y,proto3" json:"y,omitempty"`
-	Width                int32    `protobuf:"varint,3,opt,name=width,proto3" json:"width,omitempty"`
-	Height               int32    `protobuf:"varint,4,opt,name=height,proto3" json:"height,omitempty"`
-	Map                  []*Zone  `protobuf:"bytes,5,rep,name=map,proto3" json:"map,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *SetMapRequest) Reset()         { *m = SetMapRequest{} }
-func (m *SetMapRequest) String() string { return proto.CompactTextString(m) }
-func (*SetMapRequest) ProtoMessage()    {}
-func (*SetMapRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_77a6da22d6a3feb1, []int{4}
-}
-
-func (m *SetMapRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_SetMapRequest.Unmarshal(m, b)
-}
-func (m *SetMapRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_SetMapRequest.Marshal(b, m, deterministic)
-}
-func (m *SetMapRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_SetMapRequest.Merge(m, src)
-}
-func (m *SetMapRequest) XXX_Size() int {
-	return xxx_messageInfo_SetMapRequest.Size(m)
-}
-func (m *SetMapRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_SetMapRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_SetMapRequest proto.InternalMessageInfo
-
-func (m *SetMapRequest) GetX() int32 {
-	if m != nil {
-		return m.X
-	}
-	return 0
-}
-
-func (m *SetMapRequest) GetY() int32 {
-	if m != nil {
-		return m.Y
-	}
-	return 0
-}
-
-func (m *SetMapRequest) GetWidth() int32 {
-	if m != nil {
-		return m.Width
-	}
-	return 0
-}
-
-func (m *SetMapRequest) GetHeight() int32 {
-	if m != nil {
-		return m.Height
-	}
-	return 0
-}
-
-func (m *SetMapRequest) GetMap() []*Zone {
-	if m != nil {
-		return m.Map
-	}
-	return nil
-}
-
-type SetMapReply struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *SetMapReply) Reset()         { *m = SetMapReply{} }
-func (m *SetMapReply) String() string { return proto.CompactTextString(m) }
-func (*SetMapReply) ProtoMessage()    {}
-func (*SetMapReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_77a6da22d6a3feb1, []int{5}
-}
-
-func (m *SetMapReply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_SetMapReply.Unmarshal(m, b)
-}
-func (m *SetMapReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_SetMapReply.Marshal(b, m, deterministic)
-}
-func (m *SetMapReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_SetMapReply.Merge(m, src)
-}
-func (m *SetMapReply) XXX_Size() int {
-	return xxx_messageInfo_SetMapReply.Size(m)
-}
-func (m *SetMapReply) XXX_DiscardUnknown() {
-	xxx_messageInfo_SetMapReply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_SetMapReply proto.InternalMessageInfo
-
-// Messages liés à updateMap
-type UpdateMapRequest struct {
-	X                    int32    `protobuf:"varint,1,opt,name=x,proto3" json:"x,omitempty"`
-	Y                    int32    `protobuf:"varint,2,opt,name=y,proto3" json:"y,omitempty"`
-	Width                int32    `protobuf:"varint,3,opt,name=width,proto3" json:"width,omitempty"`
-	Height               int32    `protobuf:"varint,4,opt,name=height,proto3" json:"height,omitempty"`
-	Map                  []*Zone  `protobuf:"bytes,5,rep,name=map,proto3" json:"map,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *UpdateMapRequest) Reset()         { *m = UpdateMapRequest{} }
-func (m *UpdateMapRequest) String() string { return proto.CompactTextString(m) }
-func (*UpdateMapRequest) ProtoMessage()    {}
-func (*UpdateMapRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_77a6da22d6a3feb1, []int{6}
-}
-
-func (m *UpdateMapRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_UpdateMapRequest.Unmarshal(m, b)
-}
-func (m *UpdateMapRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_UpdateMapRequest.Marshal(b, m, deterministic)
-}
-func (m *UpdateMapRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_UpdateMapRequest.Merge(m, src)
-}
-func (m *UpdateMapRequest) XXX_Size() int {
-	return xxx_messageInfo_UpdateMapRequest.Size(m)
-}
-func (m *UpdateMapRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_UpdateMapRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_UpdateMapRequest proto.InternalMessageInfo
-
-func (m *UpdateMapRequest) GetX() int32 {
-	if m != nil {
-		return m.X
-	}
-	return 0
-}
-
-func (m *UpdateMapRequest) GetY() int32 {
-	if m != nil {
-		return m.Y
-	}
-	return 0
-}
-
-func (m *UpdateMapRequest) GetWidth() int32 {
-	if m != nil {
-		return m.Width
-	}
-	return 0
-}
-
-func (m *UpdateMapRequest) GetHeight() int32 {
-	if m != nil {
-		return m.Height
-	}
-	return 0
-}
-
-func (m *UpdateMapRequest) GetMap() []*Zone {
-	if m != nil {
-		return m.Map
-	}
-	return nil
-}
-
-type UpdateMapReply struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *UpdateMapReply) Reset()         { *m = UpdateMapReply{} }
-func (m *UpdateMapReply) String() string { return proto.CompactTextString(m) }
-func (*UpdateMapReply) ProtoMessage()    {}
-func (*UpdateMapReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_77a6da22d6a3feb1, []int{7}
-}
-
-func (m *UpdateMapReply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_UpdateMapReply.Unmarshal(m, b)
-}
-func (m *UpdateMapReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_UpdateMapReply.Marshal(b, m, deterministic)
-}
-func (m *UpdateMapReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_UpdateMapReply.Merge(m, src)
-}
-func (m *UpdateMapReply) XXX_Size() int {
-	return xxx_messageInfo_UpdateMapReply.Size(m)
-}
-func (m *UpdateMapReply) XXX_DiscardUnknown() {
-	xxx_messageInfo_UpdateMapReply.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_UpdateMapReply proto.InternalMessageInfo
-
-// Message de structure d'organisation de la carte
-type Zone struct {
-	Type                 int32     `protobuf:"varint,1,opt,name=type,proto3" json:"type,omitempty"`
-	Resource             *Resource `protobuf:"bytes,2,opt,name=resource,proto3" json:"resource,omitempty"`
-	Building             *Building `protobuf:"bytes,3,opt,name=building,proto3" json:"building,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}  `json:"-"`
-	XXX_unrecognized     []byte    `json:"-"`
-	XXX_sizecache        int32     `json:"-"`
-}
-
-func (m *Zone) Reset()         { *m = Zone{} }
-func (m *Zone) String() string { return proto.CompactTextString(m) }
-func (*Zone) ProtoMessage()    {}
-func (*Zone) Descriptor() ([]byte, []int) {
-	return fileDescriptor_77a6da22d6a3feb1, []int{8}
-}
-
-func (m *Zone) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Zone.Unmarshal(m, b)
-}
-func (m *Zone) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Zone.Marshal(b, m, deterministic)
-}
-func (m *Zone) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Zone.Merge(m, src)
-}
-func (m *Zone) XXX_Size() int {
-	return xxx_messageInfo_Zone.Size(m)
-}
-func (m *Zone) XXX_DiscardUnknown() {
-	xxx_messageInfo_Zone.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Zone proto.InternalMessageInfo
-
-func (m *Zone) GetType() int32 {
-	if m != nil {
-		return m.Type
-	}
-	return 0
-}
-
-func (m *Zone) GetResource() *Resource {
-	if m != nil {
-		return m.Resource
-	}
-	return nil
-}
-
-func (m *Zone) GetBuilding() *Building {
-	if m != nil {
-		return m.Building
-	}
-	return nil
-}
-
-type Resource struct {
-	Ph                   int32    `protobuf:"varint,1,opt,name=ph,proto3" json:"ph,omitempty"`
-	Type                 int32    `protobuf:"varint,2,opt,name=type,proto3" json:"type,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *Resource) Reset()         { *m = Resource{} }
-func (m *Resource) String() string { return proto.CompactTextString(m) }
-func (*Resource) ProtoMessage()    {}
-func (*Resource) Descriptor() ([]byte, []int) {
-	return fileDescriptor_77a6da22d6a3feb1, []int{9}
-}
-
-func (m *Resource) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Resource.Unmarshal(m, b)
-}
-func (m *Resource) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Resource.Marshal(b, m, deterministic)
-}
-func (m *Resource) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Resource.Merge(m, src)
-}
-func (m *Resource) XXX_Size() int {
-	return xxx_messageInfo_Resource.Size(m)
-}
-func (m *Resource) XXX_DiscardUnknown() {
-	xxx_messageInfo_Resource.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Resource proto.InternalMessageInfo
-
-func (m *Resource) GetPh() int32 {
-	if m != nil {
-		return m.Ph
-	}
-	return 0
-}
-
-func (m *Resource) GetType() int32 {
-	if m != nil {
-		return m.Type
-	}
-	return 0
-}
-
-type Building struct {
-	Ph                   int32    `protobuf:"varint,1,opt,name=ph,proto3" json:"ph,omitempty"`
-	Type                 int32    `protobuf:"varint,2,opt,name=type,proto3" json:"type,omitempty"`
-	Width                int32    `protobuf:"varint,3,opt,name=width,proto3" json:"width,omitempty"`
-	Height               int32    `protobuf:"varint,4,opt,name=height,proto3" json:"height,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *Building) Reset()         { *m = Building{} }
-func (m *Building) String() string { return proto.CompactTextString(m) }
-func (*Building) ProtoMessage()    {}
-func (*Building) Descriptor() ([]byte, []int) {
-	return fileDescriptor_77a6da22d6a3feb1, []int{10}
-}
-
-func (m *Building) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Building.Unmarshal(m, b)
-}
-func (m *Building) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Building.Marshal(b, m, deterministic)
-}
-func (m *Building) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Building.Merge(m, src)
-}
-func (m *Building) XXX_Size() int {
-	return xxx_messageInfo_Building.Size(m)
-}
-func (m *Building) XXX_DiscardUnknown() {
-	xxx_messageInfo_Building.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Building proto.InternalMessageInfo
-
-func (m *Building) GetPh() int32 {
-	if m != nil {
-		return m.Ph
-	}
-	return 0
-}
-
-func (m *Building) GetType() int32 {
-	if m != nil {
-		return m.Type
-	}
-	return 0
-}
-
-func (m *Building) GetWidth() int32 {
-	if m != nil {
-		return m.Width
-	}
-	return 0
-}
-
-func (m *Building) GetHeight() int32 {
-	if m != nil {
-		return m.Height
-	}
-	return 0
-}
-
-// Messages liés à rightClick
+// Messages liés à RightClick
 type RightClickRequest struct {
 	Coordinates          *Coordinates `protobuf:"bytes,1,opt,name=coordinates,proto3" json:"coordinates,omitempty"`
+	EntitySelectionUUID  []string     `protobuf:"bytes,2,rep,name=entitySelectionUUID,proto3" json:"entitySelectionUUID,omitempty"`
+	Target               string       `protobuf:"bytes,3,opt,name=target,proto3" json:"target,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}     `json:"-"`
 	XXX_unrecognized     []byte       `json:"-"`
 	XXX_sizecache        int32        `json:"-"`
@@ -571,7 +98,7 @@ func (m *RightClickRequest) Reset()         { *m = RightClickRequest{} }
 func (m *RightClickRequest) String() string { return proto.CompactTextString(m) }
 func (*RightClickRequest) ProtoMessage()    {}
 func (*RightClickRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_77a6da22d6a3feb1, []int{11}
+	return fileDescriptor_77a6da22d6a3feb1, []int{2}
 }
 
 func (m *RightClickRequest) XXX_Unmarshal(b []byte) error {
@@ -599,6 +126,20 @@ func (m *RightClickRequest) GetCoordinates() *Coordinates {
 	return nil
 }
 
+func (m *RightClickRequest) GetEntitySelectionUUID() []string {
+	if m != nil {
+		return m.EntitySelectionUUID
+	}
+	return nil
+}
+
+func (m *RightClickRequest) GetTarget() string {
+	if m != nil {
+		return m.Target
+	}
+	return ""
+}
+
 type RightClickReply struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
@@ -609,7 +150,7 @@ func (m *RightClickReply) Reset()         { *m = RightClickReply{} }
 func (m *RightClickReply) String() string { return proto.CompactTextString(m) }
 func (*RightClickReply) ProtoMessage()    {}
 func (*RightClickReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_77a6da22d6a3feb1, []int{12}
+	return fileDescriptor_77a6da22d6a3feb1, []int{3}
 }
 
 func (m *RightClickReply) XXX_Unmarshal(b []byte) error {
@@ -630,93 +171,79 @@ func (m *RightClickReply) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_RightClickReply proto.InternalMessageInfo
 
-// Message liés à moveTo
-type MoveToRequest struct {
-	Actuel               *Coordinates `protobuf:"bytes,1,opt,name=actuel,proto3" json:"actuel,omitempty"`
-	Destionation         *Coordinates `protobuf:"bytes,2,opt,name=destionation,proto3" json:"destionation,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}     `json:"-"`
-	XXX_unrecognized     []byte       `json:"-"`
-	XXX_sizecache        int32        `json:"-"`
+// Message liés à MoveTo
+type AskUpdateRequest struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *MoveToRequest) Reset()         { *m = MoveToRequest{} }
-func (m *MoveToRequest) String() string { return proto.CompactTextString(m) }
-func (*MoveToRequest) ProtoMessage()    {}
-func (*MoveToRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_77a6da22d6a3feb1, []int{13}
+func (m *AskUpdateRequest) Reset()         { *m = AskUpdateRequest{} }
+func (m *AskUpdateRequest) String() string { return proto.CompactTextString(m) }
+func (*AskUpdateRequest) ProtoMessage()    {}
+func (*AskUpdateRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_77a6da22d6a3feb1, []int{4}
 }
 
-func (m *MoveToRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_MoveToRequest.Unmarshal(m, b)
+func (m *AskUpdateRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_AskUpdateRequest.Unmarshal(m, b)
 }
-func (m *MoveToRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_MoveToRequest.Marshal(b, m, deterministic)
+func (m *AskUpdateRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_AskUpdateRequest.Marshal(b, m, deterministic)
 }
-func (m *MoveToRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MoveToRequest.Merge(m, src)
+func (m *AskUpdateRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AskUpdateRequest.Merge(m, src)
 }
-func (m *MoveToRequest) XXX_Size() int {
-	return xxx_messageInfo_MoveToRequest.Size(m)
+func (m *AskUpdateRequest) XXX_Size() int {
+	return xxx_messageInfo_AskUpdateRequest.Size(m)
 }
-func (m *MoveToRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_MoveToRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_MoveToRequest proto.InternalMessageInfo
-
-func (m *MoveToRequest) GetActuel() *Coordinates {
-	if m != nil {
-		return m.Actuel
-	}
-	return nil
+func (m *AskUpdateRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_AskUpdateRequest.DiscardUnknown(m)
 }
 
-func (m *MoveToRequest) GetDestionation() *Coordinates {
-	if m != nil {
-		return m.Destionation
-	}
-	return nil
-}
+var xxx_messageInfo_AskUpdateRequest proto.InternalMessageInfo
 
-type MoveToReply struct {
-	Chemin               []*Coordinates `protobuf:"bytes,1,rep,name=chemin,proto3" json:"chemin,omitempty"`
+type AskUpdateReply struct {
+	// Si vide rien
+	Array                []*UpdateAsked `protobuf:"bytes,1,rep,name=array,proto3" json:"array,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}       `json:"-"`
 	XXX_unrecognized     []byte         `json:"-"`
 	XXX_sizecache        int32          `json:"-"`
 }
 
-func (m *MoveToReply) Reset()         { *m = MoveToReply{} }
-func (m *MoveToReply) String() string { return proto.CompactTextString(m) }
-func (*MoveToReply) ProtoMessage()    {}
-func (*MoveToReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_77a6da22d6a3feb1, []int{14}
+func (m *AskUpdateReply) Reset()         { *m = AskUpdateReply{} }
+func (m *AskUpdateReply) String() string { return proto.CompactTextString(m) }
+func (*AskUpdateReply) ProtoMessage()    {}
+func (*AskUpdateReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_77a6da22d6a3feb1, []int{5}
 }
 
-func (m *MoveToReply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_MoveToReply.Unmarshal(m, b)
+func (m *AskUpdateReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_AskUpdateReply.Unmarshal(m, b)
 }
-func (m *MoveToReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_MoveToReply.Marshal(b, m, deterministic)
+func (m *AskUpdateReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_AskUpdateReply.Marshal(b, m, deterministic)
 }
-func (m *MoveToReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MoveToReply.Merge(m, src)
+func (m *AskUpdateReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AskUpdateReply.Merge(m, src)
 }
-func (m *MoveToReply) XXX_Size() int {
-	return xxx_messageInfo_MoveToReply.Size(m)
+func (m *AskUpdateReply) XXX_Size() int {
+	return xxx_messageInfo_AskUpdateReply.Size(m)
 }
-func (m *MoveToReply) XXX_DiscardUnknown() {
-	xxx_messageInfo_MoveToReply.DiscardUnknown(m)
+func (m *AskUpdateReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_AskUpdateReply.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MoveToReply proto.InternalMessageInfo
+var xxx_messageInfo_AskUpdateReply proto.InternalMessageInfo
 
-func (m *MoveToReply) GetChemin() []*Coordinates {
+func (m *AskUpdateReply) GetArray() []*UpdateAsked {
 	if m != nil {
-		return m.Chemin
+		return m.Array
 	}
 	return nil
 }
 
+// Message de structure du service Interactions
 type Coordinates struct {
 	X                    int32    `protobuf:"varint,1,opt,name=x,proto3" json:"x,omitempty"`
 	Y                    int32    `protobuf:"varint,2,opt,name=y,proto3" json:"y,omitempty"`
@@ -729,7 +256,7 @@ func (m *Coordinates) Reset()         { *m = Coordinates{} }
 func (m *Coordinates) String() string { return proto.CompactTextString(m) }
 func (*Coordinates) ProtoMessage()    {}
 func (*Coordinates) Descriptor() ([]byte, []int) {
-	return fileDescriptor_77a6da22d6a3feb1, []int{15}
+	return fileDescriptor_77a6da22d6a3feb1, []int{6}
 }
 
 func (m *Coordinates) XXX_Unmarshal(b []byte) error {
@@ -764,63 +291,169 @@ func (m *Coordinates) GetY() int32 {
 	return 0
 }
 
+//
+//type: list
+//- 0: vide
+//- 1: case carte
+//- type: int
+//- 0: eau
+//- 1: herbe
+//- 2: case ressource
+//- type: int
+//- 0: bois
+//- 1: pierre
+//- 3: case entité
+//- x: int
+//- y: int
+//- xDest: int
+//- yDest: int
+//- hp: int
+//- hpMax: int
+//- name: string
+//
+type UpdateAsked struct {
+	Type                 int32    `protobuf:"varint,1,opt,name=type,proto3" json:"type,omitempty"`
+	EntityUUID           string   `protobuf:"bytes,2,opt,name=entityUUID,proto3" json:"entityUUID,omitempty"`
+	Arg                  []*Param `protobuf:"bytes,3,rep,name=arg,proto3" json:"arg,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *UpdateAsked) Reset()         { *m = UpdateAsked{} }
+func (m *UpdateAsked) String() string { return proto.CompactTextString(m) }
+func (*UpdateAsked) ProtoMessage()    {}
+func (*UpdateAsked) Descriptor() ([]byte, []int) {
+	return fileDescriptor_77a6da22d6a3feb1, []int{7}
+}
+
+func (m *UpdateAsked) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_UpdateAsked.Unmarshal(m, b)
+}
+func (m *UpdateAsked) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_UpdateAsked.Marshal(b, m, deterministic)
+}
+func (m *UpdateAsked) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_UpdateAsked.Merge(m, src)
+}
+func (m *UpdateAsked) XXX_Size() int {
+	return xxx_messageInfo_UpdateAsked.Size(m)
+}
+func (m *UpdateAsked) XXX_DiscardUnknown() {
+	xxx_messageInfo_UpdateAsked.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_UpdateAsked proto.InternalMessageInfo
+
+func (m *UpdateAsked) GetType() int32 {
+	if m != nil {
+		return m.Type
+	}
+	return 0
+}
+
+func (m *UpdateAsked) GetEntityUUID() string {
+	if m != nil {
+		return m.EntityUUID
+	}
+	return ""
+}
+
+func (m *UpdateAsked) GetArg() []*Param {
+	if m != nil {
+		return m.Arg
+	}
+	return nil
+}
+
+type Param struct {
+	Key                  string   `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
+	Value                string   `protobuf:"bytes,2,opt,name=value,proto3" json:"value,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *Param) Reset()         { *m = Param{} }
+func (m *Param) String() string { return proto.CompactTextString(m) }
+func (*Param) ProtoMessage()    {}
+func (*Param) Descriptor() ([]byte, []int) {
+	return fileDescriptor_77a6da22d6a3feb1, []int{8}
+}
+
+func (m *Param) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Param.Unmarshal(m, b)
+}
+func (m *Param) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Param.Marshal(b, m, deterministic)
+}
+func (m *Param) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Param.Merge(m, src)
+}
+func (m *Param) XXX_Size() int {
+	return xxx_messageInfo_Param.Size(m)
+}
+func (m *Param) XXX_DiscardUnknown() {
+	xxx_messageInfo_Param.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Param proto.InternalMessageInfo
+
+func (m *Param) GetKey() string {
+	if m != nil {
+		return m.Key
+	}
+	return ""
+}
+
+func (m *Param) GetValue() string {
+	if m != nil {
+		return m.Value
+	}
+	return ""
+}
+
 func init() {
 	proto.RegisterType((*HelloRequest)(nil), "communication.HelloRequest")
 	proto.RegisterType((*HelloReply)(nil), "communication.HelloReply")
-	proto.RegisterType((*GetMapRequest)(nil), "communication.getMapRequest")
-	proto.RegisterType((*GetMapReply)(nil), "communication.getMapReply")
-	proto.RegisterType((*SetMapRequest)(nil), "communication.setMapRequest")
-	proto.RegisterType((*SetMapReply)(nil), "communication.setMapReply")
-	proto.RegisterType((*UpdateMapRequest)(nil), "communication.updateMapRequest")
-	proto.RegisterType((*UpdateMapReply)(nil), "communication.updateMapReply")
-	proto.RegisterType((*Zone)(nil), "communication.Zone")
-	proto.RegisterType((*Resource)(nil), "communication.Resource")
-	proto.RegisterType((*Building)(nil), "communication.Building")
-	proto.RegisterType((*RightClickRequest)(nil), "communication.rightClickRequest")
-	proto.RegisterType((*RightClickReply)(nil), "communication.rightClickReply")
-	proto.RegisterType((*MoveToRequest)(nil), "communication.moveToRequest")
-	proto.RegisterType((*MoveToReply)(nil), "communication.moveToReply")
+	proto.RegisterType((*RightClickRequest)(nil), "communication.RightClickRequest")
+	proto.RegisterType((*RightClickReply)(nil), "communication.RightClickReply")
+	proto.RegisterType((*AskUpdateRequest)(nil), "communication.AskUpdateRequest")
+	proto.RegisterType((*AskUpdateReply)(nil), "communication.AskUpdateReply")
 	proto.RegisterType((*Coordinates)(nil), "communication.Coordinates")
+	proto.RegisterType((*UpdateAsked)(nil), "communication.UpdateAsked")
+	proto.RegisterType((*Param)(nil), "communication.Param")
 }
 
 func init() { proto.RegisterFile("rpc.proto", fileDescriptor_77a6da22d6a3feb1) }
 
 var fileDescriptor_77a6da22d6a3feb1 = []byte{
-	// 541 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xc4, 0x95, 0xcf, 0x6f, 0xd3, 0x30,
-	0x14, 0xc7, 0xe7, 0x76, 0xad, 0xba, 0x97, 0xb6, 0x6c, 0x06, 0x41, 0x09, 0xbf, 0x2a, 0x4b, 0x48,
-	0xe3, 0xd2, 0x43, 0xc6, 0x11, 0x21, 0xc1, 0x76, 0x80, 0x43, 0x25, 0x88, 0xb8, 0x80, 0xb8, 0x64,
-	0x89, 0xd5, 0x44, 0x24, 0xb1, 0x89, 0x1d, 0x58, 0x6e, 0x48, 0xf0, 0xb7, 0xf0, 0x77, 0xf1, 0xa7,
-	0x20, 0x3b, 0x4e, 0x9a, 0xa4, 0x5b, 0x18, 0x07, 0xc4, 0xcd, 0xcf, 0xef, 0xeb, 0x6f, 0x3e, 0xaf,
-	0x7e, 0x7e, 0x85, 0x83, 0x8c, 0xfb, 0x2b, 0x9e, 0x31, 0xc9, 0xf0, 0xcc, 0x67, 0x49, 0x92, 0xa7,
-	0x91, 0xef, 0xc9, 0x88, 0xa5, 0x64, 0x0e, 0xd3, 0x57, 0x34, 0x8e, 0x99, 0x4b, 0x3f, 0xe7, 0x54,
-	0x48, 0x32, 0x05, 0x30, 0x31, 0x8f, 0x0b, 0xf2, 0x1e, 0x66, 0x1b, 0x2a, 0xd7, 0x1e, 0x37, 0x69,
-	0x3c, 0x05, 0x74, 0xb1, 0x40, 0x4b, 0x74, 0x3c, 0x72, 0xd1, 0x85, 0x8a, 0x8a, 0xc5, 0xa0, 0x8c,
-	0x0a, 0x7c, 0x0b, 0x46, 0x5f, 0xa3, 0x40, 0x86, 0x8b, 0xa1, 0xde, 0x29, 0x03, 0x7c, 0x1b, 0xc6,
-	0x21, 0x8d, 0x36, 0xa1, 0x5c, 0xec, 0xeb, 0x6d, 0x13, 0x91, 0xa7, 0x60, 0x55, 0xd6, 0x3c, 0x2e,
-	0xf0, 0x63, 0x18, 0x26, 0x1e, 0x5f, 0xa0, 0xe5, 0xf0, 0xd8, 0x72, 0x6e, 0xae, 0x5a, 0x90, 0xab,
-	0x0f, 0x2c, 0xa5, 0xae, 0xca, 0x93, 0x6f, 0x08, 0x66, 0xe2, 0xdf, 0x10, 0x55, 0x08, 0xa3, 0x3f,
-	0x20, 0xcc, 0xc0, 0x12, 0x5b, 0x70, 0xf2, 0x1d, 0xc1, 0x61, 0xce, 0x03, 0x4f, 0xd2, 0xff, 0x09,
-	0x75, 0x08, 0xf3, 0x06, 0x84, 0xe2, 0xfa, 0x81, 0x60, 0x5f, 0xe5, 0x31, 0x86, 0x7d, 0x59, 0x70,
-	0x6a, 0x70, 0xf4, 0x1a, 0x9f, 0xc0, 0x24, 0xa3, 0x82, 0xe5, 0x99, 0x4f, 0x35, 0x98, 0xe5, 0xdc,
-	0xe9, 0x58, 0xbb, 0x26, 0xed, 0xd6, 0x42, 0x75, 0xe8, 0x3c, 0x8f, 0xe2, 0x20, 0x4a, 0x37, 0x9a,
-	0x7d, 0xf7, 0xd0, 0x4b, 0x93, 0x76, 0x6b, 0x21, 0x59, 0xc1, 0xa4, 0xb2, 0xc2, 0x73, 0x18, 0xf0,
-	0xd0, 0x70, 0x0c, 0x78, 0x58, 0x93, 0x0d, 0xb6, 0x64, 0xe4, 0x23, 0x4c, 0x2a, 0x97, 0xeb, 0xe8,
-	0xff, 0xb2, 0xe9, 0xde, 0xc2, 0x51, 0xa6, 0x16, 0xa7, 0x71, 0xe4, 0x7f, 0xaa, 0x2e, 0xeb, 0x19,
-	0x58, 0x3e, 0x63, 0x59, 0x10, 0xa5, 0x9e, 0xa4, 0x42, 0x7f, 0xcf, 0x72, 0xec, 0x4e, 0x69, 0xa7,
-	0x5b, 0x85, 0xdb, 0x94, 0x93, 0x23, 0xb8, 0xd1, 0xb4, 0x34, 0x2d, 0x31, 0x4b, 0xd8, 0x17, 0xfa,
-	0xae, 0x7a, 0x55, 0xd8, 0x81, 0xb1, 0xe7, 0xcb, 0x9c, 0xc6, 0xd7, 0x70, 0x37, 0x4a, 0xfc, 0x1c,
-	0xa6, 0x01, 0x15, 0x2a, 0xad, 0x35, 0xe6, 0x9e, 0xfa, 0x4e, 0xb6, 0xf4, 0xe4, 0x05, 0x58, 0x15,
-	0x84, 0x7a, 0x60, 0x0e, 0x8c, 0xfd, 0x90, 0x26, 0x51, 0x6a, 0xde, 0x58, 0x2f, 0x42, 0xa9, 0x24,
-	0x4f, 0xc0, 0x6a, 0x6c, 0xf7, 0x75, 0xb5, 0xb3, 0x86, 0x91, 0x9e, 0x1b, 0xf8, 0x0c, 0x26, 0xc2,
-	0x2b, 0xca, 0xf5, 0xbd, 0xce, 0x37, 0x9a, 0x93, 0xc6, 0xbe, 0x7b, 0x79, 0x52, 0xfd, 0x80, 0x7b,
-	0xce, 0x2f, 0x04, 0xc3, 0xb5, 0xc7, 0xf1, 0x19, 0x8c, 0xcb, 0x29, 0x81, 0xef, 0x77, 0xe4, 0xad,
-	0xb9, 0x64, 0xdb, 0x57, 0x64, 0xb5, 0x9b, 0x72, 0x11, 0x97, 0xbb, 0x88, 0x5e, 0x17, 0xd1, 0x72,
-	0x59, 0xc3, 0x41, 0xfd, 0xc6, 0xf0, 0xa3, 0x8e, 0xb4, 0x3b, 0x02, 0xec, 0x07, 0x57, 0x0b, 0xca,
-	0x12, 0x7f, 0x22, 0x98, 0xbe, 0x4e, 0x25, 0xcd, 0x3c, 0x5f, 0x09, 0x04, 0x7e, 0x03, 0xb0, 0xed,
-	0x24, 0xbc, 0xec, 0x9c, 0xdf, 0xe9, 0x5b, 0xfb, 0x61, 0x8f, 0xa2, 0xae, 0xbb, 0x6c, 0x81, 0x9d,
-	0xba, 0x5b, 0xed, 0xb9, 0x53, 0x77, 0xa3, 0x6f, 0xc8, 0xde, 0xf9, 0x58, 0xff, 0x71, 0x9c, 0xfc,
-	0x0e, 0x00, 0x00, 0xff, 0xff, 0xbd, 0xa8, 0x7e, 0x68, 0x45, 0x06, 0x00, 0x00,
+	// 399 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x93, 0xc1, 0x8e, 0xda, 0x30,
+	0x10, 0x86, 0x6b, 0xd2, 0xa0, 0x66, 0x92, 0x52, 0x98, 0xa2, 0x2a, 0x4d, 0x55, 0x1a, 0xe5, 0x50,
+	0xd1, 0x0b, 0x45, 0xf4, 0xda, 0x0b, 0x85, 0x43, 0x39, 0x20, 0x21, 0x23, 0x1e, 0xc0, 0x0d, 0x16,
+	0x8d, 0x12, 0x92, 0xd4, 0x31, 0x15, 0x7e, 0x96, 0x7d, 0x88, 0x7d, 0xc5, 0x55, 0x9c, 0xec, 0x92,
+	0xcd, 0xb2, 0x7b, 0x9b, 0xdf, 0xfe, 0x98, 0x99, 0x9f, 0xdf, 0x01, 0x4b, 0xe4, 0xe1, 0x24, 0x17,
+	0x99, 0xcc, 0xf0, 0x6d, 0x98, 0x1d, 0x8f, 0xa7, 0x34, 0x0a, 0x99, 0x8c, 0xb2, 0x34, 0xe8, 0x81,
+	0xf3, 0x9b, 0x27, 0x49, 0x46, 0xf9, 0xbf, 0x13, 0x2f, 0x64, 0xe0, 0x00, 0xd4, 0x3a, 0x4f, 0x54,
+	0x70, 0x43, 0x60, 0x40, 0xa3, 0xc3, 0x5f, 0xb9, 0x48, 0xa2, 0x30, 0xae, 0x19, 0xfc, 0x09, 0x76,
+	0x98, 0x65, 0x62, 0x1f, 0xa5, 0x4c, 0xf2, 0xc2, 0x25, 0x3e, 0x19, 0xdb, 0x33, 0x6f, 0xf2, 0xa8,
+	0xf1, 0x64, 0x71, 0x21, 0x68, 0x13, 0xc7, 0x29, 0xbc, 0xe7, 0xa9, 0x8c, 0xa4, 0xda, 0xf2, 0x84,
+	0x87, 0x25, 0xbb, 0xdb, 0xad, 0x96, 0x6e, 0xc7, 0x37, 0xc6, 0x16, 0xbd, 0x76, 0x85, 0x1f, 0xa0,
+	0x2b, 0x99, 0x38, 0x70, 0xe9, 0x1a, 0x3e, 0x19, 0x5b, 0xb4, 0x56, 0xc1, 0x00, 0xde, 0x35, 0x97,
+	0x2b, 0x17, 0x46, 0xe8, 0xcf, 0x8b, 0x78, 0x97, 0xef, 0x99, 0xe4, 0xf7, 0x96, 0x7e, 0x41, 0xaf,
+	0x71, 0x96, 0x27, 0x0a, 0xa7, 0x60, 0x32, 0x21, 0x98, 0x72, 0x89, 0x6f, 0x5c, 0x59, 0xbd, 0x42,
+	0xe7, 0x45, 0xcc, 0xf7, 0xb4, 0x02, 0x83, 0x6f, 0x60, 0x37, 0x0c, 0xa1, 0x03, 0xe4, 0xac, 0x7d,
+	0x9b, 0x94, 0x9c, 0x4b, 0xa5, 0xdc, 0x4e, 0xa5, 0x54, 0x10, 0x81, 0xdd, 0x68, 0x80, 0x08, 0xaf,
+	0xa5, 0xca, 0x79, 0x4d, 0xeb, 0x1a, 0x47, 0x00, 0x95, 0xcf, 0xda, 0x79, 0x69, 0xaa, 0x71, 0x82,
+	0x5f, 0xc1, 0x60, 0xe2, 0xe0, 0x1a, 0x7a, 0xbb, 0x61, 0x6b, 0xbb, 0x0d, 0x13, 0xec, 0x48, 0x4b,
+	0x20, 0xf8, 0x0e, 0xa6, 0x56, 0xd8, 0x07, 0x23, 0xe6, 0x4a, 0xcf, 0xb0, 0x68, 0x59, 0xe2, 0x10,
+	0xcc, 0xff, 0x2c, 0x39, 0xf1, 0xba, 0x7b, 0x25, 0x66, 0x6b, 0x30, 0x75, 0xba, 0xb8, 0x84, 0x37,
+	0x5b, 0xa6, 0xaa, 0xfa, 0x53, 0x6b, 0x40, 0xf3, 0x3d, 0x78, 0x1f, 0xaf, 0x5f, 0x96, 0xff, 0xf5,
+	0xab, 0xd9, 0x2d, 0x01, 0x67, 0x95, 0x4a, 0x2e, 0x98, 0x0e, 0xab, 0xc0, 0x0d, 0xc0, 0x25, 0x11,
+	0xf4, 0x5b, 0xbf, 0x7d, 0xf2, 0x92, 0xbc, 0xd1, 0x0b, 0x84, 0x1e, 0x81, 0x6b, 0xb0, 0x1e, 0xc2,
+	0xc3, 0x2f, 0x2d, 0xbc, 0x1d, 0xb5, 0xf7, 0xf9, 0x79, 0x40, 0xb7, 0xfb, 0xd3, 0xd5, 0x1f, 0xc1,
+	0x8f, 0xbb, 0x00, 0x00, 0x00, 0xff, 0xff, 0xe2, 0xb7, 0x7f, 0x46, 0x11, 0x03, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -849,7 +482,7 @@ func NewHelloClient(cc *grpc.ClientConn) HelloClient {
 
 func (c *helloClient) SayHello(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloReply, error) {
 	out := new(HelloReply)
-	err := c.cc.Invoke(ctx, "/communication.Hello/sayHello", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/communication.Hello/SayHello", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -889,144 +522,8 @@ var _Hello_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*HelloServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "sayHello",
+			MethodName: "SayHello",
 			Handler:    _Hello_SayHello_Handler,
-		},
-	},
-	Streams:  []grpc.StreamDesc{},
-	Metadata: "rpc.proto",
-}
-
-// MapClient is the client API for Map service.
-//
-// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
-type MapClient interface {
-	// Fonction permettant au client de demander une zone de carte
-	GetMap(ctx context.Context, in *GetMapRequest, opts ...grpc.CallOption) (*GetMapReply, error)
-	// Fonction permettant au client de faire une modification d'une zone de carte
-	SetMap(ctx context.Context, in *SetMapRequest, opts ...grpc.CallOption) (*SetMapReply, error)
-	// Fonction permettant au serveur de mettre à jour une zone de carte du client
-	UpdateMap(ctx context.Context, in *UpdateMapRequest, opts ...grpc.CallOption) (*UpdateMapReply, error)
-}
-
-type mapClient struct {
-	cc *grpc.ClientConn
-}
-
-func NewMapClient(cc *grpc.ClientConn) MapClient {
-	return &mapClient{cc}
-}
-
-func (c *mapClient) GetMap(ctx context.Context, in *GetMapRequest, opts ...grpc.CallOption) (*GetMapReply, error) {
-	out := new(GetMapReply)
-	err := c.cc.Invoke(ctx, "/communication.Map/getMap", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *mapClient) SetMap(ctx context.Context, in *SetMapRequest, opts ...grpc.CallOption) (*SetMapReply, error) {
-	out := new(SetMapReply)
-	err := c.cc.Invoke(ctx, "/communication.Map/setMap", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *mapClient) UpdateMap(ctx context.Context, in *UpdateMapRequest, opts ...grpc.CallOption) (*UpdateMapReply, error) {
-	out := new(UpdateMapReply)
-	err := c.cc.Invoke(ctx, "/communication.Map/updateMap", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-// MapServer is the server API for Map service.
-type MapServer interface {
-	// Fonction permettant au client de demander une zone de carte
-	GetMap(context.Context, *GetMapRequest) (*GetMapReply, error)
-	// Fonction permettant au client de faire une modification d'une zone de carte
-	SetMap(context.Context, *SetMapRequest) (*SetMapReply, error)
-	// Fonction permettant au serveur de mettre à jour une zone de carte du client
-	UpdateMap(context.Context, *UpdateMapRequest) (*UpdateMapReply, error)
-}
-
-func RegisterMapServer(s *grpc.Server, srv MapServer) {
-	s.RegisterService(&_Map_serviceDesc, srv)
-}
-
-func _Map_GetMap_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetMapRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MapServer).GetMap(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/communication.Map/GetMap",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MapServer).GetMap(ctx, req.(*GetMapRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Map_SetMap_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SetMapRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MapServer).SetMap(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/communication.Map/SetMap",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MapServer).SetMap(ctx, req.(*SetMapRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Map_UpdateMap_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdateMapRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MapServer).UpdateMap(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/communication.Map/UpdateMap",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MapServer).UpdateMap(ctx, req.(*UpdateMapRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-var _Map_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "communication.Map",
-	HandlerType: (*MapServer)(nil),
-	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "getMap",
-			Handler:    _Map_GetMap_Handler,
-		},
-		{
-			MethodName: "setMap",
-			Handler:    _Map_SetMap_Handler,
-		},
-		{
-			MethodName: "updateMap",
-			Handler:    _Map_UpdateMap_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -1039,8 +536,8 @@ var _Map_serviceDesc = grpc.ServiceDesc{
 type InteractionsClient interface {
 	// Fonction transmettant un click du client au serveur
 	RightClick(ctx context.Context, in *RightClickRequest, opts ...grpc.CallOption) (*RightClickReply, error)
-	// Fonction permettant au client de demander le chemin à un endroit
-	MoveTo(ctx context.Context, in *MoveToRequest, opts ...grpc.CallOption) (*MoveToReply, error)
+	// Fonction permettant au client de demander les mises à jour
+	AskUpdate(ctx context.Context, in *AskUpdateRequest, opts ...grpc.CallOption) (*AskUpdateReply, error)
 }
 
 type interactionsClient struct {
@@ -1053,16 +550,16 @@ func NewInteractionsClient(cc *grpc.ClientConn) InteractionsClient {
 
 func (c *interactionsClient) RightClick(ctx context.Context, in *RightClickRequest, opts ...grpc.CallOption) (*RightClickReply, error) {
 	out := new(RightClickReply)
-	err := c.cc.Invoke(ctx, "/communication.Interactions/rightClick", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/communication.Interactions/RightClick", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *interactionsClient) MoveTo(ctx context.Context, in *MoveToRequest, opts ...grpc.CallOption) (*MoveToReply, error) {
-	out := new(MoveToReply)
-	err := c.cc.Invoke(ctx, "/communication.Interactions/moveTo", in, out, opts...)
+func (c *interactionsClient) AskUpdate(ctx context.Context, in *AskUpdateRequest, opts ...grpc.CallOption) (*AskUpdateReply, error) {
+	out := new(AskUpdateReply)
+	err := c.cc.Invoke(ctx, "/communication.Interactions/AskUpdate", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1073,8 +570,8 @@ func (c *interactionsClient) MoveTo(ctx context.Context, in *MoveToRequest, opts
 type InteractionsServer interface {
 	// Fonction transmettant un click du client au serveur
 	RightClick(context.Context, *RightClickRequest) (*RightClickReply, error)
-	// Fonction permettant au client de demander le chemin à un endroit
-	MoveTo(context.Context, *MoveToRequest) (*MoveToReply, error)
+	// Fonction permettant au client de demander les mises à jour
+	AskUpdate(context.Context, *AskUpdateRequest) (*AskUpdateReply, error)
 }
 
 func RegisterInteractionsServer(s *grpc.Server, srv InteractionsServer) {
@@ -1099,20 +596,20 @@ func _Interactions_RightClick_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Interactions_MoveTo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MoveToRequest)
+func _Interactions_AskUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AskUpdateRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(InteractionsServer).MoveTo(ctx, in)
+		return srv.(InteractionsServer).AskUpdate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/communication.Interactions/MoveTo",
+		FullMethod: "/communication.Interactions/AskUpdate",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(InteractionsServer).MoveTo(ctx, req.(*MoveToRequest))
+		return srv.(InteractionsServer).AskUpdate(ctx, req.(*AskUpdateRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1122,12 +619,12 @@ var _Interactions_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*InteractionsServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "rightClick",
+			MethodName: "RightClick",
 			Handler:    _Interactions_RightClick_Handler,
 		},
 		{
-			MethodName: "moveTo",
-			Handler:    _Interactions_MoveTo_Handler,
+			MethodName: "AskUpdate",
+			Handler:    _Interactions_AskUpdate_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

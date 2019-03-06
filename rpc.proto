@@ -15,70 +15,6 @@ message HelloRequest {}
 message HelloReply {}
 
 ///////////////////////////////////////////////////////////////////////////////
-// Service de gestion du contenu de la carte
-///////////////////////////////////////////////////////////////////////////////
-
-service Map {
-  // Fonction permettant au client de demander une zone de carte
-  rpc GetMap (GetMapRequest) returns (GetMapReply) {}
-
-  // Fonction permettant au client de faire une modification d'une zone de carte
-  rpc SetMap (SetMapRequest) returns (SetMapReply) {}
-
-  // Fonction permettant au serveur de mettre à jour une zone de carte du client
-  rpc UpdateMap(UpdateMapRequest) returns (UpdateMapReply) {}
-
-}
-
-// Messages liés à getMap
-message GetMapRequest {
-  int32 x = 1;
-  int32 y = 2;
-  int32 width = 3;
-  int32 height = 4;
-}
-message GetMapReply {
-  repeated Zone map = 1;
-}
-
-// Messages liés à setMap
-message SetMapRequest {
-  int32 x = 1;
-  int32 y = 2;
-  int32 width = 3;
-  int32 height = 4;
-  repeated Zone map = 5;
-}
-message SetMapReply {}
-
-// Messages liés à updateMap
-message UpdateMapRequest {
-  int32 x = 1;
-  int32 y = 2;
-  int32 width = 3;
-  int32 height = 4;
-  repeated Zone map = 5;
-}
-message UpdateMapReply {}
-
-// Message de structure du service Map
-message Zone {
-  int32 type = 1;
-  Resource resource = 2;
-  Building building = 3;
-}
-message Resource {
-  int32 ph = 1;
-  int32 type = 2;
-}
-message Building {
-  int32 ph = 1;
-  int32 type = 2;
-  int32 width = 3;
-  int32 height = 4;
-}
-
-///////////////////////////////////////////////////////////////////////////////
 // Service de gestion des NPC
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -86,28 +22,62 @@ service Interactions {
   // Fonction transmettant un click du client au serveur
   rpc RightClick (RightClickRequest) returns (RightClickReply) {}
 
-  // Fonction permettant au client de demander le chemin à un endroit
-  rpc MoveTo (MoveToRequest) returns (MoveToReply) {}
+  // Fonction permettant au client de demander les mises à jour
+  rpc AskUpdate (AskUpdateRequest) returns (AskUpdateReply) {}
 
 }
 
 // Messages liés à RightClick
 message RightClickRequest {
   Coordinates coordinates = 1;
+  repeated string entitySelectionUUID = 2;
+  string target = 3; 
 }
 message RightClickReply {}
 
 // Message liés à MoveTo
-message MoveToRequest {
-  Coordinates actuel = 1;
-  Coordinates destionation = 2;
+message AskUpdateRequest {
+    string token = 1;
 }
-message MoveToReply {
-  repeated Coordinates chemin = 1;
+message AskUpdateReply {
+    // Si vide rien
+    repeated UpdateAsked array = 1;
 }
 
 // Message de structure du service Interactions
 message Coordinates {
   int32 x = 1;
   int32 y = 2;
+}
+
+/*
+    type: list
+        - 0: vide
+        - 1: case carte
+            - type: int 
+                - 0: eau
+                - 1: herbe
+        - 2: case ressource
+            - type: int
+                - 0: bois
+                - 1: pierre
+        - 3: case entité
+            - x: int
+            - y: int
+            - xDest: int
+            - yDest: int
+            - hp: int
+            - hpMax: int
+            - name: string
+
+    */
+message UpdateAsked {
+    int32 type = 1;
+    string entityUUID = 2;
+    repeated Param arg = 3;
+}
+
+message Param {
+    string key = 1;
+    string value = 2;
 }
