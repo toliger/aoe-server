@@ -33,7 +33,7 @@ func Create(class string,x int,y int) Npc{
 		case "harvester":
 			pnj=New(x,y,4,4,10,2,false,1,10,true,1)
 		default:
-			pnj=New(x,y,4,4,5,2,false,1,0,false,0)
+			pnj=New(x,y,4,4,10,2,false,1,0,false,0)
 	}
 	return pnj
 }
@@ -61,6 +61,7 @@ func (pnj Npc)deplacement(path []carte.Case){
 		vdep:=(1000000000/pnj.vitesse)
 		for i:=0;i<ndep;i++{
 			time.Sleep(time.Duration(vdep))
+			fmt.Printf("x : %d , y : %d", pnj.x, pnj.y)
 			pnj.x=path[i].GetPathX()
 			pnj.y=path[i].GetPathY()
 			fmt.Println("déplacement")

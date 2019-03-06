@@ -80,12 +80,9 @@ func (g *Game)GenerateMap(data Data){
 		}
 		// test recolte ressource
 		vill := npc.Create("vill", 13, 13)
-		//fmt.Printf("vue : %d\n", vill.GetVue())
 
 		(*g).Joueurs[0].AddNpc(vill)
 		fmt.Println("vue : ", (*g).Joueurs[0].GetNpc(0).GetVue())
-
-		//fmt.Printf(vill == nil)
 
 		//
 	}else{//sinon 4 Joueurs classiques dans l'ordre des bases fournies (blue blue red red)
@@ -103,8 +100,8 @@ func (g *Game)GenerateMap(data Data){
 			os.Exit(1)
 		}
 	}
-	(*g).Joueurs[0].Recolte((*g).Joueurs[0].GetNpc(0), (*g).Carte)
 	//Carte.Debug((*g).Carte)
+	(*g).Joueurs[0].Recolte((*g).Joueurs[0].GetNpc(0), (*g).Carte)
 }
 //Recupere les donnes des Joueurs entree en parametre du programme
 //Modification: Changement pour des valeurs statiques (temporaire)

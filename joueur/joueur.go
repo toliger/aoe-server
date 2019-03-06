@@ -21,6 +21,12 @@ type Joueur struct{
 	wood int
 	food int
 }
+
+type position struct{
+	x int
+	y int
+}
+
 var model byte =0//Permet d'obtenir des id uniques lors d'une partie
 
 //Crée un joueur
@@ -92,6 +98,18 @@ func Abs(x int) int {
 	return x
 }
 
+// Renvoie vrai si le villageois peut accéder à une case pour recolter la ressource en x,y
+func (joueur Joueur) RecoltePossible(c carte.Carte, x int, y int) bool{
+	for i := x-1; i <= x+1; i++{
+		for j := y-1; j <= y+1; j++{
+			if (c.IsEmpty(i, j)){
+				return true
+			}
+		}
+	}
+	return false
+}
+
 //Recolte de ressources (se deplace vers la ressource la plus proche dans la vue du villageois)
 func (joueur Joueur) Recolte(vill npc.Npc, c carte.Carte){
 	var i, j int
@@ -104,14 +122,15 @@ func (joueur Joueur) Recolte(vill npc.Npc, c carte.Carte){
 	}
 	for i = vill.GetX() - vill.GetVue(); i <= vill.GetX() + vill.GetVue(); i++{
 		for j = vill.GetY() - vill.GetVue(); j <= vill.GetY() + vill.GetVue(); j++{
-			fmt.Printf("i : %d , j : %d\n", i, j)
+			//fmt.Printf("i : %d , j : %d\n", i, j)
 			if (c.GetTile(i, j).GetType() == 2){
 				fmt.Println("ressource")
 				if (c.GetTile(i, j).GetRess().GetType() == 2 && vill.GetType() != 0){
 					fmt.Println("Seul un harvester peut recolter de la pierre")
 					continue;
 				}
-				if (Abs(i - vill.GetX()) + Abs(j - vill.GetY()) < distance){
+				if ((Abs(i - vill.GetX()) + Abs(j - vill.GetY())) < distance &&
+					joueur.RecoltePossible(c, i, j)){
 					distance = Abs(i - vill.GetX()) + Abs(j - vill.GetY())
 					ress = c.GetTile(i, j).GetRess()
 				}
@@ -125,14 +144,45 @@ func (joueur Joueur) Recolte(vill npc.Npc, c carte.Carte){
 	}
 	fmt.Println("ok")
 
-	go vill.MoveTo(c, ress.GetX(), ress.GetY());
+	// Le villageois se place à une case de la ressource la plus proche de lui
+	fmt.Printf("ressX : %d, ressY : %d\n", ress.GetX(), ress.GetY())
+	fmt.Printf("villX : %d, villY : %d\n", vill.GetX(), vill.GetY())
+
+	var posRecolteVillX, posRecolteVillY int
+	distance = 2000
+
+	for i = ress.GetX() - 1; i <= ress.GetX() + 1; i++{
+		for j = ress.GetY() - 1; j <= ress.GetY() + 1; j++{
+			if (Abs(ress.GetX() + i - vill.GetX()) + Abs(ress.GetY() + j - vill.GetY()) < distance &&
+				c.IsEmpty(ress.GetX() + i, ress.GetY() + j)){
+				distance = Abs(ress.GetX() + i - vill.GetX()) + Abs(ress.GetY() + j - vill.GetY())
+				posRecolteVillX = ress.GetX() + i
+				posRecolteVillY = ress.GetY() + j
+			}
+		}
+	}
+	// pas d'accès possible pour recolter la ressource
+	if (distance == 2000){
+		return
+	}
+	if (vill.MoveTo(c, posRecolteVillX, posRecolteVillY) == nil) {
+		return
+	}
+	time.Sleep(5 * time.Second)
+
+	fmt.Println("move done")
+	fmt.Printf("villX : %d , villY : %d |||| ressX : %d , ressY : %d\n", vill.GetX(), vill.GetY(), posRecolteVillX, posRecolteVillY)
 	var elapsed time.Duration
 	start := time.Now()
 	for{
+		fmt.Println("recolte")
 		elapsed = time.Since(start)
 		if (elapsed % 1 == 0){
+			fmt.Println("elapsed")
 			// Le villageois ne se trouve pas (ou plus) à l'emplacement de la ressource
-			if (vill.GetX() != ress.GetX() || vill.GetY() != ress.GetY()){
+
+			if (vill.GetX() != posRecolteVillX || vill.GetY() != posRecolteVillY){
+				fmt.Println("break")
 				break
 			}
 			switch ress.GetType(){

@@ -133,6 +133,7 @@ func shortestPath(weightMatrix [][]int,destx int, desty int,c Carte,path []Case)
 	if(weightMatrix[destx][desty]==UNVISITED){
 		return (nil)
 	}
+fmt.Println("w=",(weightMatrix[destx][desty]+1))
 	path=make([]Case,weightMatrix[destx][desty]+1)
 	path[len(path)-1]=(Case{destx,desty,*(c.GetTile(destx,desty))})
 	currX:=destx
@@ -177,7 +178,7 @@ func (c Carte) GetPathFromTo(x int, y int, destx int, desty int) []Case{
 			}
 		}
 	}
-	printMatrix(weightMatrix)
+	//printMatrix(weightMatrix)
 	//Une matrice de poids est cree
 	return shortestPath(weightMatrix,destx, desty,c,path)
 }
