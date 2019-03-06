@@ -7,18 +7,41 @@ import (
 	"git.unistra.fr/AOEINT/server/ressource"
 	"git.unistra.fr/AOEINT/server/joueur"
 	"git.unistra.fr/AOEINT/server/batiment"*/
-
+	"git.unistra.fr/AOEINT/server/constants"
 	"fmt"
 	"context"
 	"log"
 	"net"
 	"google.golang.org/grpc"
 	pb "git.unistra.fr/AOEINT/server/serveur"
+	"strconv"
 )
 
 ///////////////////////////////////////////////////////////////////////////////
 // Général
 ///////////////////////////////////////////////////////////////////////////////
+
+type ObjectId struct{
+	IdOffset int
+	IdArray map[string]*interface{}
+}
+func NewObjectID() ObjectId{
+	return (ObjectId{0,make(map[string]*interface{},constants.MAXOBJECTS)})
+}
+
+func (o *ObjectId)AddObject(obj *interface{}){
+	key:=strconv.Itoa((*o).IdOffset)
+	(*o).IdArray[key]=obj
+	(*o).IdOffset++
+}
+
+func (o *ObjectId) DeleteObject(id string){
+	delete((*o).IdArray,id)
+}
+
+func (o *ObjectId) GetObjectFromId(id string) *interface{}{
+	return (*o).IdArray[id]
+}
 
 var server *grpc.Server
 
