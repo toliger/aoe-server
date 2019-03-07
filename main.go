@@ -1,16 +1,14 @@
 package main
 
 import "fmt"
-//import npc "server/npc"
-//import tests "server/test"
 import "git.unistra.fr/AOEINT/server/affichage"
 import simulateClient "git.unistra.fr/AOEINT/server/falseclient"
 import "git.unistra.fr/AOEINT/server/game"
-//import tests "server/test"
-
+import "git.unistra.fr/AOEINT/server/data"
 
 func main() {
 	var g game.Game
+	data.IdMap=data.NewObjectID()
 	g.GameRunning=true
 	(&g).GetPlayerData()
 	data:=game.ExtractData()

@@ -1,6 +1,5 @@
 package constants
 //Listes des differentes constantes de jeu
-
 //constantes de debug
 
 const (
@@ -49,4 +48,3 @@ const HarvesterRayon=8
 const SoldierPortee=1
 const HarvesterPortee=1
 const VillagerPortee=0
-

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"git.unistra.fr/AOEINT/server/carte"
 	"time"
+	"git.unistra.fr/AOEINT/server/data"
 )
 
 type Npc struct {
@@ -24,7 +25,7 @@ func New(x int,y int,pv int, vitesse int, vue int, portee int, offensive bool,si
 	return pnj
 }
 //Crée un Npc du type fourni
-func create(class string,x int,y int) Npc{
+func Create(class string,x int,y int) Npc{
     var pnj Npc
 	switch class{
 		case "soldier":
@@ -34,6 +35,7 @@ func create(class string,x int,y int) Npc{
 		default:
 			pnj=New(x,y,4,4,10,2,false,1,0,false)
     }
+	(&data.IdMap).AddObject(&pnj)
     return pnj
 }
 
@@ -55,8 +57,12 @@ func (pnj Npc) MoveTo(c carte.Carte, destx int, desty int) []carte.Case{
 	return path
 }
 
+func (pnj Npc)GetSpeed() int{
+	return pnj.vitesse
+}
+
 func Test(c carte.Carte) {
-	entity:=create("soldier",1,1)
+	entity:=Create("soldier",1,1)
 	fmt.Println("Hello, playground")
 	fmt.Println(entity.pv)
 	path:=entity.MoveTo(c,5,8)

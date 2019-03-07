@@ -57,6 +57,20 @@ func (j *Joueur) AddFood(f int){
 	(*j).food+= f
 }
 
+func (j *Joueur) AddNpc(typ string, x int, y int){
+	test:=false
+	for i,e:=range (*j).entities{
+		if(e.GetSpeed()==0){
+			test=true;
+			(*j).entities[i]=npc.Create(typ,x,y)
+			break
+		}
+	}
+	if(!test){
+		(*j).entities=append((*j).entities,npc.Create(typ,x,y))
+	}
+}
+
 func (j *Joueur)AddBuilding(b batiment.Batiment){
 	(*j).batiments=append(j.batiments,b)
 }
