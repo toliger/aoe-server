@@ -1,6 +1,8 @@
 package joueur
 
 import "fmt"
+import "sync"
+//import wait "k8s.io/apimachinery/pkg/util/wait"
 import time "time"
 import npc "git.unistra.fr/AOEINT/server/npc"
 import batiment "git.unistra.fr/AOEINT/server/batiment"
@@ -110,21 +112,26 @@ func (joueur Joueur) RecoltePossible(c carte.Carte, x int, y int) bool{
 	return false
 }
 
+
+
 //Recolte de ressources (se deplace vers la ressource la plus proche dans la vue du villageois)
-func (joueur Joueur) Recolte(vill npc.Npc, c carte.Carte){
+func (joueur Joueur) DeplacementRecolte(vill npc.Npc, c carte.Carte){
 	var i, j int
 	var ress *ressource.Ressource
 	distance := 2000
-	fmt.Printf("x : %d\n", vill.GetX())
 	if (vill.GetType() == 2){
 		fmt.Println("Un soldat ne peut pas recolter de ressources")
 		return
 	}
-	for i = vill.GetX() - vill.GetVue(); i <= vill.GetX() + vill.GetVue(); i++{
-		for j = vill.GetY() - vill.GetVue(); j <= vill.GetY() + vill.GetVue(); j++{
-			//fmt.Printf("i : %d , j : %d\n", i, j)
+	for i = vill.GetX() - vill.GetVue(); i <= vill.GetX() + vill.GetVue() || i > c.GetSize(); i++{
+		if (i < 0){
+			i = 0
+		}
+		for j = vill.GetY() - vill.GetVue(); j <= vill.GetY() + vill.GetVue() || j > c.GetSize(); j++{
+			if (j < 0){
+				j = 0
+			}
 			if (c.GetTile(i, j).GetType() == 2){
-				fmt.Println("ressource")
 				if (c.GetTile(i, j).GetRess().GetType() == 2 && vill.GetType() != 0){
 					fmt.Println("Seul un harvester peut recolter de la pierre")
 					continue;
@@ -137,27 +144,23 @@ func (joueur Joueur) Recolte(vill npc.Npc, c carte.Carte){
 			}
 		}
 	}
-	fmt.Println(ress == nil)
+	//fmt.Println(ress == nil)
+
 	// pas de ressources dans la vue du villageois
 	if (distance == 2000){
 		return
 	}
-	fmt.Println("ok")
-
-	// Le villageois se place à une case de la ressource la plus proche de lui
-	fmt.Printf("ressX : %d, ressY : %d\n", ress.GetX(), ress.GetY())
-	fmt.Printf("villX : %d, villY : %d\n", vill.GetX(), vill.GetY())
 
 	var posRecolteVillX, posRecolteVillY int
 	distance = 2000
 
 	for i = ress.GetX() - 1; i <= ress.GetX() + 1; i++{
 		for j = ress.GetY() - 1; j <= ress.GetY() + 1; j++{
-			if (Abs(ress.GetX() + i - vill.GetX()) + Abs(ress.GetY() + j - vill.GetY()) < distance &&
-				c.IsEmpty(ress.GetX() + i, ress.GetY() + j)){
-				distance = Abs(ress.GetX() + i - vill.GetX()) + Abs(ress.GetY() + j - vill.GetY())
-				posRecolteVillX = ress.GetX() + i
-				posRecolteVillY = ress.GetY() + j
+			if ( (Abs(i - vill.GetX()) + Abs(j - vill.GetY()) ) < distance &&
+				c.IsEmpty(i, j)){
+				distance = Abs(i - vill.GetX()) + Abs(j - vill.GetY())
+				posRecolteVillX = i
+				posRecolteVillY = j
 			}
 		}
 	}
@@ -165,26 +168,38 @@ func (joueur Joueur) Recolte(vill npc.Npc, c carte.Carte){
 	if (distance == 2000){
 		return
 	}
-	if (vill.MoveTo(c, posRecolteVillX, posRecolteVillY) == nil) {
-		return
+	// on attends que le villageois est finit son déplacement
+	var wg sync.WaitGroup
+	wg.Add(1)
+    go (&vill).MoveTo(c, posRecolteVillX, posRecolteVillY, &wg)
+	wg.Wait()
+
+    // fmt.Printf("posRecolteVillX : %d, posRecolteVillY : %d\n", posRecolteVillX, posRecolteVillY)
+	// fmt.Printf("villX : %d, villY: %d\n", vill.GetX(), vill.GetY())
+
+	// Le villageois se trouve bien à l'emplacement de la recolte?
+	if (vill.GetX() == (posRecolteVillX-1) && vill.GetY() == posRecolteVillY-1){
+		 go joueur.Recolte(vill, c, ress, posRecolteVillX, posRecolteVillY)
 	}
-	time.Sleep(5 * time.Second)
+}
 
-	fmt.Println("move done")
-	fmt.Printf("villX : %d , villY : %d |||| ressX : %d , ressY : %d\n", vill.GetX(), vill.GetY(), posRecolteVillX, posRecolteVillY)
-	var elapsed time.Duration
-	start := time.Now()
-	for{
-		fmt.Println("recolte")
-		elapsed = time.Since(start)
-		if (elapsed % 1 == 0){
-			fmt.Println("elapsed")
-			// Le villageois ne se trouve pas (ou plus) à l'emplacement de la ressource
-
-			if (vill.GetX() != posRecolteVillX || vill.GetY() != posRecolteVillY){
-				fmt.Println("break")
-				break
-			}
+// Effectue la recolte de la ressource (x par seconde)
+func (joueur Joueur) Recolte(vill npc.Npc, c carte.Carte, ress *ressource.Ressource,
+	posRecolteVillX int, posRecolteVillY int){
+	uptimeTicker := time.NewTicker(1 * time.Second)
+	tps_ecoule := 0
+	for {
+		// La ressource est épuisée ou le villageois est mort
+		if (tps_ecoule == ress.GetPv() || vill.GetPv() == 0){
+			break
+		}
+		// Le villageois ne se trouve plus à l'emplacement de la ressource
+		if (vill.GetX() != (posRecolteVillX-1) || vill.GetY() != posRecolteVillY-1){
+			break;
+		}
+		select {
+		case <-uptimeTicker.C:
+			tps_ecoule++
 			switch ress.GetType(){
 			case 1:
 				joueur.AddWood(constants.TauxRecolte)

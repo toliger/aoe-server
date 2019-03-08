@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"git.unistra.fr/AOEINT/server/carte"
 	"time"
+	"sync"
 )
 
 type Npc struct {
@@ -55,29 +56,34 @@ func (pnj Npc) GetType() int{
 	return pnj.typ
 }
 
-func (pnj Npc)deplacement(path []carte.Case){
+func (pnj Npc) GetPv() int{
+	return pnj.pv
+}
+
+func (pnj *Npc)deplacement(path []carte.Case, wg *sync.WaitGroup){
 	if(path!=nil){
 		ndep:=len(path)-1
 		vdep:=(1000000000/pnj.vitesse)
 		for i:=0;i<ndep;i++{
 			time.Sleep(time.Duration(vdep))
-			fmt.Printf("x : %d , y : %d", pnj.x, pnj.y)
 			pnj.x=path[i].GetPathX()
 			pnj.y=path[i].GetPathY()
-			fmt.Println("déplacement")
+			//fmt.Println("déplacement")
 		}
+		wg.Done()
 	}
 }
-func (pnj Npc) MoveTo(c carte.Carte, destx int, desty int) []carte.Case{
+func (pnj *Npc) MoveTo(c carte.Carte, destx int, desty int, wg *sync.WaitGroup) []carte.Case{
 	path:= c.GetPathFromTo(pnj.x,pnj.y,destx,desty)
-	go pnj.deplacement(path)
+	go pnj.deplacement(path, wg)
 	return path
 }
 
 func Test(c carte.Carte) {
+	var wg sync.WaitGroup
 	entity:=Create("soldier",1,1)
 	fmt.Println("Hello, playground")
 	fmt.Println(entity.pv)
-	path:=entity.MoveTo(c,5,8)
+	path:=entity.MoveTo(c,5,8,&wg)
 	fmt.Printf("Path len=%d\n",len(path))
 }
