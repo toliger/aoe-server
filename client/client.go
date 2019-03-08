@@ -13,6 +13,7 @@ import (
 	"net"
 	"google.golang.org/grpc"
 	pb "git.unistra.fr/AOEINT/server/serveur"
+	game "git.unistra.fr/AOEINT/server/game"
 )
 
 ///////////////////////////////////////////////////////////////////////////////
