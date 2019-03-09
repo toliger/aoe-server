@@ -114,7 +114,7 @@ func attribuerPoids(weightMatrix [][]int,x int,y int, step int) [][]int{
 	return weightMatrix
 }
 
-func shortestPathAux(weightMatrix [][]int,c Carte, x int, y int, currX *int, currY *int, step int, path []Case,modif *bool) bool{
+func shortestPathAux(weightMatrix [][]int,c Carte, x int, y int, currX *int, currY *int, step int, path []Case, modif *bool) bool{
 	if(validCoords(x,y,len(weightMatrix))){
 		if(weightMatrix[x][y]==step-1){
 			path[step-1]=(Case{x,y,*(c.GetTile(x,y))})
@@ -162,6 +162,8 @@ func shortestPath(weightMatrix [][]int,destx int, desty int,c Carte,path []Case)
 	path[len(path)-1]=(Case{destx,desty,*(c.GetTile(destx,desty))})
 	return path
 }
+
+
 //Renvoie le chemin le plus court entre deux cases ou nil si inatteignable
 func (c Carte) GetPathFromTo(x int, y int, destx int, desty int) []Case{
 	var path []Case

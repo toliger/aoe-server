@@ -77,6 +77,7 @@ func (g *Game)GenerateMap(data Data){
 			fmt.Println("Erreur lors du placement d'une auberge")
 			os.Exit(1)
 		}
+
 	}else{//sinon 4 Joueurs classiques dans l'ordre des bases fournies (blue blue red red)
 		for i:=0;i<4;i++{
 			(*g).Joueurs[i].AddBuilding(data.Buildings[i])
@@ -101,4 +102,3 @@ func (g *Game)GetPlayerData(){
 	(*g).Joueurs[1]=joueur.Create(true,"Alice","1982N19N2")
 	fmt.Println("joueurs:",(*g).Joueurs[0].GetNom(),"",(*g).Joueurs[1].GetNom())
 }
-

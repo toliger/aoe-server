@@ -40,8 +40,11 @@ const PrixStoneEtabli=5
 const PrixWoodEtabli=5
 
 //DataRecup consts
+const (
+	DATAFILENAME="server/data/Gamedata.json"
+	RESSOURCE_BUFFER_SIZE=50
+)
 
-const DATAFILENAME="server/data/Gamedata.json"
 //Default PNJ values
 const SoldierRayon=5
 const VillagerRayon=10
@@ -49,4 +52,3 @@ const HarvesterRayon=8
 const SoldierPortee=1
 const HarvesterPortee=1
 const VillagerPortee=0
-

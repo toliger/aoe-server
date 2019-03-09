@@ -22,4 +22,3 @@ func main() {
 	affichage.ImprimerCarte(g.Carte)
 	(&g).GameLoop()
 }
-
