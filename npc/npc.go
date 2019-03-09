@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"git.unistra.fr/AOEINT/server/carte"
 	"git.unistra.fr/AOEINT/server/ressource"
-	//"git.unistra.fr/AOEINT/server/constants"
+	"git.unistra.fr/AOEINT/server/constants"
 	"time"
 	"sync"
 )
@@ -34,11 +34,14 @@ func Create(class string,x int,y int, flag bool,channel chan []int) Npc{
 	var pnj Npc
 	switch class{
 		case "soldier":
-			pnj=New(x,y,8,3,10,1,true,1,2,true,2,flag,channel)
+			pnj=New(x,y,constants.SoldierPv,constants.SoldierVitesse,constants.SoldierVue,
+				constants.SoldierPortee, true,constants.SoldierSize,constants.SoldierDamage,true,2,flag,channel)
 		case "harvester":
-			pnj=New(x,y,4,4,10,1,false,1,10,true,1,flag,channel)
+			pnj=New(x,y,constants.HarvesterPv,constants.HarvesterVitesse,constants.HarvesterVue,
+				constants.HarvesterVillPortee,false,constants.HarvesterSize,constants.HarvesterDamage,true,1,flag,channel)
 		default:
-			pnj=New(x,y,4,4,10,1,false,1,5,false,0,flag,channel)
+			pnj=New(x,y,constants.VillagerPv,constants.VillagerVitesse,constants.VillagerVue,
+				constants.HarvesterVillPortee,false,constants.VillagerSize,constants.VillagerDamage,false,0,flag,channel)
 	}
 	return pnj
 }
@@ -134,7 +137,7 @@ func DeplacementRecolte(vill Npc, c carte.Carte){
 			}
 		}
 	}
-	fmt.Println("ressource?",ress == nil)
+	//fmt.Println("ressource?",ress == nil)
 
 	// pas de ressources dans la vue du villageois
 	if (distance == 2000){
@@ -144,8 +147,8 @@ func DeplacementRecolte(vill Npc, c carte.Carte){
 	var posRecolteVillX, posRecolteVillY int
 	distance = 2000
 
-	for i = ress.GetX() - 1; i <= ress.GetX() + 1; i++{
-		for j = ress.GetY() - 1; j <= ress.GetY() + 1; j++{
+	for i = ress.GetX() - constants.HarvesterVillPortee; i <= ress.GetX() + constants.HarvesterVillPortee; i++{
+		for j = ress.GetY() - constants.HarvesterVillPortee; j <= ress.GetY() + constants.HarvesterVillPortee; j++{
 			if ( (Abs(i - vill.GetX()) + Abs(j - vill.GetY()) ) < distance &&
 				c.IsEmpty(i, j)){
 				distance = Abs(i - vill.GetX()) + Abs(j - vill.GetY())
@@ -158,17 +161,17 @@ func DeplacementRecolte(vill Npc, c carte.Carte){
 	if (distance == 2000){
 		return
 	}
-	// on attends que le villageois est finit son déplacement
+	// on attends que le villageois ait finit son déplacement
 	var wg sync.WaitGroup
 	wg.Add(1)
     go (&vill).MoveTo(c, posRecolteVillX, posRecolteVillY, &wg)
 	wg.Wait()
 
     // fmt.Printf("posRecolteVillX : %d, posRecolteVillY : %d\n", posRecolteVillX, posRecolteVillY)
-	 fmt.Printf("villX : %d, villY: %d\n", vill.GetX(), vill.GetY())
+	// fmt.Printf("villX : %d, villY: %d\n", vill.GetX(), vill.GetY())
 
 	// Le villageois se trouve bien à l'emplacement de la recolte?
-	if (vill.GetX() == (posRecolteVillX-1) && vill.GetY() == posRecolteVillY-1){
+	if (vill.GetX() == (posRecolteVillX) && vill.GetY() == posRecolteVillY){
 		 go Recolte(vill, c, ress, posRecolteVillX, posRecolteVillY)
 	}
 }
@@ -184,7 +187,7 @@ func Recolte(vill Npc, c carte.Carte, ress *ressource.Ressource,
 			break
 		}
 		// Le villageois ne se trouve plus à l'emplacement de la ressource
-		if (vill.GetX() != (posRecolteVillX-1) || vill.GetY() != posRecolteVillY-1){
+		if (vill.GetX() != (posRecolteVillX) || vill.GetY() != posRecolteVillY){
 			break;
 		}
 		select {
@@ -221,4 +224,3 @@ func Recolte(vill Npc, c carte.Carte, ress *ressource.Ressource,
 		}
 	}
 }
-

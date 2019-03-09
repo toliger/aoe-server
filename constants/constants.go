@@ -46,9 +46,24 @@ const (
 )
 
 //Default PNJ values
-const SoldierRayon=5
-const VillagerRayon=10
-const HarvesterRayon=8
+
+const HarvesterVillPortee=1
+
+const SoldierPv=8
+const SoldierVitesse=3
+const SoldierVue=10
 const SoldierPortee=1
-const HarvesterPortee=1
-const VillagerPortee=0
+const SoldierSize=1
+const SoldierDamage=2
+
+const HarvesterPv=6
+const HarvesterVitesse=4
+const HarvesterVue=10
+const HarvesterSize=1
+const HarvesterDamage=7
+
+const VillagerPv=4
+const VillagerVitesse=4
+const VillagerVue=10
+const VillagerSize=1
+const VillagerDamage=5
