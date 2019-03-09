@@ -5,7 +5,6 @@ import "os"
 import "git.unistra.fr/AOEINT/server/joueur"
 import "git.unistra.fr/AOEINT/server/ressource"
 import "git.unistra.fr/AOEINT/server/batiment"
-import "git.unistra.fr/AOEINT/server/npc"
 import "time"
 import "fmt"
 import "encoding/json"
@@ -78,9 +77,6 @@ func (g *Game)GenerateMap(data Data){
 			fmt.Println("Erreur lors du placement d'une auberge")
 			os.Exit(1)
 		}
-		// test recolte ressource
-		vill := npc.Create("vill", 21, 13)
-		(*g).Joueurs[0].AddNpc(vill)
 
 	}else{//sinon 4 Joueurs classiques dans l'ordre des bases fournies (blue blue red red)
 		for i:=0;i<4;i++{
@@ -97,7 +93,6 @@ func (g *Game)GenerateMap(data Data){
 			os.Exit(1)
 		}
 	}
-	(*g).Joueurs[0].DeplacementRecolte((*g).Joueurs[0].GetNpc(0), (*g).Carte)
 }
 //Recupere les donnes des Joueurs entree en parametre du programme
 //Modification: Changement pour des valeurs statiques (temporaire)

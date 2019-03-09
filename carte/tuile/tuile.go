@@ -36,3 +36,9 @@ func (t *Tuile)AddRessource(res *ressource.Ressource){
 	(*t).res=res
 	(*t).bat=nil
 }
+
+func (t *Tuile)Empty(){
+	(*t).typ=0
+	(*t).bat=nil
+	(*t).res=nil
+}
