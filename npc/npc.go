@@ -68,7 +68,6 @@ func (pnj Npc) GetPv() int{
 }
 
 func (pnj *Npc)deplacement(path []carte.Case, wg *sync.WaitGroup){
-func (pnj *Npc)deplacement(path []carte.Case){
 	if(path!=nil){
 		ndep:=len(path)-1
 		vdep:=(1000000000/pnj.vitesse)
