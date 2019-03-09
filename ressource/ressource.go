@@ -43,6 +43,10 @@ func (res Ressource)GetY() int{
 	return res.Y
 }
 
+func (res Ressource)GetPv() int{
+	return res.Pv
+}
+
 func (res Ressource)IsHarvestable() bool{
 	return res.Typ!=0
 }

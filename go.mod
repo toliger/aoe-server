@@ -9,4 +9,6 @@ require (
 	github.com/nsf/termbox-go v0.0.0-20190121233118-02980233997d // indirect
 	golang.org/x/image v0.0.0-20190220214146-31aff87c08e9
 	google.golang.org/grpc v1.19.0
+	k8s.io/apimachinery v0.0.0-20190301173222-2f7e9cae4418
+	k8s.io/klog v0.2.0 // indirect
 )
