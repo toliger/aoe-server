@@ -7,6 +7,7 @@ import (
 	"git.unistra.fr/AOEINT/server/constants"
 	"time"
 	"sync"
+	"git.unistra.fr/AOEINT/server/data"
 )
 
 type Npc struct {
@@ -43,7 +44,8 @@ func Create(class string,x int,y int, flag bool,channel chan []int) Npc{
 			pnj=New(x,y,constants.VillagerPv,constants.VillagerVitesse,constants.VillagerVue,
 				constants.HarvesterVillPortee,false,constants.VillagerSize,constants.VillagerDamage,false,0,flag,channel)
 	}
-	return pnj
+	(&data.IdMap).AddObject(&pnj)
+    return pnj
 }
 
 //Npc
@@ -90,6 +92,9 @@ func Abs(x int) int {
 		return -x
 	}
 	return x
+func (pnj Npc)GetSpeed() int{
+	return pnj.vitesse
+}
 }
 
 // Renvoie vrai si le villageois peut accéder à une case pour recolter la ressource en x,y

@@ -4,6 +4,8 @@ import tuile "git.unistra.fr/AOEINT/server/carte/tuile"
 import "fmt"
 import "git.unistra.fr/AOEINT/server/batiment"
 import "git.unistra.fr/AOEINT/server/ressource"
+import "git.unistra.fr/AOEINT/server/data"
+
 type Carte struct{
 	size int
 	matrice[][] tuile.Tuile
@@ -40,6 +42,7 @@ func (c Carte)AddNewRessource(res *ressource.Ressource) bool{
 		return false
 	}
 	(c.GetTile(x,y)).AddRessource(res)
+	(&data.IdMap).AddObject(res)
 	return true
 }
 //Ajouter un Batiment a la carte
@@ -58,6 +61,7 @@ func (c Carte)AddNewBuilding(bat *batiment.Batiment) bool{
 			(c.GetTile(x+i,y+j)).AddBuilding(bat)
 		}
 	}
+	(&data.IdMap).AddObject(bat)
 	return true
 }
 

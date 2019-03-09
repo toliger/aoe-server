@@ -4,10 +4,9 @@
 # General
 .log
 
-
-server\.exe
-
 *.exe
 *.png
 
+.gitignore
+perso/
 *.txt
