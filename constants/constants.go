@@ -54,9 +54,6 @@ const (
 	API_HOST_def = "DEFAULT"
 	TOKEN_def = "DEFAULT"
 	TOKEN_SECRET_def = "DEFAULT" 
-)
-const (
-	DATAFILENAME="server/data/Gamedata.json"
 	RESSOURCE_BUFFER_SIZE=50
 )
 

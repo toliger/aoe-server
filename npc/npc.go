@@ -92,9 +92,9 @@ func Abs(x int) int {
 		return -x
 	}
 	return x
+}
 func (pnj Npc)GetSpeed() int{
 	return pnj.vitesse
-}
 }
 
 // Renvoie vrai si le villageois peut accéder à une case pour recolter la ressource en x,y
