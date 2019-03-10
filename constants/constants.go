@@ -1,11 +1,24 @@
 package constants
+
 //Listes des differentes constantes de jeu
 //constantes de debug
-
 const (
 	UseSmallMap = true
 	DEBUG = false
 )
+//constantes liées aux actions
+const (
+	ACTION_NEWNPC = 0
+	ACTION_DELNPC = 1
+	ACTION_HARMNPC = 2
+	ACTION_PLAYERRESSOURCE = 3
+	ACTION_HARMRESSOURCE = 4
+	ACTION_DELRESSOURCE = 5
+	ACTION_HARMBUILDING = 6
+	ACTION_DESTROYBUILDING = 7
+	ACTION_ENDOFGAME = 8
+)
+
 
 //caracteristiques d'une partie
 
@@ -17,7 +30,7 @@ const StartingVillager = 4
 const StartingWood = 50
 const StartingStone = 0
 const StartingFood = 50
-const MAXACTIONS = 20
+const MAXACTIONS = 50
 const MAXOBJECTS = 100
 //Batiments
 

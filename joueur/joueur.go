@@ -53,7 +53,7 @@ func (j *Joueur)ressourceUpdate(){
 	}
 	fmt.Println(j.nom,":channel inactif")
 }
-//Retourne l'id jouer
+//Retourne l'uid du joueur
 func (j Joueur) GetUid() string{
 	return j.Uid
 }
