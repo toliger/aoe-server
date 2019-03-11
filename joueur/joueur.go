@@ -100,3 +100,8 @@ func (j *Joueur)AddNpc(entity npc.Npc){
 		(*j).entities=append(j.entities,&entity)
 	}
 }
+
+///////////////////////////////////////////////////////
+func (j *Joueur)GetChannel() chan []int {
+    return j.ressourceChannel
+}
