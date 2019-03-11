@@ -27,7 +27,6 @@ require (
 	github.com/mattn/go-runewidth v0.0.4 // indirect
 	github.com/microcosm-cc/bluemonday v1.0.2 // indirect
 	github.com/nsf/termbox-go v0.0.0-20190121233118-02980233997d // indirect
-<<<<<<< HEAD
 	github.com/onsi/ginkgo v1.8.0 // indirect
 	github.com/openzipkin/zipkin-go v0.1.5 // indirect
 	github.com/pkg/errors v0.8.1 // indirect
@@ -70,7 +69,4 @@ require (
 	k8s.io/apimachinery v0.0.0-20190301173222-2f7e9cae4418
 	k8s.io/klog v0.2.0 // indirect
 	sourcegraph.com/sqs/pbtypes v1.0.0 // indirect
-=======
-	google.golang.org/grpc v1.19.0
->>>>>>> 99dcb68ee02979b8162948ca82e08ec7c4f6e01f
 )
