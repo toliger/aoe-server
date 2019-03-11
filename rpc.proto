@@ -12,10 +12,10 @@ service Hello {
 }
 
 message HelloRequest {
-    string name = 1;
+    string Name = 1;
 }
 message HelloReply {
-    string name = 1; 
+    string Name = 1; 
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -33,25 +33,30 @@ service Interactions {
 
 // Messages liés à RightClick
 message RightClickRequest {
-  Coordinates coordinates = 1;
-  repeated string entitySelectionUUID = 2;
-  string target = 3;
+    Coordinates Point = 1;
+    repeated string EntitySelectionUUID = 2;
+    string Target = 3;
 }
-message RightClickReply {}
+message RightClickReply {
+    map<string, RPCoordinates> Path = 1;
+}
+message RPCoordinates {
+    repeated Coordinates Coord = 1;
+}
 
 // Message liés à MoveTo
 message AskUpdateRequest {
-    string token = 1;
+    string Token = 1;
 }
 message AskUpdateReply {
     // Si vide rien
-    repeated UpdateAsked array = 1;
+    repeated UpdateAsked Array = 1;
 }
 
 // Message de structure du service Interactions
 message Coordinates {
-  int32 x = 1;
-  int32 y = 2;
+  int32 X = 1;
+  int32 Y = 2;
 }
 
 /*
@@ -76,12 +81,12 @@ message Coordinates {
 
     */
 message UpdateAsked {
-    int32 type = 1;
-    string entityUUID = 2;
-    repeated Param arg = 3;
+    int32 Type = 1;
+    string TntityUUID = 2;
+    repeated Param Arg = 3;
 }
 
 message Param {
-    string key = 1;
-    string value = 2;
+    string Key = 1;
+    string Value = 2;
 }

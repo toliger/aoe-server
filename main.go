@@ -21,6 +21,6 @@ func main() {
 	go falseclient.StartClient(&(g.GameRunning))
 	(&g).GameLoop()
 
-  // Listen
-  client.InitListenerServer()
+	// Listen
+	client.InitListenerServer(&g)
 }

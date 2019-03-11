@@ -70,8 +70,8 @@ func (pnj Npc) GetPv() int{
 	return pnj.pv
 }
 
-func (pnj *Npc)deplacement(path []carte.Case, wg *sync.WaitGroup){
-	if(path!=nil){
+func (pnj *Npc)deplacement(path []carte.Case, wg *sync.WaitGroup) {
+	if(path!=nil) {
 		ndep:=len(path)-1
 		vdep:=(1000000000/pnj.vitesse)
 		for i:=0;i<=ndep;i++{
@@ -79,7 +79,9 @@ func (pnj *Npc)deplacement(path []carte.Case, wg *sync.WaitGroup){
 			pnj.x=path[i].GetPathX()
 			pnj.y=path[i].GetPathY()
 		}
-		wg.Done()
+		if (wg != nil) {
+			wg.Done()
+		}
 	}
 }
 func (pnj *Npc) MoveTo(c carte.Carte, destx int, desty int, wg *sync.WaitGroup) []carte.Case{
