@@ -27,6 +27,7 @@ type Data struct{
 }
 
 func ExtractData() Data{
+	getEnvData()
 	datafileName:="data/GameData.json"
 	if(constants.UseSmallMap){
 		datafileName="data/SmallTestMap.json"
@@ -41,6 +42,33 @@ func ExtractData() Data{
 	var newGame Data
 	json.Unmarshal(byteValue, &newGame)
 	return newGame
+}
+
+func getEnvData(){
+	if(len(os.Getenv("GAME_UUID"))==0){
+		constants.GAME_UUID = "DEFAULT"
+		fmt.Println("default for GAME_UUID")
+	}else{
+		constants.GAME_UUID = constants.GAME_UUID_def
+	}
+	if(len(os.Getenv("API_HOST"))==0){
+		constants.API_HOST = "DEFAULT"
+		fmt.Println("default for API_HOST")
+	}else{
+		constants.API_HOST = constants.API_HOST_def
+	}
+	if(len(os.Getenv("TOKEN"))==0){
+		constants.TOKEN = "DEFAULT"
+		fmt.Println("default for TOKEN")
+	}else{
+		constants.TOKEN = constants.TOKEN_def
+	}
+	if(len(os.Getenv("TOKEN_SECRET"))==0){
+		constants.TOKEN_SECRET = "DEFAULT"
+		fmt.Println("default for TOKEN_SECRET")
+	}else{
+		constants.TOKEN_SECRET = constants.TOKEN_SECRET_def
+	}
 }
 
 //Permet de recuperer l'instance d'un joueur à partir de son uid
@@ -78,6 +106,7 @@ func (g *Game)GenerateMap(data Data){
 			fmt.Println("Erreur lors du placement d'une auberge")
 			os.Exit(1)
 		}
+
 	}else{//sinon 4 Joueurs classiques dans l'ordre des bases fournies (blue blue red red)
 		for i:=0;i<4;i++{
 			(*g).Joueurs[i].AddBuilding(data.Buildings[i])
@@ -102,4 +131,3 @@ func (g *Game)GetPlayerData(){
 	(*g).Joueurs[1]=joueur.Create(true,"Alice","1982N19N2")
 	fmt.Println("joueurs:",(*g).Joueurs[0].GetNom(),"",(*g).Joueurs[1].GetNom())
 }
-

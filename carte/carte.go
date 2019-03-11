@@ -4,6 +4,8 @@ import tuile "git.unistra.fr/AOEINT/server/carte/tuile"
 import "fmt"
 import "git.unistra.fr/AOEINT/server/batiment"
 import "git.unistra.fr/AOEINT/server/ressource"
+import "git.unistra.fr/AOEINT/server/data"
+
 type Carte struct{
 	size int
 	matrice[][] tuile.Tuile
@@ -40,6 +42,7 @@ func (c Carte)AddNewRessource(res *ressource.Ressource) bool{
 		return false
 	}
 	(c.GetTile(x,y)).AddRessource(res)
+	(&data.IdMap).AddObject(res)
 	return true
 }
 //Ajouter un Batiment a la carte
@@ -58,6 +61,7 @@ func (c Carte)AddNewBuilding(bat *batiment.Batiment) bool{
 			(c.GetTile(x+i,y+j)).AddBuilding(bat)
 		}
 	}
+	(&data.IdMap).AddObject(bat)
 	return true
 }
 
@@ -114,12 +118,13 @@ func attribuerPoids(weightMatrix [][]int,x int,y int, step int) [][]int{
 	return weightMatrix
 }
 
-func shortestPathAux(weightMatrix [][]int,c Carte, x int, y int, currX *int, currY *int, step int, path []Case) bool{
+func shortestPathAux(weightMatrix [][]int,c Carte, x int, y int, currX *int, currY *int, step int, path []Case, modif *bool) bool{
 	if(validCoords(x,y,len(weightMatrix))){
 		if(weightMatrix[x][y]==step-1){
 			path[step-1]=(Case{x,y,*(c.GetTile(x,y))})
 			*currX=x
 			*currY=y
+			*modif=true
 			if(step==1){
 				return true
 			}
@@ -137,13 +142,32 @@ func shortestPath(weightMatrix [][]int,destx int, desty int,c Carte,path []Case)
 	path[len(path)-1]=(Case{destx,desty,*(c.GetTile(destx,desty))})
 	currX:=destx
 	currY:=desty
-	for step:=weightMatrix[destx][desty]+1;step>=0;step--{
-		if(shortestPathAux(weightMatrix,c, currX, currY+1, &currX, &currY, step,path) || shortestPathAux(weightMatrix,c, currX, currY-1, &currX, &currY, step,path) ||shortestPathAux(weightMatrix,c, currX+1, currY, &currX, &currY, step,path) || shortestPathAux(weightMatrix,c, currX-1, currY, &currX, &currY, step,path) || shortestPathAux(weightMatrix,c, currX-1, currY+1, &currX, &currY, step,path) || shortestPathAux(weightMatrix,c, currX-1, currY-1, &currX, &currY, step,path) || shortestPathAux(weightMatrix,c, currX+1, currY+1, &currX, &currY, step,path) || shortestPathAux(weightMatrix,c, currX+1, currY-1, &currX, &currY, step,path)){
+	modif:=false
+	for step:=weightMatrix[destx][desty]+1;step>0;step--{
+		modif=false
+		if(shortestPathAux(weightMatrix,c, currX, currY+1, &currX, &currY, step,path, &modif)){
+			break
+		}else if(!modif && shortestPathAux(weightMatrix,c, currX, currY-1, &currX, &currY, step,path,&modif)){
+			break
+		}else if(!modif && shortestPathAux(weightMatrix,c, currX+1, currY, &currX, &currY, step,path,&modif)){
+			break
+		}else if(!modif && shortestPathAux(weightMatrix,c, currX-1, currY, &currX, &currY, step,path,&modif)){
+			break
+		}else if(!modif && shortestPathAux(weightMatrix,c, currX-1, currY+1, &currX, &currY, step,path,&modif)){
+			break
+		}else if(!modif && shortestPathAux(weightMatrix,c, currX-1, currY-1, &currX, &currY, step,path,&modif)){
+			break
+		}else if(!modif && shortestPathAux(weightMatrix,c, currX+1, currY+1, &currX, &currY, step,path,&modif)){
+			break
+		}else if(!modif && shortestPathAux(weightMatrix,c, currX+1, currY-1, &currX, &currY, step,path,&modif)){
 			break
 		}
 	}
+	path[len(path)-1]=(Case{destx,desty,*(c.GetTile(destx,desty))})
 	return path
 }
+
+
 //Renvoie le chemin le plus court entre deux cases ou nil si inatteignable
 func (c Carte) GetPathFromTo(x int, y int, destx int, desty int) []Case{
 	var path []Case
@@ -177,7 +201,7 @@ func (c Carte) GetPathFromTo(x int, y int, destx int, desty int) []Case{
 			}
 		}
 	}
-	printMatrix(weightMatrix)
+	//printMatrix(weightMatrix)
 	//Une matrice de poids est cree
 	return shortestPath(weightMatrix,destx, desty,c,path)
 }

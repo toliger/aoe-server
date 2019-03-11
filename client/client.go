@@ -7,52 +7,34 @@ import (
 	"git.unistra.fr/AOEINT/server/ressource"
 	"git.unistra.fr/AOEINT/server/joueur"
 	"git.unistra.fr/AOEINT/server/batiment"*/
-	"git.unistra.fr/AOEINT/server/constants"
 	"fmt"
 	"context"
 	"log"
 	"net"
 	"google.golang.org/grpc"
 	pb "git.unistra.fr/AOEINT/server/serveur"
-	"strconv"
 )
 
 ///////////////////////////////////////////////////////////////////////////////
 // Général
 ///////////////////////////////////////////////////////////////////////////////
 
-type ObjectId struct{
-	IdOffset int
-	IdArray map[string]*interface{}
-}
-func NewObjectID() ObjectId{
-	return (ObjectId{0,make(map[string]*interface{},constants.MAXOBJECTS)})
-}
-
-func (o *ObjectId)AddObject(obj *interface{}){
-	key:=strconv.Itoa((*o).IdOffset)
-	(*o).IdArray[key]=obj
-	(*o).IdOffset++
-}
-
-func (o *ObjectId) DeleteObject(id string){
-	delete((*o).IdArray,id)
-}
-
-func (o *ObjectId) GetObjectFromId(id string) *interface{}{
-	return (*o).IdArray[id]
-}
-
 var server *grpc.Server
 
 type Server struct {}
 
+func (s *server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
+	log.Printf("Received: %v", in.Name)
+	return &pb.HelloReply{Message: "Hello " + in.Name}, nil
+}
+
 // Fonction demarrant la gestion des intéractions gRPC
 // Fonction bloquante, à lancer en concurrence
-func InitListenerServer(adress string) {
+func InitListenerServer() {
 
 	// Initialisation du socket d'écoute réseau
-	lis, err := net.Listen("tcp", adress)
+  // TODO Utiliser une variable d'environement pour pouvoir redéfinir le port
+  lis, err := net.Listen("tcp", ":50067")
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
@@ -115,6 +97,7 @@ func (s *Server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloRe
 // Fonction du service Interactions: RightClick
 func (s *Server) RightClick(ctx context.Context, in *pb.RightClickRequest) (*pb.RightClickReply, error) {
 	fmt.Println("Reception d'un RightClickRequest et envoie d'un RightClickReply")
+  fmt.Println(in.Target, in.EntitySelectionUUID, in.Coordinates.X, in.Coordinates.Y)
 	return &pb.RightClickReply{}, nil
 }
 

@@ -2,11 +2,11 @@ package tuile
 
 import batiment "git.unistra.fr/AOEINT/server/batiment"
 import ressource "git.unistra.fr/AOEINT/server/ressource"
-
 type Tuile struct{//Batiment, ressource ou vide
 	typ int //0 vide 1 batiment 2 ressource
 	bat *batiment.Batiment
 	res *ressource.Ressource
+	//entities []*npc.Npc
 }
 
 func New() Tuile{
@@ -14,6 +14,9 @@ func New() Tuile{
 }
 func (t Tuile) GetType() int{
 	return t.typ
+}
+func (t Tuile) GetRess() *ressource.Ressource{
+	return t.res
 }
 
 func (t Tuile)ExtractData(typ *int,bat *batiment.Batiment,res *ressource.Ressource){
@@ -31,4 +34,10 @@ func (t *Tuile)AddRessource(res *ressource.Ressource){
 	(*t).typ=2
 	(*t).res=res
 	(*t).bat=nil
+}
+
+func (t *Tuile)Empty(){
+	(*t).typ=0
+	(*t).bat=nil
+	(*t).res=nil
 }
