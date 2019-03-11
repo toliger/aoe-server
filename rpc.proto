@@ -57,15 +57,15 @@ message Coordinates {
 /*
     type: list
         - 0: vide
-        - 1: case carte
+        - 1: set case carte
             - type: int
                 - 0: eau
                 - 1: herbe
-        - 2: case ressource
+        - 2: set case ressource
             - type: int
                 - 0: bois
                 - 1: pierre
-        - 3: case entité
+        - 3: move to entité
             - x: int
             - y: int
             - xDest: int
