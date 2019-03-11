@@ -3,8 +3,10 @@ package client
 
 import (
 	"git.unistra.fr/AOEINT/server/npc"
-	/*"git.unistra.fr/AOEINT/server/carte"
-	"git.unistra.fr/AOEINT/server/ressource"
+	"git.unistra.fr/AOEINT/server/data"
+	"git.unistra.fr/AOEINT/server/game"
+
+	/*"git.unistra.fr/AOEINT/server/ressource"
 	"git.unistra.fr/AOEINT/server/joueur"
 	"git.unistra.fr/AOEINT/server/batiment"*/
 	"fmt"
@@ -21,30 +23,28 @@ import (
 
 var server *grpc.Server
 
-type Server struct {}
-
-func (s *server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
-	log.Printf("Received: %v", in.Name)
-	return &pb.HelloReply{Message: "Hello " + in.Name}, nil
+type ServerArguments struct {
+	g *game.Game 
 }
 
 // Fonction demarrant la gestion des intéractions gRPC
 // Fonction bloquante, à lancer en concurrence
-func InitListenerServer() {
+func InitListenerServer(g *game.Game) {
 
 	// Initialisation du socket d'écoute réseau
-  // TODO Utiliser une variable d'environement pour pouvoir redéfinir le port
-  lis, err := net.Listen("tcp", ":50067")
+	// TODO Utiliser une variable d'environement pour pouvoir redéfinir le port
+	lis, err := net.Listen("tcp", ":50010")
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
 
 	// Initialisation du serveur gRPC
+	arg := ServerArguments{g: g}
 	server = grpc.NewServer()
 
 	// Enregistement des services Hello, Map et Interactions sur le serveur
-	pb.RegisterHelloServer(server, &Server{})
-	pb.RegisterInteractionsServer(server, &Server{})
+	pb.RegisterHelloServer(server, &arg)
+	pb.RegisterInteractionsServer(server, &arg)
 
 	// Mise en écoute du serveur
 	if err := server.Serve(lis); err != nil {
@@ -89,20 +89,42 @@ func PlayerNpcsDied(playerUID string,npc []npc.Npc){
 ///////////////////////////////////////////////////////////////////////////////
 
 // Fonction du service Hello: SayHello
-func (s *Server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
+func (s *ServerArguments) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
 	fmt.Println("Reception d'un HelloRequest et envoie d'un HelloReply")
 	return &pb.HelloReply{}, nil
 }
 
 // Fonction du service Interactions: RightClick
-func (s *Server) RightClick(ctx context.Context, in *pb.RightClickRequest) (*pb.RightClickReply, error) {
-	fmt.Println("Reception d'un RightClickRequest et envoie d'un RightClickReply")
-  fmt.Println(in.Target, in.EntitySelectionUUID, in.Coordinates.X, in.Coordinates.Y)
-	return &pb.RightClickReply{}, nil
+func (s *ServerArguments) RightClick(ctx context.Context, in *pb.RightClickRequest) (*pb.RightClickReply, error) {
+
+	// Boucle pour chaque entité
+	sendPath := make(map[string]*pb.RPCoordinates, len(in.EntitySelectionUUID))
+	for i:=0 ; i<len(in.EntitySelectionUUID) ; i++ {
+
+		// Obtention de l'entité
+		entity := data.IdMap.GetObjectFromId(in.EntitySelectionUUID[i]).(*npc.Npc)
+
+		// Obtention du path pour l'entité
+		path := entity.MoveTo(s.g.Carte, int(in.Point.X), int(in.Point.Y), nil)
+
+		// Affectation au tableau
+		tmpCoord := make([]*pb.Coordinates, len(path))
+		tmp := make([]pb.Coordinates, len(path))
+		for j:=0 ; j<len(path) ; j++ {
+			tmp[j].X = int32(path[j].GetPathX())
+			tmp[j].Y = int32(path[j].GetPathY())
+			tmpCoord[j] = &tmp[j]
+		}
+
+		// Lien au reply
+		sendPath[in.EntitySelectionUUID[i]] = &pb.RPCoordinates{Coord: tmpCoord}
+	}
+
+	return &pb.RightClickReply{Path: sendPath}, nil
 }
 
 // Fonction du service Interactions: AskUpdate
-func (s *Server) AskUpdate(ctx context.Context, in *pb.AskUpdateRequest) (*pb.AskUpdateReply, error) {
+func (s *ServerArguments) AskUpdate(ctx context.Context, in *pb.AskUpdateRequest) (*pb.AskUpdateReply, error) {
 	fmt.Println("Reception d'un AskUpdateRequest et envoie d'un AskUpdateReply")
 	return &pb.AskUpdateReply{}, nil
 }
