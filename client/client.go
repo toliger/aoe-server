@@ -13,7 +13,6 @@ import (
 	"net"
 	"google.golang.org/grpc"
 	pb "git.unistra.fr/AOEINT/server/serveur"
-	game "git.unistra.fr/AOEINT/server/game"
 )
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -26,10 +25,11 @@ type Server struct {}
 
 // Fonction demarrant la gestion des intéractions gRPC
 // Fonction bloquante, à lancer en concurrence
-func InitListenerServer(adress string) {
+func InitListenerServer() {
 
 	// Initialisation du socket d'écoute réseau
-	lis, err := net.Listen("tcp", adress)
+  // TODO Utiliser une variable d'environement pour pouvoir redéfinir le port
+  lis, err := net.Listen("tcp", ":50067")
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
@@ -92,6 +92,7 @@ func (s *Server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloRe
 // Fonction du service Interactions: RightClick
 func (s *Server) RightClick(ctx context.Context, in *pb.RightClickRequest) (*pb.RightClickReply, error) {
 	fmt.Println("Reception d'un RightClickRequest et envoie d'un RightClickReply")
+  fmt.Println(in.Target, in.EntitySelectionUUID, in.Coordinates.X, in.Coordinates.Y)
 	return &pb.RightClickReply{}, nil
 }
 

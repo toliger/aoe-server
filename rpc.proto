@@ -31,7 +31,7 @@ service Interactions {
 message RightClickRequest {
   Coordinates coordinates = 1;
   repeated string entitySelectionUUID = 2;
-  string target = 3; 
+  string target = 3;
 }
 message RightClickReply {}
 
@@ -53,15 +53,15 @@ message Coordinates {
 /*
     type: list
         - 0: vide
-        - 1: case carte
-            - type: int 
+        - 1: set case carte
+            - type: int
                 - 0: eau
                 - 1: herbe
-        - 2: case ressource
+        - 2: set case ressource
             - type: int
                 - 0: bois
                 - 1: pierre
-        - 3: case entité
+        - 3: move to entité
             - x: int
             - y: int
             - xDest: int

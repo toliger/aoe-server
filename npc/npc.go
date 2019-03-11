@@ -24,10 +24,11 @@ type Npc struct {
 	typ int // 0:villager, 1:harvester, 2:soldier
 	TeamFlag bool
 	ressourceChannel chan []int
+	hasOrder bool //Si un déplacement a dejà été demandé par le joueur (disable auto movement)
 }
 //Crée un nouveau Npc avec les paramètres fourni
 func New(x int,y int,pv int, vitesse int, vue int, portee int, offensive bool,size int, damage int,selectable bool, typ int,flag bool, channel chan []int) Npc{
-	pnj:=Npc{x,y,pv,vitesse,vue,portee,offensive,size,damage,selectable,typ,flag,channel}
+	pnj:=Npc{x,y,pv,vitesse,vue,portee,offensive,size,damage,selectable,typ,flag,channel,false}
 	return pnj
 }
 //Crée un Npc du type fourni
@@ -112,7 +113,7 @@ func RecoltePossible(c carte.Carte, x int, y int) bool{
 
 
 //Recolte de ressources (se deplace vers la ressource la plus proche dans la vue du villageois)
-func DeplacementRecolte(vill Npc, c carte.Carte){
+func DeplacementRecolte(vill *Npc, c carte.Carte){
 	var i, j int
 	var ress *ressource.Ressource
 	distance := 2000
@@ -168,7 +169,7 @@ func DeplacementRecolte(vill Npc, c carte.Carte){
 	// on attends que le villageois ait finit son déplacement
 	var wg sync.WaitGroup
 	wg.Add(1)
-    go (&vill).MoveTo(c, posRecolteVillX, posRecolteVillY, &wg)
+    go vill.MoveTo(c, posRecolteVillX, posRecolteVillY, &wg)
 	wg.Wait()
 
     // fmt.Printf("posRecolteVillX : %d, posRecolteVillY : %d\n", posRecolteVillX, posRecolteVillY)
@@ -181,7 +182,7 @@ func DeplacementRecolte(vill Npc, c carte.Carte){
 }
 
 // Effectue la recolte de la ressource (x par seconde)
-func Recolte(vill Npc, c carte.Carte, ress *ressource.Ressource,
+func Recolte(vill *Npc, c carte.Carte, ress *ressource.Ressource,
 	posRecolteVillX int, posRecolteVillY int){
 	uptimeTicker := time.NewTicker(1 * time.Second)
 	tps_ecoule := 0

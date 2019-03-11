@@ -1,10 +1,13 @@
 package main
 
-import "fmt"
-import "git.unistra.fr/AOEINT/server/affichage"
-import simulateClient "git.unistra.fr/AOEINT/server/falseclient"
-import "git.unistra.fr/AOEINT/server/game"
-import "git.unistra.fr/AOEINT/server/data"
+import (
+  "fmt"
+  "git.unistra.fr/AOEINT/server/affichage"
+  "git.unistra.fr/AOEINT/server/falseclient"
+  "git.unistra.fr/AOEINT/server/game"
+  "git.unistra.fr/AOEINT/server/data"
+  "git.unistra.fr/AOEINT/server/client"
+)
 
 func main() {
 	var g game.Game
@@ -15,8 +18,11 @@ func main() {
 	(&g).GenerateMap(data)
 	fmt.Println("Data struct extracted from json:",data)
 
-	//On lance le faux client pour tester les fonctions de liaison
-	go simulateClient.StartClient(&(g.GameRunning))
+	// On lance le faux client pour tester les fonctions de liaison
+	go falseclient.StartClient(&(g.GameRunning))
 	affichage.ImprimerCarte(g.Carte)
 	(&g).GameLoop()
+
+  // Listen
+  client.InitListenerServer()
 }
