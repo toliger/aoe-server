@@ -2,7 +2,6 @@ package main
 
 import (
   "fmt"
-  "git.unistra.fr/AOEINT/server/affichage"
   "git.unistra.fr/AOEINT/server/falseclient"
   "git.unistra.fr/AOEINT/server/game"
   "git.unistra.fr/AOEINT/server/data"
@@ -20,7 +19,6 @@ func main() {
 
 	// On lance le faux client pour tester les fonctions de liaison
 	go falseclient.StartClient(&(g.GameRunning))
-	affichage.ImprimerCarte(g.Carte)
 	(&g).GameLoop()
 
   // Listen
