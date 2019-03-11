@@ -92,6 +92,7 @@ func (s *Server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloRe
 // Fonction du service Interactions: RightClick
 func (s *Server) RightClick(ctx context.Context, in *pb.RightClickRequest) (*pb.RightClickReply, error) {
 	fmt.Println("Reception d'un RightClickRequest et envoie d'un RightClickReply")
+  fmt.Println(in.Target, in.EntitySelectionUUID, in.Coordinates.X, in.Coordinates.Y)
 	return &pb.RightClickReply{}, nil
 }
 
