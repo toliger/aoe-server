@@ -8,15 +8,12 @@ WORKDIR /go/src/app
 
 COPY . .
 
-RUN go build
+RUN go build -o /bin/server
 
 
-FROM alpine:latest
+FROM scratch
 
-WORKDIR /app
+COPY --from=build-env /bin/server /bin/server
 
-COPY --from=build-env /go/src/app/server  /app/server
+ENTRYPOINT ["/bin/server"]
 
-RUN chmod +x /app/server
-
-ENTRYPOINT ["./server"]
