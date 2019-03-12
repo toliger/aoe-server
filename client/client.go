@@ -25,6 +25,7 @@ var server *grpc.Server
 
 type ServerArguments struct {
 	g *game.Game 
+	UpdateBuffer []pb.UpdateAsked
 }
 
 // Fonction demarrant la gestion des intéractions gRPC
@@ -98,6 +99,7 @@ func (s *ServerArguments) SayHello(ctx context.Context, in *pb.HelloRequest) (*p
 func (s *ServerArguments) RightClick(ctx context.Context, in *pb.RightClickRequest) (*pb.RightClickReply, error) {
 
 	// Boucle pour chaque entité
+	var tmpCoord []*pb.Coordinates
 	sendPath := make(map[string]*pb.RPCoordinates, len(in.EntitySelectionUUID))
 	for i:=0 ; i<len(in.EntitySelectionUUID) ; i++ {
 
@@ -108,16 +110,36 @@ func (s *ServerArguments) RightClick(ctx context.Context, in *pb.RightClickReque
 		path := entity.MoveTo(s.g.Carte, int(in.Point.X), int(in.Point.Y), nil)
 
 		// Affectation au tableau
-		tmpCoord := make([]*pb.Coordinates, len(path))
-		tmp := make([]pb.Coordinates, len(path))
-		for j:=0 ; j<len(path) ; j++ {
-			tmp[j].X = int32(path[j].GetPathX())
-			tmp[j].Y = int32(path[j].GetPathY())
-			tmpCoord[j] = &tmp[j]
+		if len(path) != 0 {
+			tmpCoord = make([]*pb.Coordinates, len(path))
+			tmp := make([]pb.Coordinates, len(path))
+			for j:=0 ; j<len(path) ; j++ {
+				tmp[j].X = int32(path[j].GetPathX())
+				tmp[j].Y = int32(path[j].GetPathY())
+				tmpCoord[j] = &tmp[j]
+			}
+		} else {
+			tmpCoord = make([]*pb.Coordinates, 1)
+			tmpCoord[0] = &pb.Coordinates{X: int32(-1), Y: int32(-1)}
 		}
 
 		// Lien au reply
 		sendPath[in.EntitySelectionUUID[i]] = &pb.RPCoordinates{Coord: tmpCoord}
+	}
+
+	// Mise à jour du UpdateBuffer
+	for uuid, rpcoord := range sendPath {
+		lenght := len(rpcoord.Coord)
+		if lenght > 1 {
+			tmp := pb.UpdateAsked{Type: 3, EntityUUID: uuid}
+			tmp.Arg = make([]*pb.Param, 0)
+			tmp.Arg = append(tmp.Arg, &pb.Param{Key: "x",Value: string(rpcoord.Coord[0].X)})
+			tmp.Arg = append(tmp.Arg, &pb.Param{Key: "y",Value: string(rpcoord.Coord[0].Y)})
+			tmp.Arg = append(tmp.Arg, &pb.Param{Key: "xDest",Value: string(rpcoord.Coord[lenght-1].X)})
+			tmp.Arg = append(tmp.Arg, &pb.Param{Key: "yDest",Value: string(rpcoord.Coord[lenght-1].Y)})
+
+			s.UpdateBuffer = append(s.UpdateBuffer, tmp)
+		}
 	}
 
 	return &pb.RightClickReply{Path: sendPath}, nil
@@ -125,8 +147,16 @@ func (s *ServerArguments) RightClick(ctx context.Context, in *pb.RightClickReque
 
 // Fonction du service Interactions: AskUpdate
 func (s *ServerArguments) AskUpdate(ctx context.Context, in *pb.AskUpdateRequest) (*pb.AskUpdateReply, error) {
-	fmt.Println("Reception d'un AskUpdateRequest et envoie d'un AskUpdateReply")
-	return &pb.AskUpdateReply{}, nil
+	
+	toSend := make([]*pb.UpdateAsked, 0)
+
+	if s.UpdateBuffer != nil {
+		for i:=0 ; i<len(s.UpdateBuffer) ; i++ {
+			toSend = append(toSend, &s.UpdateBuffer[i])
+		}
+	}
+	
+	return &pb.AskUpdateReply{Array: toSend}, nil
 }
 
 //demande la creation d'un batiment à partir de l'uid du joueur, une position et un type de batiment
