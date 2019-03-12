@@ -15,7 +15,7 @@ message HelloRequest {
     string Name = 1;
 }
 message HelloReply {
-    string Name = 1; 
+    string Name = 1;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -70,14 +70,14 @@ message Coordinates {
             - type: int
                 - 0: bois
                 - 1: pierre
-        - 3: move to entité
-            - x: int
-            - y: int
-            - xDest: int
-            - yDest: int
-            - hp: int
-            - hpMax: int
-            - name: string
+        - 3: entité - Update an entity
+            - x: int - current x
+            - y: int - current y
+            - xDest: int - destination x
+            - yDest: int - destination y
+            - hp: int - current hp
+            - hpMax: int - max hp
+            - name: string - username
 
     */
 message UpdateAsked {
