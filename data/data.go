@@ -20,7 +20,9 @@ func AddNewAction(typ int,uuid string, key string, description string){
 	elem, ok := ActionBuffer[typ].Description[uuid]
     if !ok {
        elem = make(map[string]string)
-	   ActionBuffer[typ].Description=make(map[string]map[string]string)
+	   if(ActionBuffer[typ].Description == nil){
+			ActionBuffer[typ].Description=make(map[string]map[string]string)
+	   }
        ActionBuffer[typ].Description[uuid] = elem
     }
 	ActionBuffer[typ].Description[uuid][key]=description
