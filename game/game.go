@@ -10,7 +10,6 @@ import "fmt"
 import "encoding/json"
 import "git.unistra.fr/AOEINT/server/constants"
 import "io/ioutil"
-//import "git.unistra.fr/AOEINT/server/client"
 
 //Game : Structure contenant les donnees principales d'une partie
 type Game struct{

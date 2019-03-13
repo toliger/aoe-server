@@ -4,7 +4,7 @@ import (
   "fmt"
   "git.unistra.fr/AOEINT/server/game"
   d "git.unistra.fr/AOEINT/server/data"
-  "git.unistra.fr/AOEINT/server/client"
+  client "git.unistra.fr/AOEINT/server/server"
 )
 
 func main() {

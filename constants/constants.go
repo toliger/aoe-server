@@ -37,7 +37,7 @@ const StartingVillager = 4
 const StartingWood = 50
 const StartingStone = 0
 const StartingFood = 50
-const MAXOBJECTS = 100
+const MAXOBJECTS = 200
 //Batiments
 
 const LongueurAuberge = 2

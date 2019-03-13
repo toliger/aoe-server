@@ -1,26 +1,26 @@
-image: docker:git
-
-services:
-  - docker:dind
+image: golang:alpine
 
 stages:
-  - build
+  - test
 
 before_script:
-    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+  - export GO111MODULE=on
+  - export PKG_LIST=$(shell go list git.unistra.fr/AOEINT/server/... | grep -v /vendor/)
+  - apk add git gcc libc-dev
+  - go mod download
+  - go get -u golang.org/x/lint/golint
 
-build-and-publish:
-  stage: build
+unit_tests:
+  stage: test
   script:
-    - docker build --build-arg GIT_HASH=$CI_BUILD_REF -t $CI_REGISTRY_IMAGE:$CI_BUILD_REF -t $CI_REGISTRY_IMAGE:latest -f Dockerfile .
-    - docker push $CI_REGISTRY_IMAGE
-  only:
-    - master
+    - go test -short ./...
 
-build-and-publish-dev:
-  stage: build
+race_detector:
+  stage: test
   script:
-    - docker build --build-arg GIT_HASH=$CI_BUILD_REF -t $CI_REGISTRY_IMAGE:$CI_BUILD_REF -t $CI_REGISTRY_IMAGE:develop -f Dockerfile .
-    - docker push $CI_REGISTRY_IMAGE
-  only:
-    - develop
+    - go test -race -short ./...
+
+lint_code:
+  stage: test
+  script:
+    - golint -set_exit_status ./...
