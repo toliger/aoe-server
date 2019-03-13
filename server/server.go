@@ -1,5 +1,5 @@
-//Package client contient toutes les fonctions pour les echanges de donnees client/serveur
-package client
+//Package server contient toutes les fonctions pour les echanges de donnees client/serveur
+package server
 
 import (
 	"git.unistra.fr/AOEINT/server/npc"

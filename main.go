@@ -19,8 +19,8 @@ func main() {
 
 	// On lance le faux client pour tester les fonctions de liaison
 	go falseclient.StartClient(&(g.GameRunning))
-	(&g).GameLoop()
+	go (&g).GameLoop()
 
 	// Listen
-	client.InitListenerServer(&g)
+	server.InitListenerServer(&g)
 }
