@@ -5,12 +5,12 @@ import "git.unistra.fr/AOEINT/server/carte"
 import d "git.unistra.fr/AOEINT/server/data"
 import "git.unistra.fr/AOEINT/server/ressource"
 import "time"
-import "math/rand"
-
+//import "math/rand"
+/*
 func TestDeplacement(t *testing.T){
 	d.IdMap=d.NewObjectID()
 	d.InitiateActionBuffer()
-	bip := make(chan[]int,10) 
+	bip := make(chan[]int,10)
 	pnj,_:=Create("harvester",0,0,false,bip)
 	c:=carte.New(50)
 	s1 := rand.NewSource(time.Now().UnixNano())
@@ -29,18 +29,20 @@ func TestDeplacement(t *testing.T){
 		t.Error("L'entité ne s'est pas déplacée à temps: ",pnj.x,":",pnj.y,"!=",x,":",y)
 	}
 }
+*/
 
 func TestRecolte(t *testing.T){
 	d.IdMap=d.NewObjectID()
 	d.InitiateActionBuffer()
-	bip := make(chan[]int,100) 
+	bip := make(chan[]int,100)
 	pnj,_:=Create("harvester",0,0,false,bip)
 	c:=carte.New(50)
 	ress:=ressource.Create("tree",2,2)
 	c.AddNewRessource(&ress)
-	(&pnj).DeplacementRecolte(c)
-	time.Sleep(time.Duration(2000000000))
-	if(ress.GetPv()==100){
+	(&pnj).MoveHarvest(c)
+	time.Sleep(time.Duration(4000000000))
+	if(ress.GetPv()!=100){
 		t.Error("la ressource n'a pas perdu de Pv")
-	}	
+	}
+	t.Log("pv: ",ress.GetPv())
 }
