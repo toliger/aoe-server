@@ -143,7 +143,7 @@ func RecoltePossible(c carte.Carte, x int, y int) bool{
 
 
 //Recolte de ressources (se deplace vers la ressource la plus proche dans la vue du villageois)
-func DeplacementRecolte(vill *Npc, c carte.Carte){
+func (vill *Npc)DeplacementRecolte(c carte.Carte){
 	var i, j int
 	var ress *ressource.Ressource
 	distance := 2000
@@ -214,7 +214,7 @@ func DeplacementRecolte(vill *Npc, c carte.Carte){
 // Effectue la recolte de la ressource (x par seconde)
 func Recolte(vill *Npc, c carte.Carte, ress *ressource.Ressource,
 	posRecolteVillX int, posRecolteVillY int){
-	uptimeTicker := time.NewTicker(1 * time.Second)
+	uptimeTicker := time.NewTicker(time.Duration(1 * time.Second))
 	tps_ecoule := 0
 	for {
 		// La ressource est épuisée ou le villageois est mort

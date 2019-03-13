@@ -2,7 +2,6 @@ package main
 
 import (
   "fmt"
-  "git.unistra.fr/AOEINT/server/falseclient"
   "git.unistra.fr/AOEINT/server/game"
   d "git.unistra.fr/AOEINT/server/data"
   "git.unistra.fr/AOEINT/server/client"
@@ -19,7 +18,6 @@ func main() {
 	fmt.Println("Data struct extracted from json:",data)
 	fmt.Println("buffer",d.ActionBuffer)
 	// On lance le faux client pour tester les fonctions de liaison
-	go falseclient.StartClient(&(g.GameRunning))
 	(&g).GameLoop()
 
 	// Listen

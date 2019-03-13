@@ -5,7 +5,6 @@ import "git.unistra.fr/AOEINT/server/data"
 import "strconv"
 
 type Ressource struct{
-
     X int
     Y int
     Pv int

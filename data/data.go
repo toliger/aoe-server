@@ -38,7 +38,9 @@ type ObjectId struct{
 }
 //Crée une instance ObjectId
 func NewObjectID() ObjectId{
-	return (ObjectId{0,make(map[string]interface{},constants.MAXOBJECTS)})
+	res:=(ObjectId{0,make(map[string]interface{},constants.MAXOBJECTS)})
+	res.IdArray=make(map[string]interface{})
+	return res
 }
 
 var IdMap ObjectId
