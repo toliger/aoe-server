@@ -11,20 +11,21 @@ import "encoding/json"
 import "git.unistra.fr/AOEINT/server/constants"
 import "io/ioutil"
 
-//Structure contenant les donnees principales d'une partie
+//Game : Structure contenant les donnees principales d'une partie
 type Game struct{
 	Joueurs []joueur.Joueur
 	Carte Carte.Carte
 	GameRunning bool
 }
 
-//Structure permettant de stocker les informations recuperees sur le fichier json
+//Data :Structure permettant de stocker les informations recuperees sur le fichier json
 type Data struct{
 	Size int
 	Buildings []batiment.Batiment
 	Ressources []ressource.Ressource
 }
 
+//ExtractData : extract data from a file (ressources, buildings)
 func ExtractData() Data{
 	getEnvData()
 	datafileName:="data/GameData.json"
@@ -70,7 +71,7 @@ func getEnvData(){
 	}
 }
 
-//Permet de recuperer l'instance d'un joueur à partir de son uid
+//GetPlayerFromUID : Permet de recuperer l'instance d'un joueur à partir de son uid
 func (g Game)GetPlayerFromUID(uid string) *joueur.Joueur{
 	for i:=0;i<len(g.Joueurs);i++{
 		if(g.Joueurs[i].Uid==uid){
@@ -79,18 +80,18 @@ func (g Game)GetPlayerFromUID(uid string) *joueur.Joueur{
 	}
 	return nil
 }
-//Interromps la boucle principale du jeu
+//EndOfGame : Interromps la boucle principale du jeu
 func (g *Game)EndOfGame(){
 	(*g).GameRunning=false
 }
-//fonction contenant la boucle principale du jeu
+//GameLoop : fonction contenant la boucle principale du jeu
 func (g *Game)GameLoop(){
 	for (*g).GameRunning{
 		time.Sleep(time.Duration(1000000000))
 	}
 
 }
-//Permet de generer la Carte a partir d'une structure data
+//GenerateMap : Permet de generer la Carte a partir d'une structure data
 func (g *Game)GenerateMap(data Data){
 	(*g).Carte =Carte.New(data.Size)
 	//On attribue les auberges
@@ -122,8 +123,9 @@ func (g *Game)GenerateMap(data Data){
 		}
 	}
 }
-//Recupere les donnes des Joueurs entree en parametre du programme
-//Modification: Changement pour des valeurs statiques (temporaire)
+/*GetPlayerData : Recupere les donnes des Joueurs entree en parametre du programme
+Modification: Changement pour des valeurs statiques (temporaire)
+*/
 func (g *Game)GetPlayerData(){
 	(*g).Joueurs=make([]joueur.Joueur,2)
 	(*g).Joueurs[0]=joueur.Create(false,"Bob","V8F1238VF")
