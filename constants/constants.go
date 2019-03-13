@@ -8,17 +8,24 @@ const (
 )
 //constantes liées aux actions
 const (
+//NPC
 	ACTION_NEWNPC = 0
 	ACTION_DELNPC = 1
 	ACTION_HARMNPC = 2
+//PLAYER
 	ACTION_PLAYERRESSOURCE = 3
+//RESSOURCE
 	ACTION_HARMRESSOURCE = 4
 	ACTION_DELRESSOURCE = 5
-	ACTION_HARMBUILDING = 6
-	ACTION_DESTROYBUILDING = 7
-	ACTION_ENDOFGAME = 8
+	ACTION_NEWRESSOURCE = 6
+//BUILDING
+	ACTION_HARMBUILDING = 7
+	ACTION_DESTROYBUILDING = 8
+	ACTION_NEWBUILDING = 9
+//GAME
+	ACTION_ENDOFGAME = 10
 )
-
+const MAXACTIONS = 10
 
 //caracteristiques d'une partie
 
@@ -30,7 +37,6 @@ const StartingVillager = 4
 const StartingWood = 50
 const StartingStone = 0
 const StartingFood = 50
-const MAXACTIONS = 50
 const MAXOBJECTS = 100
 //Batiments
 

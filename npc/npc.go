@@ -8,6 +8,7 @@ import (
 	"time"
 	"sync"
 	"git.unistra.fr/AOEINT/server/data"
+	"strconv"
 )
 
 type Npc struct {
@@ -25,14 +26,16 @@ type Npc struct {
 	TeamFlag bool
 	ressourceChannel chan []int
 	hasOrder bool //Si un déplacement a dejà été demandé par le joueur (disable auto movement)
+	PlayerUUID string
 }
 //Crée un nouveau Npc avec les paramètres fourni
 func New(x int,y int,pv int, vitesse int, vue int, portee int, offensive bool,size int, damage int,selectable bool, typ int,flag bool, channel chan []int) Npc{
-	pnj:=Npc{x,y,pv,vitesse,vue,portee,offensive,size,damage,selectable,typ,flag,channel,false}
+	pnj:=Npc{x,y,pv,vitesse,vue,portee,offensive,size,damage,selectable,typ,flag,channel,false,""}
 	return pnj
 }
+
 //Crée un Npc du type fourni
-func Create(class string,x int,y int, flag bool,channel chan []int) Npc{
+func Create(class string,x int,y int, flag bool,channel chan []int) (Npc,string){
 	var pnj Npc
 	switch class{
 		case "soldier":
@@ -45,8 +48,33 @@ func Create(class string,x int,y int, flag bool,channel chan []int) Npc{
 			pnj=New(x,y,constants.VillagerPv,constants.VillagerVitesse,constants.VillagerVue,
 				constants.HarvesterVillPortee,false,constants.VillagerSize,constants.VillagerDamage,false,0,flag,channel)
 	}
-	(&data.IdMap).AddObject(&pnj)
-    return pnj
+	id:=(&data.IdMap).AddObject(&pnj)
+	pnj.Transmit(id)
+    return pnj,id
+}
+
+func (pnj Npc)stringify() map[string]string{
+	res:=make(map[string]string)
+	res["pv"]=strconv.Itoa(pnj.pv)
+	res["x"]=strconv.Itoa(pnj.x)
+	res["y"]=strconv.Itoa(pnj.y)
+	res["vitesse"]=strconv.Itoa(pnj.vitesse)
+	res["type"]=strconv.Itoa(pnj.typ)
+	res["damage"]=strconv.Itoa(pnj.damage)
+	res["offensive"]=strconv.FormatBool(pnj.offensive)
+	res["vue"]=strconv.Itoa(pnj.vue)
+	res["portee"]=strconv.Itoa(pnj.portee)
+	res["TeamFlag"]=strconv.FormatBool(pnj.TeamFlag)
+	res["PlayerUUID"]=pnj.PlayerUUID
+	return res
+}
+
+//Ajoute le npc au buffer de communication
+func (pnj Npc) Transmit(id string){
+	arr:=pnj.stringify()
+	for k,e := range arr{
+		data.AddNewAction(constants.ACTION_NEWNPC,id,k,e)
+	}
 }
 
 //Npc

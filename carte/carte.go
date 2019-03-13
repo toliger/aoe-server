@@ -42,7 +42,8 @@ func (c Carte)AddNewRessource(res *ressource.Ressource) bool{
 		return false
 	}
 	(c.GetTile(x,y)).AddRessource(res)
-	(&data.IdMap).AddObject(res)
+	id:=(&data.IdMap).AddObject(res)
+	(*res).Transmit(id)
 	return true
 }
 //Ajouter un Batiment a la carte
@@ -61,7 +62,8 @@ func (c Carte)AddNewBuilding(bat *batiment.Batiment) bool{
 			(c.GetTile(x+i,y+j)).AddBuilding(bat)
 		}
 	}
-	(&data.IdMap).AddObject(bat)
+	id:=(&data.IdMap).AddObject(bat)
+	(*bat).Transmit(id)
 	return true
 }
 

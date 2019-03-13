@@ -96,12 +96,12 @@ func (g *Game)GenerateMap(data Data){
 	(*g).Carte =Carte.New(data.Size)
 	//On attribue les auberges
 	if(len((*g).Joueurs)==2){//Si Seulement 2 Joueurs fournis, fait en sorte de leur donner des bases adverses
-		(*g).Joueurs[0].AddBuilding(data.Buildings[0])
+		(*g).Joueurs[0].AddBuilding(&data.Buildings[0])
 		if((*g).Carte.AddNewBuilding(&(data.Buildings[0]))==false){
 			fmt.Println("Erreur lors du placement d'une auberge")
 			os.Exit(1)
 		}
-		(*g).Joueurs[1].AddBuilding(data.Buildings[2])
+		(*g).Joueurs[1].AddBuilding(&data.Buildings[2])
 		if((*g).Carte.AddNewBuilding(&(data.Buildings[2]))==false){
 			fmt.Println("Erreur lors du placement d'une auberge")
 			os.Exit(1)
@@ -109,7 +109,7 @@ func (g *Game)GenerateMap(data Data){
 
 	}else{//sinon 4 Joueurs classiques dans l'ordre des bases fournies (blue blue red red)
 		for i:=0;i<4;i++{
-			(*g).Joueurs[i].AddBuilding(data.Buildings[i])
+			(*g).Joueurs[i].AddBuilding(&data.Buildings[i])
 			if((*g).Carte.AddNewBuilding(&(data.Buildings[i]))==false){
 				fmt.Println("Erreur lors du placement d'une auberge")
 				os.Exit(1)

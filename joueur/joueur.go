@@ -1,9 +1,10 @@
 package joueur
 
-//import wait "k8s.io/apimachinery/pkg/util/wait"
-import npc "git.unistra.fr/AOEINT/server/npc"
-import batiment "git.unistra.fr/AOEINT/server/batiment"
-import constants "git.unistra.fr/AOEINT/server/constants"
+import "git.unistra.fr/AOEINT/server/npc"
+import "git.unistra.fr/AOEINT/server/batiment"
+import "git.unistra.fr/AOEINT/server/constants"
+import "git.unistra.fr/AOEINT/server/data"
+import "strconv"
 import "fmt"
 
 type Joueur struct{
@@ -25,6 +26,7 @@ func Create(faction bool,nom string,uid string) Joueur{
 	buffer:=make(chan []int,constants.RESSOURCE_BUFFER_SIZE)
 	res :=Joueur{faction,nom,uid,0,make([](*batiment.Batiment),constants.MaxBuildings),0,make([](*npc.Npc),constants.MaxEntities),constants.StartingStone,constants.StartingWood,constants.StartingFood,buffer}
 	go (&res).ressourceUpdate()
+	res.Transmit()
 	return res
 }
 //Retourne la faction
@@ -34,6 +36,24 @@ func (j Joueur) GetFaction() bool{
 //Retourne le Nom
 func (j Joueur) GetNom() string{
 	return j.nom
+}
+
+func (j Joueur) stringify() map[string]string{
+	result:=make(map[string]string)
+	result["nom"]=j.nom
+	result["faction"]=strconv.FormatBool(j.faction)
+	result["uid"]=j.Uid
+	result["stone"]=strconv.Itoa(j.stone)
+	result["wood"]=strconv.Itoa(j.wood)
+	result["food"]=strconv.Itoa(j.food)
+	return result
+}
+
+func (j Joueur) Transmit(){
+	arr:=j.stringify()
+	for k,e := range arr{
+		data.AddNewAction(constants.ACTION_PLAYERRESSOURCE,j.Uid,k,e)
+	}
 }
 
 //Met automatiquement a jour les ressources du joueur a partir des int[3] envoyes au channel du joueur
@@ -84,21 +104,23 @@ func (j *Joueur) AddFood(f int){
 	(*j).food+= f
 }
 
-func (j *Joueur)AddBuilding(b batiment.Batiment){
-	(*j).batiments=append(j.batiments,&b)
+func (j *Joueur)AddBuilding(b *batiment.Batiment){
+	b.PlayerUID=j.Uid
+	(*j).batiments=append(j.batiments,b)
 }
-func (j *Joueur)AddNpc(entity npc.Npc){
+func (j *Joueur)AddNpc(entity *npc.Npc){
 	test:=false
 	for i:=0;i<len(j.entities);i++{
 		if(j.entities[i]==nil){
-			j.entities[i]=&entity
+			j.entities[i]=entity
 			test=true
 			break
 		}
 	}
 	if(!test){
-		(*j).entities=append(j.entities,&entity)
+		(*j).entities=append(j.entities,entity)
 	}
+	entity.PlayerUUID=(*j).Uid
 }
 
 ///////////////////////////////////////////////////////

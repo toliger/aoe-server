@@ -3,21 +3,32 @@ package data
 import "strconv"
 import "git.unistra.fr/AOEINT/server/constants"
 
-//variable détaillant les actions à envoyer au client
-//Exemple: [5]["3,3"]->"vie:-10" Enlever 10 pv à la ressource en 3,3 
-var ActionBuffer [](map[string]string)
+type Action struct{
+	Description map[string]map[string]string
+}
+//variable détaillant les actions à envoyer au client 
+//	Exemple: [type:int].Description["UUID"]["Key"]="value"  
+var ActionBuffer []Action
+
 //Initialisation du buffer d'actions
 func InitiateActionBuffer(){
-	ActionBuffer=make([](map[string]string),constants.MAXACTIONS)
+	ActionBuffer=make([]Action,constants.MAXACTIONS)
 }
 //Ajoute une Action(type int, clee string, description string) au buffer
-func AddNewAction(typ int, key string, description string){
-	ActionBuffer[typ][key]=description
+func AddNewAction(typ int,uuid string, key string, description string){
+	
+	elem, ok := ActionBuffer[typ].Description[uuid]
+    if !ok {
+       elem = make(map[string]string)
+	   ActionBuffer[typ].Description=make(map[string]map[string]string)
+       ActionBuffer[typ].Description[uuid] = elem
+    }
+	ActionBuffer[typ].Description[uuid][key]=description
 }
 
 func CleanActionBuffer(){
 	ActionBuffer=nil //throw to garbage collector
-	ActionBuffer=make([](map[string]string),constants.MAXACTIONS)
+	InitiateActionBuffer()
 }
 
 //Structure générique associant chaque batiment/ressource/pnj à son id
