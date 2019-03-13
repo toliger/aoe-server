@@ -1,4 +1,4 @@
-//Contient toutes les fonctions pour les echanges de donnees client/serveur
+//Package client contient toutes les fonctions pour les echanges de donnees client/serveur
 package client
 
 import (
@@ -14,7 +14,7 @@ import (
 	"log"
 	"net"
 	"google.golang.org/grpc"
-	pb "git.unistra.fr/AOEINT/server/serveur"
+	pb "git.unistra.fr/AOEINT/server/grpc"
 )
 
 ///////////////////////////////////////////////////////////////////////////////

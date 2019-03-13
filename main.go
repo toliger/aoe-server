@@ -5,7 +5,7 @@ import (
   "git.unistra.fr/AOEINT/server/falseclient"
   "git.unistra.fr/AOEINT/server/game"
   "git.unistra.fr/AOEINT/server/data"
-  "git.unistra.fr/AOEINT/server/client"
+  "git.unistra.fr/AOEINT/server/server"
 )
 
 func main() {
