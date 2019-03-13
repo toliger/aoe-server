@@ -74,7 +74,7 @@ func getEnvData(){
 //GetPlayerFromUID : Permet de recuperer l'instance d'un joueur à partir de son uid
 func (g Game)GetPlayerFromUID(uid string) *joueur.Joueur{
 	for i:=0;i<len(g.Joueurs);i++{
-		if(g.Joueurs[i].Uid==uid){
+		if(g.Joueurs[i].UID==uid){
 			return &(g.Joueurs[i])
 		}
 	}

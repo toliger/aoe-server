@@ -2,9 +2,11 @@ package joueur
 
 //import wait "k8s.io/apimachinery/pkg/util/wait"
 import npc "git.unistra.fr/AOEINT/server/npc"
-import batiment "git.unistra.fr/AOEINT/server/batiment"
-import constants "git.unistra.fr/AOEINT/server/constants"
+import  "git.unistra.fr/AOEINT/server/batiment"
+import  "git.unistra.fr/AOEINT/server/constants"
+import 	"git.unistra.fr/AOEINT/server/data"
 import "fmt"
+import "strconv"
 
 //Joueur :
 type Joueur struct{
@@ -41,17 +43,18 @@ func (j Joueur) stringify() map[string]string{
 	result:=make(map[string]string)
 	result["nom"]=j.nom
 	result["faction"]=strconv.FormatBool(j.faction)
-	result["uid"]=j.Uid
+	result["uid"]=j.UID
 	result["stone"]=strconv.Itoa(j.stone)
 	result["wood"]=strconv.Itoa(j.wood)
 	result["food"]=strconv.Itoa(j.food)
 	return result
 }
 
+//Transmit ajoute le joueur au buffer d'action
 func (j Joueur) Transmit(){
 	arr:=j.stringify()
 	for k,e := range arr{
-		data.AddNewAction(constants.ActionPlayerRessource,j.Uid,k,e)
+		data.AddNewAction(constants.ActionPlayerRessource,j.UID,k,e)
 	}
 }
 
@@ -109,21 +112,21 @@ func (j *Joueur) AddFood(f int){
 }
 
 //AddBuilding : add a new building to the player
-func (j *Joueur)AddBuilding(b batiment.Batiment){
-	(*j).batiments=append(j.batiments,&b)
+func (j *Joueur)AddBuilding(b *batiment.Batiment){
+	(*j).batiments=append(j.batiments,b)
 }
 
 //AddNpc : add a new NPC to the player
-func (j *Joueur)AddNpc(entity npc.Npc){
+func (j *Joueur)AddNpc(entity *npc.Npc){
 	test:=false
 	for i:=0;i<len(j.entities);i++{
 		if(j.entities[i]==nil){
-			j.entities[i]=&entity
+			j.entities[i]=entity
 			test=true
 			break
 		}
 	}
 	if(!test){
-		(*j).entities=append(j.entities,&entity)
+		(*j).entities=append(j.entities,entity)
 	}
 }

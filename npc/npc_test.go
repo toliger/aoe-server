@@ -41,7 +41,7 @@ func TestRecolte(t *testing.T){
 	c.AddNewRessource(&ress)
 	(&pnj).MoveHarvest(c)
 	time.Sleep(time.Duration(4000000000))
-	if(ress.GetPv()!=100){
+	if(ress.GetPv()==100){
 		t.Error("la ressource n'a pas perdu de Pv")
 	}
 	t.Log("pv: ",ress.GetPv())
