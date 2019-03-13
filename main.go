@@ -9,7 +9,7 @@ import (
 
 func main() {
 	var g game.Game
-	d.IdMap=d.NewObjectID()
+	d.IDMap=d.NewObjectID()
 	d.InitiateActionBuffer()
 	g.GameRunning=true
 	(&g).GetPlayerData()

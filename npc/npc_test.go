@@ -8,7 +8,7 @@ import "time"
 import "math/rand"
 
 func TestDeplacement(t *testing.T){
-	d.IdMap=d.NewObjectID()
+	d.IDMap=d.NewObjectID()
 	d.InitiateActionBuffer()
 	bip := make(chan[]int,10) 
 	pnj,_:=Create("harvester",0,0,false,bip)
@@ -31,7 +31,7 @@ func TestDeplacement(t *testing.T){
 }
 
 func TestRecolte(t *testing.T){
-	d.IdMap=d.NewObjectID()
+	d.IDMap=d.NewObjectID()
 	d.InitiateActionBuffer()
 	bip := make(chan[]int,100) 
 	pnj,_:=Create("harvester",0,0,false,bip)

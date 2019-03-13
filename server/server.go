@@ -104,7 +104,7 @@ func (s *ServerArguments) RightClick(ctx context.Context, in *pb.RightClickReque
 	for i:=0 ; i<len(in.EntitySelectionUUID) ; i++ {
 
 		// Obtention de l'entité
-		entity := data.IdMap.GetObjectFromId(in.EntitySelectionUUID[i]).(*npc.Npc)
+		entity := data.IDMap.GetObjectFromID(in.EntitySelectionUUID[i]).(*npc.Npc)
 
 		// Obtention du path pour l'entité
 		path := entity.MoveTo(s.g.Carte, int(in.Point.X), int(in.Point.Y), nil)

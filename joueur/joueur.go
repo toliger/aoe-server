@@ -23,7 +23,7 @@ type Joueur struct{
 
 //Crée un joueur
 func Create(faction bool,nom string,uid string) Joueur{
-	buffer:=make(chan []int,constants.RESSOURCE_BUFFER_SIZE)
+	buffer:=make(chan []int,constants.RessourceBufferSize)
 	res :=Joueur{faction,nom,uid,0,make([](*batiment.Batiment),constants.MaxBuildings),0,make([](*npc.Npc),constants.MaxEntities),constants.StartingStone,constants.StartingWood,constants.StartingFood,buffer}
 	go (&res).ressourceUpdate()
 	res.Transmit()
@@ -52,7 +52,7 @@ func (j Joueur) stringify() map[string]string{
 func (j Joueur) Transmit(){
 	arr:=j.stringify()
 	for k,e := range arr{
-		data.AddNewAction(constants.ACTION_PLAYERRESSOURCE,j.Uid,k,e)
+		data.AddNewAction(constants.ActionPlayerRessource,j.Uid,k,e)
 	}
 }
 

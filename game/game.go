@@ -45,28 +45,28 @@ func ExtractData() Data{
 
 func getEnvData(){
 	if(len(os.Getenv("GAME_UUID"))==0){
-		constants.GAME_UUID = "DEFAULT"
+		constants.GameUUID = "DEFAULT"
 		fmt.Println("default for GAME_UUID")
 	}else{
-		constants.GAME_UUID = constants.GAME_UUID_def
+		constants.GameUUID = constants.GameUUIDDef
 	}
 	if(len(os.Getenv("API_HOST"))==0){
-		constants.API_HOST = "DEFAULT"
+		constants.APIHost = "DEFAULT"
 		fmt.Println("default for API_HOST")
 	}else{
-		constants.API_HOST = constants.API_HOST_def
+		constants.APIHost = constants.APIHostDef
 	}
 	if(len(os.Getenv("TOKEN"))==0){
-		constants.TOKEN = "DEFAULT"
+		constants.Token = "DEFAULT"
 		fmt.Println("default for TOKEN")
 	}else{
-		constants.TOKEN = constants.TOKEN_def
+		constants.Token = constants.TOKENDef
 	}
 	if(len(os.Getenv("TOKEN_SECRET"))==0){
-		constants.TOKEN_SECRET = "DEFAULT"
+		constants.TokenSecret = "DEFAULT"
 		fmt.Println("default for TOKEN_SECRET")
 	}else{
-		constants.TOKEN_SECRET = constants.TOKEN_SECRET_def
+		constants.TokenSecret = constants.TOKENSecretDef
 	}
 }
 

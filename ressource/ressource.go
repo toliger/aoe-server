@@ -44,7 +44,7 @@ func (res Ressource)stringify()map[string]string{
 func (res Ressource) Transmit(id string){
 	arr:=res.stringify()
 	for k,e := range arr{
-		data.AddNewAction(constants.ACTION_NEWRESSOURCE,id,k,e)
+		data.AddNewAction(constants.ActionNewRessource,id,k,e)
 	}
 }
 

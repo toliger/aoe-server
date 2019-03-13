@@ -4,6 +4,7 @@ import cst "git.unistra.fr/AOEINT/server/constants"
 import "git.unistra.fr/AOEINT/server/data"
 import "strconv"
 
+//Batiment : Structure contenant tous les éléments nécessaires pour la gestion d'un batiment
 type Batiment struct{
 	X int
 	Y int
@@ -13,11 +14,11 @@ type Batiment struct{
 	Largeur int
 	PlayerUID string
 }
-//Constructeur de l'objet Batiment
+//New : Constructeur de l'objet Batiment
 func New(x int,y int, typ int, long int, larg int, pv int) Batiment{
 	return (Batiment{x,y,pv,typ,long,larg,""})
 }
-//Crée une Instance de batiment
+//Create : Crée une Instance de batiment
 func Create(class string, x int, y int ) Batiment{
 	var bat Batiment
 	switch class{
@@ -43,35 +44,35 @@ func (bat Batiment)stringify(id string)map[string]string{
 	res["id"]=id
 	return res
 }
-
+//Transmit : Adds the corresponding action to ActionBuffer
 func (bat Batiment) Transmit(id string){
 	arr:=bat.stringify(id)
 	for k,e := range arr{
-		data.AddNewAction(cst.ACTION_NEWBUILDING,id,k,e)
+		data.AddNewAction(cst.ActionNewBuilding,id,k,e)
 	}
 }
 
-//"Detruit" l'objet batiment si il n'y a plus de pv
+//DestroyBuilding : "Detruit" l'objet batiment si il n'y a plus de pv
 func (bat *Batiment)DestroyBuilding(){
 	bat = nil //nil permet assigner la valeur nul à un pointeur
 }
-//Retourne les pv d'un bâtiment
+//GetPv : Retourne les pv d'un bâtiment
 func (bat Batiment)GetPv() int{
 	return bat.Pv
 }
-//Retourne la longueur d'un batiment
+//GetLongueur : Retourne la longueur d'un batiment
 func (bat Batiment)GetLongueur() int{
 	return bat.Longueur
 }
-//Retourne la largeur d'un batiment
+//GetLargeur : Retourne la largeur d'un batiment
 func (bat Batiment)GetLargeur() int{
 	return bat.Largeur
 }
-//Retourne un coordonnée x de Batiment
+//GetX : Retourne un coordonnée x de Batiment
 func (bat Batiment)GetX() int{
 	return bat.X
 }
-//Retourne un coordonnée y de Batiment
+//GetY : Retourne un coordonnée y de Batiment
 func (bat Batiment)GetY() int{
 	return bat.Y
 }

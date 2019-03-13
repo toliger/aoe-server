@@ -48,7 +48,7 @@ func Create(class string,x int,y int, flag bool,channel chan []int) (Npc,string)
 			pnj=New(x,y,constants.VillagerPv,constants.VillagerVitesse,constants.VillagerVue,
 				constants.HarvesterVillPortee,false,constants.VillagerSize,constants.VillagerDamage,false,0,flag,channel)
 	}
-	id:=(&data.IdMap).AddObject(&pnj)
+	id:=(&data.IDMap).AddObject(&pnj)
 	pnj.Transmit(id)
     return pnj,id
 }
@@ -73,7 +73,7 @@ func (pnj Npc)stringify() map[string]string{
 func (pnj Npc) Transmit(id string){
 	arr:=pnj.stringify()
 	for k,e := range arr{
-		data.AddNewAction(constants.ACTION_NEWNPC,id,k,e)
+		data.AddNewAction(constants.ActionNewNpc,id,k,e)
 	}
 }
 
