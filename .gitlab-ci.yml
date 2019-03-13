@@ -20,11 +20,6 @@ race_detector:
   script:
     - go test -race -short ./...
 
-memory_sanitizer:
-  stage: test
-  script:
-    - go test -msan -short ./...
-
 lint_code:
   stage: test
   script:
