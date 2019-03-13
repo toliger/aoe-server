@@ -1,6 +1,9 @@
 package batiment
 
 import cst "git.unistra.fr/AOEINT/server/constants"
+import "git.unistra.fr/AOEINT/server/data"
+import "strconv"
+
 type Batiment struct{
 	X int
 	Y int
@@ -8,10 +11,11 @@ type Batiment struct{
 	Typ int //auberge: 0, caserne:1, établi:2 ...
 	Longueur int
 	Largeur int
+	PlayerUID string
 }
 //Constructeur de l'objet Batiment
 func New(x int,y int, typ int, long int, larg int, pv int) Batiment{
-	return (Batiment{x,y,pv,typ,long,larg})
+	return (Batiment{x,y,pv,typ,long,larg,""})
 }
 //Crée une Instance de batiment
 func Create(class string, x int, y int ) Batiment{
@@ -28,6 +32,25 @@ func Create(class string, x int, y int ) Batiment{
 	}
 	return bat
 }
+
+func (bat Batiment)stringify(id string)map[string]string{
+	res:=make(map[string]string)
+	res["x"]=strconv.Itoa(bat.X)
+	res["y"]=strconv.Itoa(bat.Y)
+	res["pv"]=strconv.Itoa(bat.Pv)
+	res["type"]=strconv.Itoa(bat.Typ)
+	res["PlayerUUID"]=bat.PlayerUID
+	res["id"]=id
+	return res
+}
+
+func (bat Batiment) Transmit(id string){
+	arr:=bat.stringify(id)
+	for k,e := range arr{
+		data.AddNewAction(cst.ACTION_NEWBUILDING,id,k,e)
+	}
+}
+
 //"Detruit" l'objet batiment si il n'y a plus de pv
 func (bat *Batiment)DestroyBuilding(){
 	bat = nil //nil permet assigner la valeur nul à un pointeur

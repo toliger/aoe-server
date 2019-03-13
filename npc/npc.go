@@ -7,6 +7,8 @@ import (
 	"git.unistra.fr/AOEINT/server/constants"
 	"time"
 	"sync"
+	"git.unistra.fr/AOEINT/server/data"
+	"strconv"
 )
 
 type Npc struct {
@@ -23,14 +25,17 @@ type Npc struct {
 	typ int // 0:villager, 1:harvester, 2:soldier
 	TeamFlag bool
 	ressourceChannel chan []int
+	hasOrder bool //Si un déplacement a dejà été demandé par le joueur (disable auto movement)
+	PlayerUUID string
 }
 //Crée un nouveau Npc avec les paramètres fourni
 func New(x int,y int,pv int, vitesse int, vue int, portee int, offensive bool,size int, damage int,selectable bool, typ int,flag bool, channel chan []int) Npc{
-	pnj:=Npc{x,y,pv,vitesse,vue,portee,offensive,size,damage,selectable,typ,flag,channel}
+	pnj:=Npc{x,y,pv,vitesse,vue,portee,offensive,size,damage,selectable,typ,flag,channel,false,""}
 	return pnj
 }
+
 //Crée un Npc du type fourni
-func Create(class string,x int,y int, flag bool,channel chan []int) Npc{
+func Create(class string,x int,y int, flag bool,channel chan []int) (Npc,string){
 	var pnj Npc
 	switch class{
 		case "soldier":
@@ -43,7 +48,33 @@ func Create(class string,x int,y int, flag bool,channel chan []int) Npc{
 			pnj=New(x,y,constants.VillagerPv,constants.VillagerVitesse,constants.VillagerVue,
 				constants.HarvesterVillPortee,false,constants.VillagerSize,constants.VillagerDamage,false,0,flag,channel)
 	}
-	return pnj
+	id:=(&data.IdMap).AddObject(&pnj)
+	pnj.Transmit(id)
+    return pnj,id
+}
+
+func (pnj Npc)stringify() map[string]string{
+	res:=make(map[string]string)
+	res["pv"]=strconv.Itoa(pnj.pv)
+	res["x"]=strconv.Itoa(pnj.x)
+	res["y"]=strconv.Itoa(pnj.y)
+	res["vitesse"]=strconv.Itoa(pnj.vitesse)
+	res["type"]=strconv.Itoa(pnj.typ)
+	res["damage"]=strconv.Itoa(pnj.damage)
+	res["offensive"]=strconv.FormatBool(pnj.offensive)
+	res["vue"]=strconv.Itoa(pnj.vue)
+	res["portee"]=strconv.Itoa(pnj.portee)
+	res["TeamFlag"]=strconv.FormatBool(pnj.TeamFlag)
+	res["PlayerUUID"]=pnj.PlayerUUID
+	return res
+}
+
+//Ajoute le npc au buffer de communication
+func (pnj Npc) Transmit(id string){
+	arr:=pnj.stringify()
+	for k,e := range arr{
+		data.AddNewAction(constants.ACTION_NEWNPC,id,k,e)
+	}
 }
 
 //Npc
@@ -67,17 +98,18 @@ func (pnj Npc) GetPv() int{
 	return pnj.pv
 }
 
-func (pnj *Npc)deplacement(path []carte.Case, wg *sync.WaitGroup){
-	if(path!=nil){
+func (pnj *Npc)deplacement(path []carte.Case, wg *sync.WaitGroup) {
+	if(path!=nil) {
 		ndep:=len(path)-1
 		vdep:=(1000000000/pnj.vitesse)
-		for i:=0;i<ndep;i++{
+		for i:=0;i<=ndep;i++{
 			time.Sleep(time.Duration(vdep))
 			pnj.x=path[i].GetPathX()
 			pnj.y=path[i].GetPathY()
-			//fmt.Println("déplacement")
 		}
-		wg.Done()
+		if (wg != nil) {
+			wg.Done()
+		}
 	}
 }
 func (pnj *Npc) MoveTo(c carte.Carte, destx int, desty int, wg *sync.WaitGroup) []carte.Case{
@@ -91,6 +123,9 @@ func Abs(x int) int {
 		return -x
 	}
 	return x
+}
+func (pnj Npc)GetSpeed() int{
+	return pnj.vitesse
 }
 
 // Renvoie vrai si le villageois peut accéder à une case pour recolter la ressource en x,y
@@ -108,7 +143,7 @@ func RecoltePossible(c carte.Carte, x int, y int) bool{
 
 
 //Recolte de ressources (se deplace vers la ressource la plus proche dans la vue du villageois)
-func DeplacementRecolte(vill Npc, c carte.Carte){
+func (vill *Npc)DeplacementRecolte(c carte.Carte){
 	var i, j int
 	var ress *ressource.Ressource
 	distance := 2000
@@ -164,7 +199,7 @@ func DeplacementRecolte(vill Npc, c carte.Carte){
 	// on attends que le villageois ait finit son déplacement
 	var wg sync.WaitGroup
 	wg.Add(1)
-    go (&vill).MoveTo(c, posRecolteVillX, posRecolteVillY, &wg)
+    go vill.MoveTo(c, posRecolteVillX, posRecolteVillY, &wg)
 	wg.Wait()
 
     // fmt.Printf("posRecolteVillX : %d, posRecolteVillY : %d\n", posRecolteVillX, posRecolteVillY)
@@ -177,9 +212,9 @@ func DeplacementRecolte(vill Npc, c carte.Carte){
 }
 
 // Effectue la recolte de la ressource (x par seconde)
-func Recolte(vill Npc, c carte.Carte, ress *ressource.Ressource,
+func Recolte(vill *Npc, c carte.Carte, ress *ressource.Ressource,
 	posRecolteVillX int, posRecolteVillY int){
-	uptimeTicker := time.NewTicker(1 * time.Second)
+	uptimeTicker := time.NewTicker(time.Duration(1 * time.Second))
 	tps_ecoule := 0
 	for {
 		// La ressource est épuisée ou le villageois est mort

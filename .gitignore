@@ -4,8 +4,10 @@
 # General
 .log
 
-
-server\.exe
-
 *.exe
 *.png
+
+perso/
+*.txt
+
+server

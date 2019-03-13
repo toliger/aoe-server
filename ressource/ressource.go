@@ -1,9 +1,10 @@
 package ressource
 
-//import "fmt"
+import "git.unistra.fr/AOEINT/server/constants"
+import "git.unistra.fr/AOEINT/server/data"
+import "strconv"
 
 type Ressource struct{
-
     X int
     Y int
     Pv int
@@ -29,6 +30,22 @@ func Create(class string, x int, y int) Ressource {
             res=new(x, y, 100,  0) //water
     }
     return res
+}
+
+func (res Ressource)stringify()map[string]string{
+	result:=make(map[string]string)
+	result["x"]=strconv.Itoa(res.X)
+	result["y"]=strconv.Itoa(res.Y)
+	result["pv"]=strconv.Itoa(res.Pv)
+	result["type"]=strconv.Itoa(res.Typ)
+	return result
+}
+
+func (res Ressource) Transmit(id string){
+	arr:=res.stringify()
+	for k,e := range arr{
+		data.AddNewAction(constants.ACTION_NEWRESSOURCE,id,k,e)
+	}
 }
 
 func (res Ressource)GetType() int{

@@ -2,7 +2,6 @@ package tuile
 
 import batiment "git.unistra.fr/AOEINT/server/batiment"
 import ressource "git.unistra.fr/AOEINT/server/ressource"
-
 type Tuile struct{//Batiment, ressource ou vide
 	typ int //0 vide 1 batiment 2 ressource
 	bat *batiment.Batiment

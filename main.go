@@ -1,24 +1,25 @@
 package main
 
-import "fmt"
-//import npc "server/npc"
-//import tests "server/test"
-import "git.unistra.fr/AOEINT/server/affichage"
-import simulateClient "git.unistra.fr/AOEINT/server/falseclient"
-import "git.unistra.fr/AOEINT/server/game"
-//import tests "server/test"
-
+import (
+  "fmt"
+  "git.unistra.fr/AOEINT/server/game"
+  d "git.unistra.fr/AOEINT/server/data"
+  "git.unistra.fr/AOEINT/server/client"
+)
 
 func main() {
 	var g game.Game
+	d.IdMap=d.NewObjectID()
+	d.InitiateActionBuffer()
 	g.GameRunning=true
 	(&g).GetPlayerData()
 	data:=game.ExtractData()
 	(&g).GenerateMap(data)
 	fmt.Println("Data struct extracted from json:",data)
-
-	//On lance le faux client pour tester les fonctions de liaison
-	go simulateClient.StartClient(&(g.GameRunning))
-	affichage.ImprimerCarte(g.Carte)
+	fmt.Println("buffer",d.ActionBuffer)
+	// On lance le faux client pour tester les fonctions de liaison
 	(&g).GameLoop()
+
+	// Listen
+	client.InitListenerServer(&g)
 }

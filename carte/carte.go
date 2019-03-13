@@ -4,6 +4,8 @@ import tuile "git.unistra.fr/AOEINT/server/carte/tuile"
 import "fmt"
 import "git.unistra.fr/AOEINT/server/batiment"
 import "git.unistra.fr/AOEINT/server/ressource"
+import "git.unistra.fr/AOEINT/server/data"
+
 type Carte struct{
 	size int
 	matrice[][] tuile.Tuile
@@ -40,6 +42,8 @@ func (c Carte)AddNewRessource(res *ressource.Ressource) bool{
 		return false
 	}
 	(c.GetTile(x,y)).AddRessource(res)
+	id:=(&data.IdMap).AddObject(res)
+	(*res).Transmit(id)
 	return true
 }
 //Ajouter un Batiment a la carte
@@ -58,6 +62,8 @@ func (c Carte)AddNewBuilding(bat *batiment.Batiment) bool{
 			(c.GetTile(x+i,y+j)).AddBuilding(bat)
 		}
 	}
+	id:=(&data.IdMap).AddObject(bat)
+	(*bat).Transmit(id)
 	return true
 }
 
@@ -120,6 +126,7 @@ func shortestPathAux(weightMatrix [][]int,c Carte, x int, y int, currX *int, cur
 			path[step-1]=(Case{x,y,*(c.GetTile(x,y))})
 			*currX=x
 			*currY=y
+			*modif=true
 			if(step==1){
 				return true
 			}
