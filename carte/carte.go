@@ -6,11 +6,13 @@ import "git.unistra.fr/AOEINT/server/batiment"
 import "git.unistra.fr/AOEINT/server/ressource"
 import "git.unistra.fr/AOEINT/server/data"
 
+//Carte : Structure detaillant une carte de tuiles
 type Carte struct{
 	size int
 	matrice[][] tuile.Tuile
 }
-//Création de la Carte
+
+//New : Creation d'une carte de taille n [int]
 func New(size int) Carte{
 	var mat Carte
 	mat.size=size
@@ -21,20 +23,22 @@ func New(size int) Carte{
 	}
 	return mat
 }
-// Verifie si la cade est vide
+
+//IsEmpty : Verifie si la cade est vide
 func (c Carte) IsEmpty(x int, y int) bool{
 		return c.matrice[x][y].GetType() ==0
 }
 
+//GetSize : Renvoie la taille d'une carte
 func (c Carte)GetSize() int{
 	return c.size
 }
 
-//Renvoie la tuile pour la position demandee
+//GetTile : Renvoie la tuile pour la position demandee
 func (c Carte) GetTile(x int, y int) *tuile.Tuile{
 	return &(c.matrice[x][y])
 }
-//Ajouter une ressource a la carte
+//AddNewRessource : Ajoute une ressource(pointee) a la carte
 func (c Carte)AddNewRessource(res *ressource.Ressource) bool{
 	x:=(*res).GetX()
 	y:=(*res).GetY()
@@ -42,10 +46,11 @@ func (c Carte)AddNewRessource(res *ressource.Ressource) bool{
 		return false
 	}
 	(c.GetTile(x,y)).AddRessource(res)
-	(&data.IdMap).AddObject(res)
+	id:=(&data.IDMap).AddObject(res)
+	(*res).Transmit(id)
 	return true
 }
-//Ajouter un Batiment a la carte
+//AddNewBuilding : Ajoute un batiment(pointe) a la carte
 func (c Carte)AddNewBuilding(bat *batiment.Batiment) bool{
 	x:=(*bat).GetX()
 	y:=(*bat).GetY()
@@ -61,11 +66,12 @@ func (c Carte)AddNewBuilding(bat *batiment.Batiment) bool{
 			(c.GetTile(x+i,y+j)).AddBuilding(bat)
 		}
 	}
-	(&data.IdMap).AddObject(bat)
+	id:=(&data.IDMap).AddObject(bat)
+	(*bat).Transmit(id)
 	return true
 }
 
-//Affichage de debuguage sur terminal
+//Debug : Affichage de debuguage sur terminal
 func Debug(mat Carte){
 	for i:=0;i<mat.size;i++{
 		for j:=0;j<mat.size;j++{
@@ -76,23 +82,28 @@ func Debug(mat Carte){
 	}
 }
 
+//Case : Structure d'une case, []Case correspond a un chemin
 type Case struct{
 	x int
 	y int
 	tile tuile.Tuile
 }
-//Getters
+
+//GetPathX : Renvoie la valeur X d'une case
 func (c Case) GetPathX() int{
 	return c.x
 }
 
+//GetPathY : Renvoie la valeur Y d'une case
 func (c Case) GetPathY() int{
 	return c.y
 }
 
+//GetPathTile : Get the tile designed by a case
 func (c Case) GetPathTile() tuile.Tuile{
 	return c.tile
 }
+
 func validCoords(x int,y int, size int) bool{
 	return ((x>=0 && x<size) && (y>=0 && y<size))
 }
@@ -107,7 +118,10 @@ func  printMatrix(weightMatrix [][]int){
 	}
 }
 
-const UNVISITED=-1 //case non parcourue
+//UNVISITED valeur de case non parcourue lors de l'attribution de poids
+const UNVISITED=-1
+
+//OBSTACLE valeur de case contenant un obstacle lors de l'attribution de poids
 const OBSTACLE=-2
 func attribuerPoids(weightMatrix [][]int,x int,y int, step int) [][]int{
 	if(validCoords(x,y,len(weightMatrix))){
@@ -168,7 +182,7 @@ func shortestPath(weightMatrix [][]int,destx int, desty int,c Carte,path []Case)
 }
 
 
-//Renvoie le chemin le plus court entre deux cases ou nil si inatteignable
+//GetPathFromTo : Renvoie le chemin le plus court entre deux cases ou nil si inatteignable
 func (c Carte) GetPathFromTo(x int, y int, destx int, desty int) []Case{
 	var path []Case
 	var weightMatrix [][]int
