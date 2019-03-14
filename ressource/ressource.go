@@ -70,50 +70,50 @@ func Create(class string, x int, y int) Ressource {
     return res
 }
 
-func (res Ressource)stringify(id string)map[string]string{
+func (ress Ressource)stringify(id string)map[string]string{
 	result:=make(map[string]string)
-	result["x"]=strconv.Itoa(res.X)
-	result["y"]=strconv.Itoa(res.Y)
-	result["pv"]=strconv.Itoa(res.GetPv())
-	result["type"]=strconv.Itoa(res.Typ)
+	result["x"]=strconv.Itoa(ress.X)
+	result["y"]=strconv.Itoa(ress.Y)
+	result["pv"]=strconv.Itoa(ress.GetPv())
+	result["type"]=strconv.Itoa(ress.Typ)
 	result["id"]=id
 	return result
 }
 
 //Transmit :
-func (res Ressource) Transmit(id string){
-	arr:=res.stringify(id)
+func (ress Ressource) Transmit(id string){
+	arr:=ress.stringify(id)
 	for k,e := range arr{
 		data.AddNewAction(constants.ActionNewRessource,id,k,e)
 	}
 }
 
 //GetType : return the ress type
-func (res Ressource)GetType() int{
-	return res.Typ
+func (ress Ressource)GetType() int{
+	return ress.Typ
 }
 
 //Damage inflige x degats a la ressource
-func (res *Ressource)Damage(x int){
-	res.Pv.sub(x)
+func (ress *Ressource)Damage(x int){
+	ress.Pv.sub(x)
 }
 
 //GetX : return position X
-func (res Ressource)GetX() int{
-	return res.X
+func (ress Ressource)GetX() int{
+	return ress.X
 }
 
 //GetY : return position Y
-func (res Ressource)GetY() int{
-	return res.Y
+func (ress Ressource)GetY() int{
+	return ress.Y
 }
 
 //GetPv : return PV
-func (res Ressource)GetPv() int{
-	return res.Pv.get()
+func (ress Ressource)GetPv() int{
+	return ress.Pv.get()
 }
 
 //IsHarvestable : is the ress harvestable?
-func (res Ressource)IsHarvestable() bool{
-	return res.Typ!=0
+func (ress Ressource)IsHarvestable() bool{
+	return ress.Typ!=0
 }
