@@ -8,8 +8,11 @@ import (
 	"time"
 	"sync"
 	"git.unistra.fr/AOEINT/server/data"
+	"strconv"
 )
 
+
+//Npc :
 type Npc struct {
     x int
     y int
@@ -25,14 +28,16 @@ type Npc struct {
 	TeamFlag bool
 	ressourceChannel chan []int
 	hasOrder bool //Si un déplacement a dejà été demandé par le joueur (disable auto movement)
+	PlayerUUID string
 }
-//Crée un nouveau Npc avec les paramètres fourni
-func New(x int,y int,pv int, vitesse int, vue int, portee int, offensive bool,size int, damage int,selectable bool, typ int,flag bool, channel chan []int) Npc{
-	pnj:=Npc{x,y,pv,vitesse,vue,portee,offensive,size,damage,selectable,typ,flag,channel,false}
+//New : new NPC
+func New(x int,y int,pv int, vitesse int, vue int, portee int, offensive bool,size int, damage int,selectable bool, typ int,flag bool, channel *chan []int) Npc{
+	pnj:=Npc{x,y,pv,vitesse,vue,portee,offensive,size,damage,selectable,typ,flag,*channel,false,""}
 	return pnj
 }
-//Crée un Npc du type fourni
-func Create(class string,x int,y int, flag bool,channel chan []int) Npc{
+
+//Create : generate a new NPC
+func Create(class string,x int,y int, flag bool,channel *chan []int) (Npc,string){
 	var pnj Npc
 	switch class{
 		case "soldier":
@@ -45,27 +50,56 @@ func Create(class string,x int,y int, flag bool,channel chan []int) Npc{
 			pnj=New(x,y,constants.VillagerPv,constants.VillagerVitesse,constants.VillagerVue,
 				constants.HarvesterVillPortee,false,constants.VillagerSize,constants.VillagerDamage,false,0,flag,channel)
 	}
-	(&data.IdMap).AddObject(&pnj)
-    return pnj
+	id:=(&data.IDMap).AddObject(&pnj)
+	//pnj.Transmit(id)
+    return pnj,id
 }
 
-//Npc
+func (pnj Npc)stringify() map[string]string{
+	res:=make(map[string]string)
+	res["pv"]=strconv.Itoa(pnj.pv)
+	res["x"]=strconv.Itoa(pnj.x)
+	res["y"]=strconv.Itoa(pnj.y)
+	res["vitesse"]=strconv.Itoa(pnj.vitesse)
+	res["type"]=strconv.Itoa(pnj.typ)
+	res["damage"]=strconv.Itoa(pnj.damage)
+	res["offensive"]=strconv.FormatBool(pnj.offensive)
+	res["vue"]=strconv.Itoa(pnj.vue)
+	res["portee"]=strconv.Itoa(pnj.portee)
+	res["TeamFlag"]=strconv.FormatBool(pnj.TeamFlag)
+	res["PlayerUUID"]=pnj.PlayerUUID
+	return res
+}
+
+//Transmit : add the npc to the communcation's buffer
+func (pnj Npc) Transmit(id string){
+	arr:=pnj.stringify()
+	for k,e := range arr{
+		data.AddNewAction(constants.ActionNewNpc,id,k,e)
+	}
+}
+
+//GetX : return the position X
 func (pnj Npc) GetX() int{
 	return pnj.x
 }
 
+//GetY : return the position Y
 func (pnj Npc) GetY() int{
 	return pnj.y
 }
 
+//GetVue : return villager's vision
 func (pnj Npc) GetVue() int{
 	return pnj.vue
 }
 
+//GetType : return the villager's type
 func (pnj Npc) GetType() int{
 	return pnj.typ
 }
 
+//GetPv : return Pv
 func (pnj Npc) GetPv() int{
 	return pnj.pv
 }
@@ -84,23 +118,32 @@ func (pnj *Npc)deplacement(path []carte.Case, wg *sync.WaitGroup) {
 		}
 	}
 }
+
+//MoveTo : move a npc from his position(x,y) to another position(x,y)
 func (pnj *Npc) MoveTo(c carte.Carte, destx int, desty int, wg *sync.WaitGroup) []carte.Case{
-	path:= c.GetPathFromTo(pnj.x,pnj.y,destx,desty)
-	go pnj.deplacement(path, wg)
+	var path []carte.Case
+	path=nil
+	if(c.GetTile(destx,desty).GetType()==0){
+		path= c.GetPathFromTo(pnj.x,pnj.y,destx,desty)
+		go pnj.deplacement(path, wg)
+	}
 	return path
 }
 
+//Abs : utility function
 func Abs(x int) int {
 	if (x < 0) {
 		return -x
 	}
 	return x
 }
+
+//GetSpeed : return the npc's speed
 func (pnj Npc)GetSpeed() int{
 	return pnj.vitesse
 }
 
-// Renvoie vrai si le villageois peut accéder à une case pour recolter la ressource en x,y
+//RecoltePossible : return true if te villager can acces to a tile to harvest the resource in x, y
 func RecoltePossible(c carte.Carte, x int, y int) bool{
 	for i := x-1; i <= x+1; i++{
 		for j := y-1; j <= y+1; j++{
@@ -112,33 +155,31 @@ func RecoltePossible(c carte.Carte, x int, y int) bool{
 	return false
 }
 
-
-
-//Recolte de ressources (se deplace vers la ressource la plus proche dans la vue du villageois)
-func DeplacementRecolte(vill *Npc, c carte.Carte){
+//MoveHarvest : (move to the nreast ressource in the villagers's vision)
+func (pnj *Npc)MoveHarvest(c carte.Carte){
 	var i, j int
 	var ress *ressource.Ressource
 	distance := 2000
-	if (vill.GetType() == 2){
+	if (pnj.GetType() == 2){
 		fmt.Println("Un soldat ne peut pas recolter de ressources")
 		return
 	}
-	for i = vill.GetX() - vill.GetVue(); i <= vill.GetX() + vill.GetVue() || i > c.GetSize(); i++{
+	for i = pnj.GetX() - pnj.GetVue(); i <= pnj.GetX() + pnj.GetVue() || i > c.GetSize(); i++{
 		if (i < 0){
 			i = 0
 		}
-		for j = vill.GetY() - vill.GetVue(); j <= vill.GetY() + vill.GetVue() || j > c.GetSize(); j++{
+		for j = pnj.GetY() - pnj.GetVue(); j <= pnj.GetY() + pnj.GetVue() || j > c.GetSize(); j++{
 			if (j < 0){
 				j = 0
 			}
 			if (c.GetTile(i, j).GetType() == 2){
-				if (c.GetTile(i, j).GetRess().GetType() == 2 && vill.GetType() != 0){
+				if (c.GetTile(i, j).GetRess().GetType() == 2 && pnj.GetType() != 0){
 					fmt.Println("Seul un harvester peut recolter de la pierre")
 					continue;
 				}
-				if ((Abs(i - vill.GetX()) + Abs(j - vill.GetY())) < distance &&
+				if ((Abs(i - pnj.GetX()) + Abs(j - pnj.GetY())) < distance &&
 					RecoltePossible(c, i, j)){
-					distance = Abs(i - vill.GetX()) + Abs(j - vill.GetY())
+					distance = Abs(i - pnj.GetX()) + Abs(j - pnj.GetY())
 					ress = c.GetTile(i, j).GetRess()
 				}
 			}
@@ -156,9 +197,9 @@ func DeplacementRecolte(vill *Npc, c carte.Carte){
 
 	for i = ress.GetX() - constants.HarvesterVillPortee; i <= ress.GetX() + constants.HarvesterVillPortee; i++{
 		for j = ress.GetY() - constants.HarvesterVillPortee; j <= ress.GetY() + constants.HarvesterVillPortee; j++{
-			if ( (Abs(i - vill.GetX()) + Abs(j - vill.GetY()) ) < distance &&
+			if ( (Abs(i - pnj.GetX()) + Abs(j - pnj.GetY()) ) < distance &&
 				c.IsEmpty(i, j)){
-				distance = Abs(i - vill.GetX()) + Abs(j - vill.GetY())
+				distance = Abs(i - pnj.GetX()) + Abs(j - pnj.GetY())
 				posRecolteVillX = i
 				posRecolteVillY = j
 			}
@@ -171,60 +212,63 @@ func DeplacementRecolte(vill *Npc, c carte.Carte){
 	// on attends que le villageois ait finit son déplacement
 	var wg sync.WaitGroup
 	wg.Add(1)
-    go vill.MoveTo(c, posRecolteVillX, posRecolteVillY, &wg)
+    go pnj.MoveTo(c, posRecolteVillX, posRecolteVillY, &wg)
 	wg.Wait()
 
     // fmt.Printf("posRecolteVillX : %d, posRecolteVillY : %d\n", posRecolteVillX, posRecolteVillY)
-	// fmt.Printf("villX : %d, villY: %d\n", vill.GetX(), vill.GetY())
+	// fmt.Printf("villX : %d, villY: %d\n", pnj.GetX(), pnj.GetY())
 
 	// Le villageois se trouve bien à l'emplacement de la recolte?
-	if (vill.GetX() == (posRecolteVillX) && vill.GetY() == posRecolteVillY){
-		 go Recolte(vill, c, ress, posRecolteVillX, posRecolteVillY)
+	if (pnj.GetX() == (posRecolteVillX) && pnj.GetY() == posRecolteVillY){
+		 go (pnj).Harvest(c, ress, posRecolteVillX, posRecolteVillY)
 	}
 }
 
-// Effectue la recolte de la ressource (x par seconde)
-func Recolte(vill *Npc, c carte.Carte, ress *ressource.Ressource,
+//Harvest : Harvesting of the ressource
+func (pnj * Npc)Harvest(c carte.Carte, ress *ressource.Ressource,
 	posRecolteVillX int, posRecolteVillY int){
-	uptimeTicker := time.NewTicker(1 * time.Second)
-	tps_ecoule := 0
+	uptimeTicker := time.NewTicker(time.Duration(1 * time.Second))
+	tpsEcoule := 0
 	for {
 		// La ressource est épuisée ou le villageois est mort
-		if (tps_ecoule == ress.GetPv() || vill.GetPv() == 0){
+		if (tpsEcoule == ress.GetPv() || pnj.GetPv() == 0){
 			break
 		}
 		// Le villageois ne se trouve plus à l'emplacement de la ressource
-		if (vill.GetX() != (posRecolteVillX) || vill.GetY() != posRecolteVillY){
+		if (pnj.GetX() != (posRecolteVillX) || pnj.GetY() != posRecolteVillY){
 			break;
 		}
 		select {
 		case <-uptimeTicker.C:
-			tps_ecoule++
+			tpsEcoule++
 			switch ress.GetType(){
 			case 1:
 				tabRessources:=make([]int,3) //0 bois 1 pierre 2 nourriture
-				tabRessources[0]=vill.damage
-				(*ress).Pv-=vill.damage
-				if((*ress).Pv<=0){
+				if((*ress).GetPv()<=0){
 					c.GetTile(ress.X,ress.Y).Empty()
+				}else{
+					ress.Damage(pnj.damage)
+					tabRessources[0]=pnj.damage
+					pnj.ressourceChannel<-tabRessources
 				}
-				vill.ressourceChannel<-tabRessources
 			case 2:
 				tabRessources:=make([]int,3) //0 bois 1 pierre 2 nourriture
-				tabRessources[1]=vill.damage
-				(*ress).Pv-=vill.damage
-				if((*ress).Pv<=0){
+				if((*ress).GetPv()<=0){
 					c.GetTile(ress.X,ress.Y).Empty()
+				}else{
+					ress.Damage(pnj.damage)
+					tabRessources[1]=pnj.damage
+					pnj.ressourceChannel<-tabRessources
 				}
-				vill.ressourceChannel<-tabRessources
 			case 3:
 				tabRessources:=make([]int,3) //0 bois 1 pierre 2 nourriture
-				tabRessources[2]=vill.damage
-				(*ress).Pv-=vill.damage
-				if((*ress).Pv<=0){
+				if((*ress).GetPv()<=0){
 					c.GetTile(ress.X,ress.Y).Empty()
+				}else{
+					tabRessources[2]=pnj.damage
+					ress.Damage(pnj.damage)
+					pnj.ressourceChannel<-tabRessources
 				}
-				vill.ressourceChannel<-tabRessources
 			default:
 				fmt.Println("recolte:ressource inconnue")
 			}

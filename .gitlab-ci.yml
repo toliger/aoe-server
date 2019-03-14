@@ -1,14 +1,11 @@
-image: golang:alpine
+image: golang:latest
 
 stages:
   - test
 
 before_script:
   - export GO111MODULE=on
-  - export PKG_LIST=$(shell go list git.unistra.fr/AOEINT/server/... | grep -v /vendor/)
-  - apk add git gcc libc-dev
   - go mod download
-  - go get -u golang.org/x/lint/golint
 
 unit_tests:
   stage: test
@@ -23,4 +20,16 @@ race_detector:
 lint_code:
   stage: test
   script:
+    - go get -u golang.org/x/lint/golint
     - golint -set_exit_status ./...
+
+cover:
+  stage: test
+  script:
+    -  go test -cover ./...
+
+errcheck:
+  stage: test
+  script:
+    - go get -u github.com/kisielk/errcheck
+    - errcheck ./...

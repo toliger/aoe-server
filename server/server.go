@@ -1,4 +1,5 @@
-//Package server contient toutes les fonctions pour les echanges de donnees client/serveur
+// Package server :
+// All for the clients interactions 
 package server
 
 import (
@@ -18,98 +19,83 @@ import (
 )
 
 ///////////////////////////////////////////////////////////////////////////////
-// Général
+// General
 ///////////////////////////////////////////////////////////////////////////////
 
 var server *grpc.Server
 
-type ServerArguments struct {
-	g *game.Game
+// Arguments :
+// Data structure used in the gRPC method's
+type Arguments struct {
+	g *game.Game 
 	UpdateBuffer []pb.UpdateAsked
 }
 
-// Fonction demarrant la gestion des intéractions gRPC
-// Fonction bloquante, à lancer en concurrence
+// InitListenerServer :
+//	Function starting gRPC interactions
+//	Blocking function
 func InitListenerServer(g *game.Game) {
 
-	// Initialisation du socket d'écoute réseau
-	// TODO Utiliser une variable d'environement pour pouvoir redéfinir le port
+	// Initialization of the socket 
+	// TODO Use of a variable of environment to set de port
 	lis, err := net.Listen("tcp", ":50010")
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
 
-	// Initialisation du serveur gRPC
-	arg := ServerArguments{g: g}
+	// Initialization of gRPC server
+	arg := Arguments{g: g}
 	server = grpc.NewServer()
 
-	// Enregistement des services Hello, Map et Interactions sur le serveur
+	// Registration of services Hello and Interactions
 	pb.RegisterHelloServer(server, &arg)
 	pb.RegisterInteractionsServer(server, &arg)
 
-	// Mise en écoute du serveur
+	// Make listen the server
 	if err := server.Serve(lis); err != nil {
 		log.Fatalf("failed to serve gRPC: %v", err)
 	}
 }
 
-// Fonction arrêtant la gestion des intéractions gRPC (arrêt propre)
+// StopListenerServer :
+// Function stopping the gRPC interactions (clean stop)
 func StopListenerServer() {
 	server.GracefulStop()
 }
 
-// Fonction arrêtant la gestion des intéractions gRPC (arrêt brutal)
+// KillListenerServer :
+// Function stopping the gRPC interactions (dirty stop)
 func KillListenerServer() {
 	server.Stop()
 }
 
-
 ///////////////////////////////////////////////////////////////////////////////
-// Serveur -> Client
-///////////////////////////////////////////////////////////////////////////////
-
-//Envoie toutes les donnees necessaires à la mise en place de la partie en debut de jeu
-//A envoyer: donnees des joueurs, structure data(map), entites de depart..
-func InitGameState() {}
-
-//Maj les ressources du joueur à partir de l'uid correspondant
-func updatePlayerRessources(playerUID string,stone int,wood int,food int){}
-
-//Maj: Indique la destruction d'un Batiment au client pour qu'il soit retire
-func BuildingDestroyed(playerUID string,x int, y int){
-
-}
-
-//Permet de Maj la liste des npcs visibles en indiquant leur mort au client
-func PlayerNpcsDied(playerUID string,npc []npc.Npc){
-
-}
-
-///////////////////////////////////////////////////////////////////////////////
-// Client -> Serveur
+// Client -> Server
 ///////////////////////////////////////////////////////////////////////////////
 
-// Fonction du service Hello: SayHello
-func (s *ServerArguments) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
+// SayHello :
+// Function of the service Hello: SayHello
+func (s *Arguments) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
 	fmt.Println("Reception d'un HelloRequest et envoie d'un HelloReply")
 	return &pb.HelloReply{}, nil
 }
 
-// Fonction du service Interactions: RightClick
-func (s *ServerArguments) RightClick(ctx context.Context, in *pb.RightClickRequest) (*pb.RightClickReply, error) {
+// RightClick :
+// Function of the service Interactions: RightClick
+func (s *Arguments) RightClick(ctx context.Context, in *pb.RightClickRequest) (*pb.RightClickReply, error) {
 
-	// Boucle pour chaque entité
+	// Loop on each entity
 	var tmpCoord []*pb.Coordinates
 	sendPath := make(map[string]*pb.RPCoordinates, len(in.EntitySelectionUUID))
 	for i:=0 ; i<len(in.EntitySelectionUUID) ; i++ {
 
-		// Obtention de l'entité
-		entity := data.IdMap.GetObjectFromId(in.EntitySelectionUUID[i]).(*npc.Npc)
+		// Get the entity
+		entity := data.IDMap.GetObjectFromID(in.EntitySelectionUUID[i]).(*npc.Npc)
 
-		// Obtention du path pour l'entité
+		// Get the path of the entity
 		path := entity.MoveTo(s.g.Carte, int(in.Point.X), int(in.Point.Y), nil)
 
-		// Affectation au tableau
+		// Creating the array for the message
 		if len(path) != 0 {
 			tmpCoord = make([]*pb.Coordinates, len(path))
 			tmp := make([]pb.Coordinates, len(path))
@@ -123,11 +109,11 @@ func (s *ServerArguments) RightClick(ctx context.Context, in *pb.RightClickReque
 			tmpCoord[0] = &pb.Coordinates{X: int32(-1), Y: int32(-1)}
 		}
 
-		// Lien au reply
+		// Linking the array to the message
 		sendPath[in.EntitySelectionUUID[i]] = &pb.RPCoordinates{Coord: tmpCoord}
 	}
 
-	// Mise à jour du UpdateBuffer
+	// Put data in UpdateBuffer
 	for uuid, rpcoord := range sendPath {
 		lenght := len(rpcoord.Coord)
 		if lenght > 1 {
@@ -145,9 +131,10 @@ func (s *ServerArguments) RightClick(ctx context.Context, in *pb.RightClickReque
 	return &pb.RightClickReply{Path: sendPath}, nil
 }
 
-// Fonction du service Interactions: AskUpdate
-func (s *ServerArguments) AskUpdate(ctx context.Context, in *pb.AskUpdateRequest) (*pb.AskUpdateReply, error) {
-
+// AskUpdate :
+// Function of the service Interactions: AskUpdate
+func (s *Arguments) AskUpdate(ctx context.Context, in *pb.AskUpdateRequest) (*pb.AskUpdateReply, error) {
+	
 	toSend := make([]*pb.UpdateAsked, 0)
 
 	if s.UpdateBuffer != nil {
@@ -155,31 +142,6 @@ func (s *ServerArguments) AskUpdate(ctx context.Context, in *pb.AskUpdateRequest
 			toSend = append(toSend, &s.UpdateBuffer[i])
 		}
 	}
-
+	
 	return &pb.AskUpdateReply{Array: toSend}, nil
-}
-
-//demande la creation d'un batiment à partir de l'uid du joueur, une position et un type de batiment
-//class: "auberge","caserne","etabli"
-func TryToBuild(playerUID string, x int, y int, class string) bool{
-	return false
-}
-
-//Demande le deplacement des npc selectionnes
-func MoveSelectedNpc(playerUID string, liste []npc.Npc, x int, y int){
-
-}
-
-//Demande la suppression par le joueur de l'un de ses batiments
-func EraseBuilding(playerUID string, x int, y int){
-
-}
-
-//Averti le serveur de la creation d'une entite: verification des ressources necessaires
-func AddNewNpc(playerUID string, x int, y int, typ int) bool{
-	return false
-}
-//Enleve des Pv a un batiment
-func  DamageBuilding(playerUID string, x int, y int, attack int){
-
 }
