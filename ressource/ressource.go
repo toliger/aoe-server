@@ -58,10 +58,11 @@ func (res Ressource)GetType() int{
 	return res.Typ
 }
 
+//Damage inflige x degats a la ressource
 func (res *Ressource)Damage(x int){
 	res.mutex.Lock()
+	defer res.mutex.Unlock()
 	res.Pv-=x
-	res.mutex.Unlock()
 }
 
 //GetX : return position X
@@ -77,9 +78,8 @@ func (res Ressource)GetY() int{
 //GetPv : return PV
 func (res Ressource)GetPv() int{
 	res.mutex.RLock()
-	pv:=res.Pv
-	res.mutex.RUnlock()
-	return pv
+	defer res.mutex.RUnlock()
+	return res.Pv
 }
 
 //IsHarvestable : is the ress harvestable?
