@@ -19,10 +19,10 @@ type safeNumber struct {
 }
 
 //InitiatePV remplis la structure pv d'une ressource
-func (res *Ressource)InitiatePV(){
+func (ress *Ressource)InitiatePV(){
 	i := &safeNumber{}
 	i.set(constants.RessourcePv)
-	res.Pv=i
+	ress.Pv=i
 }
 
 func (i *safeNumber) get() int {
@@ -49,25 +49,25 @@ func new(x int, y int, pv *safeNumber, typ int) Ressource {
 
 //Create : generate a new npc
 func Create(class string, x int, y int) Ressource {
-    var res Ressource
+    var ress Ressource
 	i := &safeNumber{}
     switch class{
         case "water":
 			i.set(100)
-            res=new(x, y, i, 0)
+            ress=new(x, y, i, 0)
         case "tree":
 			i.set(100)
-            res=new(x, y, i,  1)
+            ress=new(x, y, i,  1)
         case "rock":
 			i.set(100)
-            res=new(x, y, i,  2)
+            ress=new(x, y, i,  2)
         case "food":
 			i.set(100)
-            res=new(x, y, i, 3)
+            ress=new(x, y, i, 3)
         default:
-            res=new(x, y, i,  0) //water
+            ress=new(x, y, i,  0) //water
     }
-    return res
+    return ress
 }
 
 func (ress Ressource)stringify(id string)map[string]string{

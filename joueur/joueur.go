@@ -101,6 +101,11 @@ func (j Joueur) GetNpc(i int) npc.Npc{
 	return *(j.entities[i])
 }
 
+//GetBatiment :
+func (j Joueur) GetBatiment(i int) batiment.Batiment{
+	return *(j.batiments[i])
+}
+
 //Adding ressources
 
 //AddStone :
