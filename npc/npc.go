@@ -243,7 +243,7 @@ func (pnj * Npc)Harvest(c carte.Carte, ress *ressource.Ressource,
 				if((*ress).Pv<=0){
 					c.GetTile(ress.X,ress.Y).Empty()
 				}else{
-					(*ress).Pv-=pnj.damage
+					ress.Damage(pnj.damage)
 					tabRessources[0]=pnj.damage
 					pnj.ressourceChannel<-tabRessources
 				}
@@ -252,7 +252,7 @@ func (pnj * Npc)Harvest(c carte.Carte, ress *ressource.Ressource,
 				if((*ress).Pv<=0){
 					c.GetTile(ress.X,ress.Y).Empty()
 				}else{
-					(*ress).Pv-=pnj.damage
+					ress.Damage(pnj.damage)
 					tabRessources[1]=pnj.damage
 					pnj.ressourceChannel<-tabRessources
 				}
@@ -262,7 +262,7 @@ func (pnj * Npc)Harvest(c carte.Carte, ress *ressource.Ressource,
 					c.GetTile(ress.X,ress.Y).Empty()
 				}else{
 					tabRessources[2]=pnj.damage
-					(*ress).Pv-=pnj.damage
+					ress.Damage(pnj.damage)
 					pnj.ressourceChannel<-tabRessources
 				}
 			default:
