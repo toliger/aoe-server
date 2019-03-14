@@ -6,7 +6,6 @@ stages:
 before_script:
   - export GO111MODULE=on
   - go mod download
-  - go get -u golang.org/x/lint/golint
 
 unit_tests:
   stage: test
@@ -21,4 +20,5 @@ race_detector:
 lint_code:
   stage: test
   script:
+    - go get -u golang.org/x/lint/golint
     - golint -set_exit_status ./...
