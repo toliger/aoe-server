@@ -107,8 +107,8 @@ func (g *Game)GenerateMap(data Data){
 	if(len((*g).Joueurs)==2){//Si Seulement 2 Joueurs fournis, fait en sorte de leur donner des bases adverses
 		//ajout des npc de base
 		pnj,id:=npc.Create("villager",10,10,g.Joueurs[0].GetFaction(),(&(g.Joueurs[0])).GetChannel())
-		g.Joueurs[0].AddNpc(&pnj)
 		pnj.Transmit(id)
+		g.Joueurs[0].AddNpc(&pnj)
 		(*g).Joueurs[0].AddBuilding(&data.Buildings[0])
 		if((*g).Carte.AddNewBuilding(&(data.Buildings[0]))==false){
 			fmt.Println("Erreur lors du placement d'une auberge")

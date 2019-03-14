@@ -17,19 +17,21 @@ const (
 	ActionDelNpc = 1
 	// ActionHarmNpc degats infliges a un npc
 	ActionHarmNpc = 2
-	
+
 //PLAYER
 //ActionPlayerRessource maj d'un joueur
 	ActionPlayerRessource = 3
-	
+
 //RESSOURCE
-//ActionHarmRessource degats infliges a une ressource
+	//ActionHarmRessource degats infliges a une ressource
 	ActionHarmRessource = 4
 	//ActionDelRessource destruction d'une ressource
 	ActionDelRessource = 5
 	//ActionNewRessource creation ressource
 	ActionNewRessource = 6
-	
+	//RessourcePv
+	RessourcePv = 100
+
 //BUILDING
 	//ActionHarmBuilding degats infliges a un batiment
 	ActionHarmBuilding = 7
@@ -37,7 +39,7 @@ const (
 	ActionDestroyBuilding = 8
 	//ActionNewBuilding creation batiment
 	ActionNewBuilding = 9
-	
+
 //GAME
 	//ActionEndOfGame fin de jeu
 	ActionEndOfGame = 10
@@ -116,7 +118,7 @@ const (
 //DataFileName : chemin vers les données de jeu
 	DataFileName = "server/data/Gamedata.json"
 	//Valeurs par defaut uniquement si non fournies en variables d'environnement (4*)
-	
+
 	//GameUUIDDef : id de partie par defaut
 	GameUUIDDef = "DEFAULT"
 	//APIHostDef : Valeur api par defaut
@@ -124,7 +126,7 @@ const (
 	//TOKENDef valeur token par defaut
 	TOKENDef = "DEFAULT"
 	//TOKENSecretDef valeur token secret par defaut
-	TOKENSecretDef = "DEFAULT" 
+	TOKENSecretDef = "DEFAULT"
 	//RessourceBufferSize taille du buffer de ressources
 	RessourceBufferSize=50
 )

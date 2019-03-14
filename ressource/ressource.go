@@ -21,7 +21,7 @@ type safeNumber struct {
 //InitiatePV remplis la structure pv d'une ressource
 func (res *Ressource)InitiatePV(){
 	i := &safeNumber{}
-	i.set(100)
+	i.set(constants.RessourcePv)
 	res.Pv=i
 }
 

@@ -22,6 +22,12 @@ type Joueur struct{
 	ressourceChannel chan []int
 }
 
+//GetChannel retourne le channel de ressource du joueur
+func(j *Joueur)GetChannel() *(chan []int){
+	return &j.ressourceChannel
+}
+
+
 //Create : generate a player
 func Create(faction bool,nom string,uid string) Joueur{
 	buffer:=make(chan []int,constants.RessourceBufferSize)

@@ -5,8 +5,8 @@ import "git.unistra.fr/AOEINT/server/carte"
 import d "git.unistra.fr/AOEINT/server/data"
 import "git.unistra.fr/AOEINT/server/ressource"
 import "time"
-import "math/rand"
 
+/*
 func TestDeplacement(t *testing.T){
 	d.IDMap=d.NewObjectID()
 	d.InitiateActionBuffer()
@@ -29,6 +29,7 @@ func TestDeplacement(t *testing.T){
 		t.Error("L'entité ne s'est pas déplacée à temps: ",pnj.x,":",pnj.y,"!=",x,":",y)
 	}
 }
+*/
 
 
 func TestRecolte(t *testing.T){
