@@ -3,6 +3,7 @@ package ressource
 import "git.unistra.fr/AOEINT/server/constants"
 import "git.unistra.fr/AOEINT/server/data"
 import "strconv"
+import "sync"
 
 //Ressource :
 type Ressource struct{
@@ -10,10 +11,11 @@ type Ressource struct{
     Y int
     Pv int
     Typ int // 0:water, 1:tree, 2:rock, 3 food ...
+	mutex *sync.Mutex
 }
 
 func new(x int, y int, pv int, typ int) Ressource {
-    return (Ressource{x,y,pv,typ})
+    return (Ressource{x,y,pv,typ,&sync.Mutex{}})
 }
 
 //Create : generate a new npc
@@ -54,6 +56,12 @@ func (res Ressource) Transmit(id string){
 //GetType : return the ress type
 func (res Ressource)GetType() int{
 	return res.Typ
+}
+
+func (res *Ressource)Damage(x int){
+	res.mutex.Lock()
+	res.Pv-=x
+	res.mutex.Unlock()
 }
 
 //GetX : return position X
