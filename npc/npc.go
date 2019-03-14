@@ -240,7 +240,7 @@ func (pnj * Npc)Harvest(c carte.Carte, ress *ressource.Ressource,
 			switch ress.GetType(){
 			case 1:
 				tabRessources:=make([]int,3) //0 bois 1 pierre 2 nourriture
-				if((*ress).Pv<=0){
+				if((*ress).GetPv()<=0){
 					c.GetTile(ress.X,ress.Y).Empty()
 				}else{
 					ress.Damage(pnj.damage)
@@ -249,7 +249,7 @@ func (pnj * Npc)Harvest(c carte.Carte, ress *ressource.Ressource,
 				}
 			case 2:
 				tabRessources:=make([]int,3) //0 bois 1 pierre 2 nourriture
-				if((*ress).Pv<=0){
+				if((*ress).GetPv()<=0){
 					c.GetTile(ress.X,ress.Y).Empty()
 				}else{
 					ress.Damage(pnj.damage)
@@ -258,7 +258,7 @@ func (pnj * Npc)Harvest(c carte.Carte, ress *ressource.Ressource,
 				}
 			case 3:
 				tabRessources:=make([]int,3) //0 bois 1 pierre 2 nourriture
-				if((*ress).Pv<=0){
+				if((*ress).GetPv()<=0){
 					c.GetTile(ress.X,ress.Y).Empty()
 				}else{
 					tabRessources[2]=pnj.damage
