@@ -9,7 +9,7 @@ import (
 
 func main() {
 	var g game.Game
-	d.IdMap=d.NewObjectID()
+	d.IDMap=d.NewObjectID()
 	d.InitiateActionBuffer()
 	g.GameRunning=true
 	(&g).GetPlayerData()
@@ -18,7 +18,7 @@ func main() {
 	fmt.Println("Data struct extracted from json:",data)
 	fmt.Println("buffer",d.ActionBuffer)
 	// On lance le faux client pour tester les fonctions de liaison
-	(&g).GameLoop()
+	go (&g).GameLoop()
 
 	// Listen
 	client.InitListenerServer(&g)

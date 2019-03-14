@@ -3,18 +3,19 @@ package data
 import "strconv"
 import "git.unistra.fr/AOEINT/server/constants"
 
+//Action classe detaillant une action de ActionBuffer
 type Action struct{
 	Description map[string]map[string]string
 }
-//variable détaillant les actions à envoyer au client 
+//ActionBuffer variable détaillant les actions à envoyer au client 
 //	Exemple: [type:int].Description["UUID"]["Key"]="value"  
 var ActionBuffer []Action
 
-//Initialisation du buffer d'actions
+//InitiateActionBuffer Initialisation du buffer d'actions
 func InitiateActionBuffer(){
-	ActionBuffer=make([]Action,constants.MAXACTIONS)
+	ActionBuffer=make([]Action,constants.MaxActions)
 }
-//Ajoute une Action(type int, clee string, description string) au buffer
+//AddNewAction Ajoute une Action(type int, clee string, description string) au buffer
 func AddNewAction(typ int,uuid string, key string, description string){
 	
 	elem, ok := ActionBuffer[typ].Description[uuid]
@@ -28,57 +29,59 @@ func AddNewAction(typ int,uuid string, key string, description string){
 	ActionBuffer[typ].Description[uuid][key]=description
 }
 
+//CleanActionBuffer vide le buffer ActionBuffer
 func CleanActionBuffer(){
 	ActionBuffer=nil //throw to garbage collector
 	InitiateActionBuffer()
 }
 
-//Structure générique associant chaque batiment/ressource/pnj à son id
-type ObjectId struct{
-	IdOffset int
-	IdArray map[string]interface{}
+//ObjectID Structure générique associant chaque batiment/ressource/pnj à son id
+type ObjectID struct{
+	IDOffset int
+	IDArray map[string]interface{}
 }
-//Crée une instance ObjectId
-func NewObjectID() ObjectId{
-	res:=(ObjectId{0,nil})
-	res.IdArray=make(map[string]interface{},constants.MAXOBJECTS)
+//NewObjectID Cree une instance ObjectId
+func NewObjectID() ObjectID{
+	res:=(ObjectID{0,nil})
+	res.IDArray=make(map[string]interface{},constants.MAXOBJECTS)
 	return res
 }
 
-var IdMap ObjectId
+//IDMap buffer associant id et objet
+var IDMap ObjectID
 
-//Fonction  permettant d'ajouter un objet générique à ObjectId. Retourne l'id de l'objet
-func (o *ObjectId)AddObject(obj interface{}) string{
-	key:=strconv.Itoa((*o).IdOffset)
-	(*o).IdArray[key]=obj
-	(*o).IdOffset++
+//AddObject Fonction  permettant d'ajouter un objet générique à ObjectId. Retourne l'id de l'objet
+func (o *ObjectID)AddObject(obj interface{}) string{
+	key:=strconv.Itoa((*o).IDOffset)
+	(*o).IDArray[key]=obj
+	(*o).IDOffset++
 	return key
 }
 
-//Fonction permettant de retirer un objet à partir de son id
-func (o *ObjectId) DeleteObjectFromId(id string){
-	delete((*o).IdArray,id)
+//DeleteObjectFromID Fonction permettant de retirer un objet à partir de son id
+func (o *ObjectID) DeleteObjectFromID(id string){
+	delete((*o).IDArray,id)
 }
 
-//Retire un objet de la liste à partir de son propre pointeur
-func (o *ObjectId) DeleteObject(obj interface{}) bool{
-	for i,e := range (*o).IdArray{
+//DeleteObject Retire un objet de la liste à partir de son propre pointeur
+func (o *ObjectID) DeleteObject(obj interface{}) bool{
+	for i,e := range (*o).IDArray{
 		if(e==obj){
-			delete((*o).IdArray,i)
+			delete((*o).IDArray,i)
 			return true
 		}
 	}
 	return false
 }
 
-//Renvoie un pointeur sur l'obj correspondant à l'id fourni
-func (o *ObjectId) GetObjectFromId(id string) interface{}{
-	return (*o).IdArray[id]
+//GetObjectFromID Renvoie un pointeur sur l'obj correspondant à l'id fourni
+func (o *ObjectID) GetObjectFromID(id string) interface{}{
+	return (*o).IDArray[id]
 }
 
-//Renvoie l'id d'un objet à partir de son pointeur
-func (o *ObjectId) GetIdFromObject(obj interface{}) string{
-	for i,e:=range (*o).IdArray{
+//GetIDFromObject Renvoie l'id d'un objet à partir de son pointeur
+func (o *ObjectID) GetIDFromObject(obj interface{}) string{
+	for i,e:=range (*o).IDArray{
 		if(e==obj){
 			return i
 		}

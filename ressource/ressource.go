@@ -4,17 +4,19 @@ import "git.unistra.fr/AOEINT/server/constants"
 import "git.unistra.fr/AOEINT/server/data"
 import "strconv"
 
+//Ressource :
 type Ressource struct{
     X int
     Y int
     Pv int
     Typ int // 0:water, 1:tree, 2:rock, 3 food ...
 }
-//Crée la Ressource
+
 func new(x int, y int, pv int, typ int) Ressource {
     return (Ressource{x,y,pv,typ})
 }
 
+//Create : generate a new npc
 func Create(class string, x int, y int) Ressource {
     var res Ressource
     switch class{
@@ -41,29 +43,35 @@ func (res Ressource)stringify()map[string]string{
 	return result
 }
 
+//Transmit :
 func (res Ressource) Transmit(id string){
 	arr:=res.stringify()
 	for k,e := range arr{
-		data.AddNewAction(constants.ACTION_NEWRESSOURCE,id,k,e)
+		data.AddNewAction(constants.ActionNewRessource,id,k,e)
 	}
 }
 
+//GetType : return the ress type
 func (res Ressource)GetType() int{
 	return res.Typ
 }
 
+//GetX : return position X
 func (res Ressource)GetX() int{
 	return res.X
 }
 
+//GetY : return position Y
 func (res Ressource)GetY() int{
 	return res.Y
 }
 
+//GetPv : return PV
 func (res Ressource)GetPv() int{
 	return res.Pv
 }
 
+//IsHarvestable : is the ress harvestable?
 func (res Ressource)IsHarvestable() bool{
 	return res.Typ!=0
 }
