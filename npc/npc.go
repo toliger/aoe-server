@@ -10,6 +10,9 @@ import (
 	"git.unistra.fr/AOEINT/server/data"
 	"strconv"
 )
+
+var mutex = &sync.Mutex{}
+
 //Npc :
 type Npc struct {
     x int
@@ -238,28 +241,37 @@ func (pnj * Npc)Harvest(c carte.Carte, ress *ressource.Ressource,
 			switch ress.GetType(){
 			case 1:
 				tabRessources:=make([]int,3) //0 bois 1 pierre 2 nourriture
-				(*ress).Pv-=pnj.damage
+				mutex.Lock()
 				if((*ress).Pv<=0){
 					c.GetTile(ress.X,ress.Y).Empty()
+				}else{
+					(*ress).Pv-=pnj.damage
 					tabRessources[0]=pnj.damage
+					pnj.ressourceChannel<-tabRessources
 				}
-				pnj.ressourceChannel<-tabRessources
+				mutex.Unlock()
 			case 2:
 				tabRessources:=make([]int,3) //0 bois 1 pierre 2 nourriture
-				tabRessources[1]=pnj.damage
-				(*ress).Pv-=pnj.damage
+				mutex.Lock()
 				if((*ress).Pv<=0){
 					c.GetTile(ress.X,ress.Y).Empty()
+				}else{
+					(*ress).Pv-=pnj.damage
+					tabRessources[1]=pnj.damage
+					pnj.ressourceChannel<-tabRessources
 				}
-				pnj.ressourceChannel<-tabRessources
+				mutex.Unlock()
 			case 3:
 				tabRessources:=make([]int,3) //0 bois 1 pierre 2 nourriture
-				tabRessources[2]=pnj.damage
-				(*ress).Pv-=pnj.damage
+				mutex.Lock()
 				if((*ress).Pv<=0){
 					c.GetTile(ress.X,ress.Y).Empty()
+				}else{
+					tabRessources[2]=pnj.damage
+					(*ress).Pv-=pnj.damage
+					pnj.ressourceChannel<-tabRessources
 				}
-				pnj.ressourceChannel<-tabRessources
+				mutex.Unlock()
 			default:
 				fmt.Println("recolte:ressource inconnue")
 			}
