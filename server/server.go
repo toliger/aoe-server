@@ -24,7 +24,7 @@ import (
 var server *grpc.Server
 
 type ServerArguments struct {
-	g *game.Game 
+	g *game.Game
 	UpdateBuffer []pb.UpdateAsked
 }
 
@@ -147,7 +147,7 @@ func (s *ServerArguments) RightClick(ctx context.Context, in *pb.RightClickReque
 
 // Fonction du service Interactions: AskUpdate
 func (s *ServerArguments) AskUpdate(ctx context.Context, in *pb.AskUpdateRequest) (*pb.AskUpdateReply, error) {
-	
+
 	toSend := make([]*pb.UpdateAsked, 0)
 
 	if s.UpdateBuffer != nil {
@@ -155,7 +155,7 @@ func (s *ServerArguments) AskUpdate(ctx context.Context, in *pb.AskUpdateRequest
 			toSend = append(toSend, &s.UpdateBuffer[i])
 		}
 	}
-	
+
 	return &pb.AskUpdateReply{Array: toSend}, nil
 }
 
