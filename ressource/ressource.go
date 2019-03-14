@@ -18,6 +18,13 @@ type safeNumber struct {
 	m   sync.Mutex
 }
 
+//InitiatePV remplis la structure pv d'une ressource
+func (ress *Ressource)InitiatePV(){
+	i := &safeNumber{}
+	i.set(100)
+	ress.Pv=i
+}
+
 func (i *safeNumber) get() int {
 	i.m.Lock()
 	defer i.m.Unlock()

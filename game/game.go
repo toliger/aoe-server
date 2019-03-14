@@ -5,6 +5,7 @@ import "os"
 import "git.unistra.fr/AOEINT/server/joueur"
 import "git.unistra.fr/AOEINT/server/ressource"
 import "git.unistra.fr/AOEINT/server/batiment"
+import "git.unistra.fr/AOEINT/server/npc"
 import "time"
 import "fmt"
 import "encoding/json"
@@ -37,10 +38,18 @@ func ExtractData() Data{
 		fmt.Println(err)
 		os.Exit(1)
 	}
-	defer jsonFile.Close()
 	byteValue,_ := ioutil.ReadAll(jsonFile)
 	var newGame Data
-	json.Unmarshal(byteValue, &newGame)
+	err=json.Unmarshal(byteValue, &newGame)
+	if err!=nil{
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	err=jsonFile.Close()
+	if err!=nil{
+		fmt.Println(err)
+		os.Exit(1)
+	}
 	return newGame
 }
 
@@ -96,6 +105,10 @@ func (g *Game)GenerateMap(data Data){
 	(*g).Carte =Carte.New(data.Size)
 	//On attribue les auberges
 	if(len((*g).Joueurs)==2){//Si Seulement 2 Joueurs fournis, fait en sorte de leur donner des bases adverses
+		//ajout des npc de base
+		pnj,id:=npc.Create("villager",10,10,g.Joueurs[0].GetFaction(),(&(g.Joueurs[0])).GetChannel())
+		pnj.Transmit(id)
+		g.Joueurs[0].AddNpc(&pnj)
 		(*g).Joueurs[0].AddBuilding(&data.Buildings[0])
 		if((*g).Carte.AddNewBuilding(&(data.Buildings[0]))==false){
 			fmt.Println("Erreur lors du placement d'une auberge")
@@ -117,6 +130,7 @@ func (g *Game)GenerateMap(data Data){
 		}
 	}
 	for i:=0;i<len(data.Ressources);i++{
+		(&data.Ressources[i]).InitiatePV()
 		if((*g).Carte.AddNewRessource(&(data.Ressources[i]))==false){
 			fmt.Println("Erreur lors du placement d'une ressource")
 			os.Exit(1)

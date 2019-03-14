@@ -23,11 +23,17 @@ type Joueur struct{
 	ressourceChannel chan []int
 }
 
+//GetChannel retourne le channel de ressource du joueur
+func(j *Joueur)GetChannel() *(chan []int){
+	return &j.ressourceChannel
+}
+
 //Create : generate a player
 func Create(faction bool,nom string,uid string) Joueur{
 	buffer:=make(chan []int,constants.RessourceBufferSize)
 	res :=Joueur{faction,nom,uid,0,make([](*batiment.Batiment),constants.MaxBuildings),0,make([](*npc.Npc),constants.MaxEntities),constants.StartingStone,constants.StartingWood,constants.StartingFood,buffer}
 	go (&res).ressourceUpdate()
+	res.Transmit()
 	return res
 }
 //GetFaction : return the faction
@@ -114,6 +120,7 @@ func (j *Joueur) AddFood(f int){
 //AddBuilding : add a new building to the player
 func (j *Joueur)AddBuilding(b *batiment.Batiment){
 	(*j).batiments=append(j.batiments,b)
+	b.PlayerUID=j.UID
 }
 
 //AddNpc : add a new NPC to the player
@@ -129,4 +136,5 @@ func (j *Joueur)AddNpc(entity *npc.Npc){
 	if(!test){
 		(*j).entities=append(j.entities,entity)
 	}
+	entity.PlayerUUID=j.UID
 }

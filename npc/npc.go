@@ -31,13 +31,13 @@ type Npc struct {
 	PlayerUUID string
 }
 //New : new NPC
-func New(x int,y int,pv int, vitesse int, vue int, portee int, offensive bool,size int, damage int,selectable bool, typ int,flag bool, channel chan []int) Npc{
-	pnj:=Npc{x,y,pv,vitesse,vue,portee,offensive,size,damage,selectable,typ,flag,channel,false,""}
+func New(x int,y int,pv int, vitesse int, vue int, portee int, offensive bool,size int, damage int,selectable bool, typ int,flag bool, channel *chan []int) Npc{
+	pnj:=Npc{x,y,pv,vitesse,vue,portee,offensive,size,damage,selectable,typ,flag,*channel,false,""}
 	return pnj
 }
 
 //Create : generate a new NPC
-func Create(class string,x int,y int, flag bool,channel chan []int) (Npc,string){
+func Create(class string,x int,y int, flag bool,channel *chan []int) (Npc,string){
 	var pnj Npc
 	switch class{
 		case "soldier":
@@ -51,7 +51,7 @@ func Create(class string,x int,y int, flag bool,channel chan []int) (Npc,string)
 				constants.HarvesterVillPortee,false,constants.VillagerSize,constants.VillagerDamage,false,0,flag,channel)
 	}
 	id:=(&data.IDMap).AddObject(&pnj)
-	pnj.Transmit(id)
+	//pnj.Transmit(id)
     return pnj,id
 }
 
