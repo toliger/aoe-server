@@ -11,11 +11,11 @@ type Ressource struct{
     Y int
     Pv int
     Typ int // 0:water, 1:tree, 2:rock, 3 food ...
-	mutex *sync.Mutex
+	mutex *sync.RWMutex
 }
 
 func new(x int, y int, pv int, typ int) Ressource {
-    return (Ressource{x,y,pv,typ,&sync.Mutex{}})
+    return (Ressource{x,y,pv,typ,&sync.RWMutex{}})
 }
 
 //Create : generate a new npc
@@ -76,7 +76,10 @@ func (res Ressource)GetY() int{
 
 //GetPv : return PV
 func (res Ressource)GetPv() int{
-	return res.Pv
+	res.mutex.RLock()
+	pv:=res.Pv
+	res.mutex.RUnlock()
+	return pv
 }
 
 //IsHarvestable : is the ress harvestable?
