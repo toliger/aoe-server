@@ -21,5 +21,5 @@ func main() {
 	go (&g).GameLoop()
 
 	// Listen
-	client.InitListenerServer(&g)
+	server.InitListenerServer(&g)
 }
