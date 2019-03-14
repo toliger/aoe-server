@@ -6,7 +6,7 @@ stages:
 before_script:
   - export GO111MODULE=on
   - export PKG_LIST=$(shell go list git.unistra.fr/AOEINT/server/... | grep -v /vendor/)
-  - apk add git gcc libc-dev
+  - apk add git gcc glibc
   - go mod download
   - go get -u golang.org/x/lint/golint
 
