@@ -22,3 +22,14 @@ lint_code:
   script:
     - go get -u golang.org/x/lint/golint
     - golint -set_exit_status ./...
+
+cover:
+  stage: test
+  script:
+    -  go test -cover ./...
+
+errcheck:
+  stage: test
+  script:
+    - go get -u github.com/kisielk/errcheck
+    - errcheck ./...

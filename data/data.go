@@ -7,8 +7,8 @@ import "git.unistra.fr/AOEINT/server/constants"
 type Action struct{
 	Description map[string]map[string]string
 }
-//ActionBuffer variable détaillant les actions à envoyer au client 
-//	Exemple: [type:int].Description["UUID"]["Key"]="value"  
+//ActionBuffer variable détaillant les actions à envoyer au client
+//	Exemple: [type:int].Description["UUID"]["Key"]="value"
 var ActionBuffer []Action
 
 //InitiateActionBuffer Initialisation du buffer d'actions
@@ -17,7 +17,7 @@ func InitiateActionBuffer(){
 }
 //AddNewAction Ajoute une Action(type int, clee string, description string) au buffer
 func AddNewAction(typ int,uuid string, key string, description string){
-	
+
 	elem, ok := ActionBuffer[typ].Description[uuid]
     if !ok {
        elem = make(map[string]string)
