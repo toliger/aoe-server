@@ -9,45 +9,73 @@ import "sync"
 type Ressource struct{
     X int
     Y int
-    Pv int
+    Pv *safeNumber
     Typ int // 0:water, 1:tree, 2:rock, 3 food ...
-	mutex *sync.RWMutex
 }
 
-func new(x int, y int, pv int, typ int) Ressource {
-    return (Ressource{x,y,pv,typ,&sync.RWMutex{}})
+type safeNumber struct {
+	val int
+	m   sync.Mutex
+}
+
+func (i *safeNumber) get() int {
+	i.m.Lock()
+	defer i.m.Unlock()
+	return i.val
+}
+
+func (i *safeNumber) set(val int) {
+	i.m.Lock()
+	defer i.m.Unlock()
+	i.val = val
+}
+
+func (i *safeNumber) sub(val int) {
+	i.m.Lock()
+	defer i.m.Unlock()
+	i.val -= val
+}
+
+func new(x int, y int, pv *safeNumber, typ int) Ressource {
+    return (Ressource{x,y,pv,typ,})
 }
 
 //Create : generate a new npc
 func Create(class string, x int, y int) Ressource {
     var res Ressource
+	i := &safeNumber{}
     switch class{
         case "water":
-            res=new(x, y, 100, 0)
+			i.set(100)
+            res=new(x, y, i, 0)
         case "tree":
-            res=new(x, y, 100,  1)
+			i.set(100)
+            res=new(x, y, i,  1)
         case "rock":
-            res=new(x, y, 100,  2)
+			i.set(100)
+            res=new(x, y, i,  2)
         case "food":
-            res=new(x, y, 100, 3)
+			i.set(100)
+            res=new(x, y, i, 3)
         default:
-            res=new(x, y, 100,  0) //water
+            res=new(x, y, i,  0) //water
     }
     return res
 }
 
-func (res Ressource)stringify()map[string]string{
+func (res Ressource)stringify(id string)map[string]string{
 	result:=make(map[string]string)
 	result["x"]=strconv.Itoa(res.X)
 	result["y"]=strconv.Itoa(res.Y)
-	result["pv"]=strconv.Itoa(res.Pv)
+	result["pv"]=strconv.Itoa(res.GetPv())
 	result["type"]=strconv.Itoa(res.Typ)
+	result["id"]=id
 	return result
 }
 
 //Transmit :
 func (res Ressource) Transmit(id string){
-	arr:=res.stringify()
+	arr:=res.stringify(id)
 	for k,e := range arr{
 		data.AddNewAction(constants.ActionNewRessource,id,k,e)
 	}
@@ -60,9 +88,7 @@ func (res Ressource)GetType() int{
 
 //Damage inflige x degats a la ressource
 func (res *Ressource)Damage(x int){
-	res.mutex.Lock()
-	defer res.mutex.Unlock()
-	res.Pv-=x
+	res.Pv.sub(x)
 }
 
 //GetX : return position X
@@ -77,9 +103,7 @@ func (res Ressource)GetY() int{
 
 //GetPv : return PV
 func (res Ressource)GetPv() int{
-	res.mutex.RLock()
-	defer res.mutex.RUnlock()
-	return res.Pv
+	return res.Pv.get()
 }
 
 //IsHarvestable : is the ress harvestable?
