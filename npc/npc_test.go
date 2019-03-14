@@ -35,7 +35,7 @@ func TestRecolte(t *testing.T){
 	d.IDMap=d.NewObjectID()
 	d.InitiateActionBuffer()
 	bip := make(chan[]int,100)
-	pnj,_:=Create("harvester",0,0,false,bip)
+	pnj,_:=Create("harvester",0,0,false,&bip)
 	c:=carte.New(50)
 	ress:=ressource.Create("tree",2,2)
 	c.AddNewRessource(&ress)
