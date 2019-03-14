@@ -19,10 +19,10 @@ type safeNumber struct {
 }
 
 //InitiatePV remplis la structure pv d'une ressource
-func (ress *Ressource)InitiatePV(){
+func (res *Ressource)InitiatePV(){
 	i := &safeNumber{}
 	i.set(100)
-	ress.Pv=i
+	res.Pv=i
 }
 
 func (i *safeNumber) get() int {
