@@ -40,7 +40,7 @@ func (res Ressource)stringify()map[string]string{
 	result:=make(map[string]string)
 	result["x"]=strconv.Itoa(res.X)
 	result["y"]=strconv.Itoa(res.Y)
-	result["pv"]=strconv.Itoa(res.Pv)
+	result["pv"]=strconv.Itoa(res.GetPv())
 	result["type"]=strconv.Itoa(res.Typ)
 	return result
 }
