@@ -121,8 +121,12 @@ func (pnj *Npc)deplacement(path []carte.Case, wg *sync.WaitGroup) {
 
 //MoveTo : move a npc from his position(x,y) to another position(x,y)
 func (pnj *Npc) MoveTo(c carte.Carte, destx int, desty int, wg *sync.WaitGroup) []carte.Case{
-	path:= c.GetPathFromTo(pnj.x,pnj.y,destx,desty)
-	go pnj.deplacement(path, wg)
+	var path []carte.Case
+	path=nil
+	if(c.GetTile(destx,desty).GetType()==0){
+		path= c.GetPathFromTo(pnj.x,pnj.y,destx,desty)
+		go pnj.deplacement(path, wg)
+	}
 	return path
 }
 
