@@ -9,24 +9,39 @@ type Action struct{
 }
 //ActionBuffer variable détaillant les actions à envoyer au client
 //	Exemple: [type:int].Description["UUID"]["Key"]="value"
-var ActionBuffer []Action
+// Modification: ["PlayerUID"]->[type:int].Description["UUID"]["Key"]="value"
+var ActionBuffer map[string]([]Action)
 
 //InitiateActionBuffer Initialisation du buffer d'actions
 func InitiateActionBuffer(){
-	ActionBuffer=make([]Action,constants.MaxActions)
+	ActionBuffer=make(map[string]([]Action),4)
+	ActionBuffer[constants.PlayerUID1]=make([]Action,constants.MaxActions)
+	ActionBuffer[constants.PlayerUID2]=make([]Action,constants.MaxActions)
+	if(constants.PlayerUID3 != "DEFAULT"){
+		ActionBuffer[constants.PlayerUID3]=make([]Action,constants.MaxActions)
+	}
+	if(constants.PlayerUID4 != "DEFAULT"){
+		ActionBuffer[constants.PlayerUID4]=make([]Action,constants.MaxActions)
+	}
 }
 //AddNewAction Ajoute une Action(type int, clee string, description string) au buffer
-func AddNewAction(typ int,uuid string, key string, description string){
+func AddNewAction(PlayerUID string,typ int,uuid string, key string, description string){
 
-	elem, ok := ActionBuffer[typ].Description[uuid]
+	elem, ok := ActionBuffer[PlayerUID][typ].Description[uuid]
     if !ok {
        elem = make(map[string]string)
-	   if(ActionBuffer[typ].Description == nil){
-			ActionBuffer[typ].Description=make(map[string]map[string]string)
+	   if(ActionBuffer[PlayerUID][typ].Description == nil){
+			ActionBuffer[PlayerUID][typ].Description=make(map[string]map[string]string)
 	   }
-       ActionBuffer[typ].Description[uuid] = elem
+       ActionBuffer[PlayerUID][typ].Description[uuid] = elem
     }
-	ActionBuffer[typ].Description[uuid][key]=description
+	ActionBuffer[PlayerUID][typ].Description[uuid][key]=description
+}
+//AddToAllAction Ajoute une action pour tous les joueurs
+func AddToAllAction(typ int,uuid string, key string, description string){
+	for k := range ActionBuffer{
+		AddNewAction(k,typ,uuid,key,description)
+	}
 }
 
 //CleanActionBuffer vide le buffer ActionBuffer

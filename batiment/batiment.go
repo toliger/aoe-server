@@ -48,7 +48,7 @@ func (bat Batiment)stringify(id string)map[string]string{
 func (bat Batiment) Transmit(id string){
 	arr:=bat.stringify(id)
 	for k,e := range arr{
-		data.AddNewAction(cst.ActionNewBuilding,id,k,e)
+		data.AddToAllAction(cst.ActionNewBuilding,id,k,e)
 	}
 }
 

@@ -144,5 +144,13 @@ func (g *Game)GetPlayerData(){
 	(*g).Joueurs=make([]joueur.Joueur,2)
 	(*g).Joueurs[0]=joueur.Create(false,"Bob","V8F1238VF")
 	(*g).Joueurs[1]=joueur.Create(true,"Alice","1982N19N2")
+	constants.PlayerUID1=(*g).Joueurs[0].UID
+	constants.PlayerUID2=(*g).Joueurs[1].UID
+	if(len((*g).Joueurs)>2){
+		constants.PlayerUID3=(*g).Joueurs[2].UID
+	}
+	if(len((*g).Joueurs)>3){
+		constants.PlayerUID4=(*g).Joueurs[3].UID
+	}
 	fmt.Println("joueurs:",(*g).Joueurs[0].GetNom(),"",(*g).Joueurs[1].GetNom())
 }

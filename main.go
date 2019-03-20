@@ -10,9 +10,9 @@ import (
 func main() {
 	var g game.Game
 	d.IDMap=d.NewObjectID()
-	d.InitiateActionBuffer()
 	g.GameRunning=true
 	(&g).GetPlayerData()
+	d.InitiateActionBuffer()
 	data:=game.ExtractData()
 	(&g).GenerateMap(data)
 	fmt.Println("Data struct extracted from json:",data)

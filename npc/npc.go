@@ -75,7 +75,7 @@ func (pnj Npc)stringify() map[string]string{
 func (pnj Npc) Transmit(id string){
 	arr:=pnj.stringify()
 	for k,e := range arr{
-		data.AddNewAction(constants.ActionNewNpc,id,k,e)
+		data.AddToAllAction(constants.ActionNewNpc,id,k,e)
 	}
 }
 
