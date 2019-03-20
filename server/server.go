@@ -85,8 +85,7 @@ func (s *Arguments) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.Hell
 func (s *Arguments) RightClick(ctx context.Context, in *pb.RightClickRequest) (*pb.RightClickReply, error) {
 
 	// Loop on each entity
-	var tmpCoord []*pb.Coordinates
-	sendPath := make(map[string]*pb.RPCoordinates, len(in.EntitySelectionUUID))
+	var action []data.Action
 	for i:=0 ; i<len(in.EntitySelectionUUID) ; i++ {
 
 		// Get the entity
@@ -95,53 +94,72 @@ func (s *Arguments) RightClick(ctx context.Context, in *pb.RightClickRequest) (*
 		// Get the path of the entity
 		path := entity.MoveTo(s.g.Carte, int(in.Point.X), int(in.Point.Y), nil)
 
-		// Creating the array for the message
+		// Filling action with the right data
+		action[3].Description[in.EntitySelectionUUID[i]] = entity.Stringify()
+		delete(action[3].Description[in.EntitySelectionUUID[i]], "type")
+		delete(action[3].Description[in.EntitySelectionUUID[i]], "TeamFlag")
+		delete(action[3].Description[in.EntitySelectionUUID[i]], "PlayerUUID")
 		if len(path) != 0 {
-			tmpCoord = make([]*pb.Coordinates, len(path))
-			tmp := make([]pb.Coordinates, len(path))
-			for j:=0 ; j<len(path) ; j++ {
-				tmp[j].X = int32(path[j].GetPathX())
-				tmp[j].Y = int32(path[j].GetPathY())
-				tmpCoord[j] = &tmp[j]
-			}
+			action[3].Description[in.EntitySelectionUUID[i]]["destX"] = string(path[len(path)-1].GetPathX())
+			action[3].Description[in.EntitySelectionUUID[i]]["destY"] = string(path[len(path)-1].GetPathY())
 		} else {
-			tmpCoord = make([]*pb.Coordinates, 1)
-			tmpCoord[0] = &pb.Coordinates{X: int32(-1), Y: int32(-1)}
-		}
-
-		// Linking the array to the message
-		sendPath[in.EntitySelectionUUID[i]] = &pb.RPCoordinates{Coord: tmpCoord}
-	}
-
-	// Put data in UpdateBuffer
-	for uuid, rpcoord := range sendPath {
-		lenght := len(rpcoord.Coord)
-		if lenght > 1 {
-			tmp := pb.UpdateAsked{Type: 3, EntityUUID: uuid}
-			tmp.Arg = make([]*pb.Param, 0)
-			tmp.Arg = append(tmp.Arg, &pb.Param{Key: "x",Value: string(rpcoord.Coord[0].X)})
-			tmp.Arg = append(tmp.Arg, &pb.Param{Key: "y",Value: string(rpcoord.Coord[0].Y)})
-			tmp.Arg = append(tmp.Arg, &pb.Param{Key: "xDest",Value: string(rpcoord.Coord[lenght-1].X)})
-			tmp.Arg = append(tmp.Arg, &pb.Param{Key: "yDest",Value: string(rpcoord.Coord[lenght-1].Y)})
-
-			s.UpdateBuffer = append(s.UpdateBuffer, tmp)
+			action[3].Description[in.EntitySelectionUUID[i]]["destX"] = "-1"
+			action[3].Description[in.EntitySelectionUUID[i]]["destY"] = "-1"
 		}
 	}
 
-	return &pb.RightClickReply{Path: sendPath}, nil
+	// Put data in ActionBuffer
+	for playerUUID := range data.ActionBuffer {
+		for entityUUID := range action[3].Description {
+			_, value := data.ActionBuffer[playerUUID][3].Description[entityUUID]
+
+			// !value is true if .Description[entityUUID] is not define
+			if !value {
+				data.ActionBuffer[playerUUID][3].Description[entityUUID] = action[3].Description[entityUUID]
+			} else {
+				data.ActionBuffer[playerUUID][3].Description[entityUUID]["destX"] = action[3].Description[entityUUID]["destX"]
+				data.ActionBuffer[playerUUID][3].Description[entityUUID]["destY"] = action[3].Description[entityUUID]["destY"]
+			}
+		}
+	}
+
+	return &pb.RightClickReply{}, nil
 }
 
 // AskUpdate :
 // Function of the service Interactions: AskUpdate
 func (s *Arguments) AskUpdate(ctx context.Context, in *pb.AskUpdateRequest) (*pb.AskUpdateReply, error) {
 	
+	playerUUID := data.ExtractFromToken(in.Token)
+	if playerUUID == nil {
+		fmt.Println("Token invalide dans AskUpdate")
+		return &pb.AskUpdateReply{Array: nil}, nil
+	}
+
 	toSend := make([]*pb.UpdateAsked, 0)
 
-	if s.UpdateBuffer != nil {
-		for i:=0 ; i<len(s.UpdateBuffer) ; i++ {
-			toSend = append(toSend, &s.UpdateBuffer[i])
+	// Verify if the playerUUID exist in the map
+	if _, isFilled := data.ActionBuffer[playerUUID.UUID] ; isFilled {
+		for actionType := range data.ActionBuffer[playerUUID.UUID] {
+			for entityUUID := range data.ActionBuffer[playerUUID.UUID][actionType].Description {
+				upAsk := pb.UpdateAsked{Type: int32(actionType), EntityUUID: entityUUID}
+
+				for key, value := range data.ActionBuffer[playerUUID.UUID][actionType].Description[entityUUID] {
+					upAsk.Arg = append(upAsk.Arg, &pb.Param{Key: key, Value: value})
+				}
+
+				toSend = append(toSend, &upAsk)
+			}
 		}
+	} else {
+		fmt.Println("PlayerUUID invalide dans AskUpdate")
+		return &pb.AskUpdateReply{Array: nil}, nil
 	}
+
+	// Deletin the historic of updates waiting for the client
+	data.CleanPlayerActionBuffer(playerUUID.UUID)
+
+	fmt.Println(data.ActionBuffer)
 	
 	return &pb.AskUpdateReply{Array: toSend}, nil
 }
