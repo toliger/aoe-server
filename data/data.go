@@ -1,7 +1,13 @@
 package data
 
-import "strconv"
-import "git.unistra.fr/AOEINT/server/constants"
+import (
+	"strconv"
+	"git.unistra.fr/AOEINT/server/constants"
+	jwt "github.com/dgrijalva/jwt-go"
+	"fmt"
+	"encoding/json"
+	"strings"
+)
 
 //Action classe detaillant une action de ActionBuffer
 type Action struct{
@@ -102,4 +108,35 @@ func (o *ObjectID) GetIDFromObject(obj interface{}) string{
 		}
 	}
 	return "-1"
+}
+
+//TokenValue structure contenant les parametres recuperes dans le segment data du token
+type TokenValue struct{
+	Group string
+	Name string
+	Uuid string
+	Iat int
+}
+
+//ExtractFromToken retourne une map[string]string des donnees du segment d'un token
+func ExtractFromToken(tokenString string) *TokenValue{
+	tab:=strings.Split(tokenString,".")
+	if(len(tab)!=3){
+		fmt.Println("Erreur lors de l'extraction du segment data")
+		return nil
+	}
+	segment:=tab[1] //extrait le segment data du milieu
+	buff,err:=jwt.DecodeSegment(segment)
+	if(err!=nil){
+		fmt.Println("Erreur lors du decodage d'un token")
+		return nil
+	}
+	var extract TokenValue
+	err=json.Unmarshal(buff, &extract)
+	if err!=nil{
+		fmt.Println("Erreur lors de la conversion du token:",err)
+		return nil
+	}
+	fmt.Println("token:",extract)
+	return &extract
 }
