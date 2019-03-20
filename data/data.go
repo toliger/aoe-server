@@ -60,6 +60,12 @@ func CleanActionBuffer() {
 	InitiateActionBuffer()
 }
 
+//CleanPlayerActionBuffer vide le buffer du joueur correspondant
+func CleanPlayerActionBuffer(uuid string) {
+	ActionBuffer[uuid] = nil //throw to garbage collector
+	ActionBuffer[uuid] = make([]Action, constants.MaxActions)
+}
+
 //ObjectID Structure générique associant chaque batiment/ressource/pnj à son id
 type ObjectID struct {
 	IDOffset int
