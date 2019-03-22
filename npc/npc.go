@@ -28,8 +28,15 @@ type Npc struct {
 	TeamFlag bool
 	ressourceChannel chan []int
 	hasOrder bool //Si un déplacement a dejà été demandé par le joueur (disable auto movement)
+	// isMoving *safeNumber
 	PlayerUUID string
 }
+
+type safeNumber struct {
+	val bool
+	m   sync.Mutex
+}
+
 //New : new NPC
 func New(x int,y int,pv int, vitesse int, vue int, portee int, offensive bool,size int, damage int,selectable bool, typ int,flag bool, channel *chan []int) Npc{
 	pnj:=Npc{x,y,pv,vitesse,vue,portee,offensive,size,damage,selectable,typ,flag,*channel,false,""}
@@ -66,8 +73,8 @@ func (pnj Npc)stringify() map[string]string{
 	res["offensive"]=strconv.FormatBool(pnj.offensive)
 	res["vue"]=strconv.Itoa(pnj.vue)
 	res["portee"]=strconv.Itoa(pnj.portee)
-	res["TeamFlag"]=strconv.FormatBool(pnj.TeamFlag)
 	res["PlayerUUID"]=pnj.PlayerUUID
+	res["TeamFlag"]=strconv.FormatBool(pnj.TeamFlag)
 	return res
 }
 
@@ -78,6 +85,7 @@ func (pnj Npc) Transmit(id string){
 		data.AddNewAction(constants.ActionNewNpc,id,k,e)
 	}
 }
+
 
 //GetX : return the position X
 func (pnj Npc) GetX() int{
@@ -143,6 +151,7 @@ func (pnj Npc)GetSpeed() int{
 	return pnj.vitesse
 }
 
+
 //RecoltePossible : return true if te villager can acces to a tile to harvest the resource in x, y
 func RecoltePossible(c carte.Carte, x int, y int) bool{
 	for i := x-1; i <= x+1; i++{
@@ -155,7 +164,9 @@ func RecoltePossible(c carte.Carte, x int, y int) bool{
 	return false
 }
 
-//MoveHarvest : (move to the nreast ressource in the villagers's vision)
+/*MoveHarvest : (move to the nreast ressource in the villagers's vision).
+Triggered when a villager is inactive, cancelled when the player moves the npc
+*/
 func (pnj *Npc)MoveHarvest(c carte.Carte){
 	var i, j int
 	var ress *ressource.Ressource
@@ -185,6 +196,8 @@ func (pnj *Npc)MoveHarvest(c carte.Carte){
 			}
 		}
 	}
+
+
 	//fmt.Println("ressource?",ress == nil)
 
 	// pas de ressources dans la vue du villageois
@@ -195,8 +208,8 @@ func (pnj *Npc)MoveHarvest(c carte.Carte){
 	var posRecolteVillX, posRecolteVillY int
 	distance = 2000
 
-	for i = ress.GetX() - constants.HarvesterVillPortee; i <= ress.GetX() + constants.HarvesterVillPortee; i++{
-		for j = ress.GetY() - constants.HarvesterVillPortee; j <= ress.GetY() + constants.HarvesterVillPortee; j++{
+	for i = ress.GetX() - pnj.portee; i <= ress.GetX() + pnj.portee; i++{
+		for j = ress.GetY() - pnj.portee; j <= ress.GetY() + pnj.portee; j++{
 			if ( (Abs(i - pnj.GetX()) + Abs(j - pnj.GetY()) ) < distance &&
 				c.IsEmpty(i, j)){
 				distance = Abs(i - pnj.GetX()) + Abs(j - pnj.GetY())
@@ -224,9 +237,58 @@ func (pnj *Npc)MoveHarvest(c carte.Carte){
 	}
 }
 
+/*MoveHarvestTarget : (move to the nreast ressource in the villagers's vision).
+Triggered when a villager is inactive, cancelled when the player moves the npc
+*/
+func (pnj *Npc)MoveHarvestTarget(c carte.Carte, ress *ressource.Ressource){
+	var i, j int
+	//Verify the parameters
+	if (pnj.GetType() == 2){
+		fmt.Println("Un soldat ne peut pas recolter de ressources")
+		return
+	}
+	if (ress.GetType() == 2 && pnj.GetType() != 0){
+		fmt.Println("Seul un harvester peut recolter de la pierre")
+		return
+	}
+	if (pnj.GetVue() < (Abs(ress.GetX() - pnj.GetX()) + Abs(ress.GetY() - pnj.GetY())) ){
+		fmt.Println("La ressource n'est pas dans la vue du npc")
+		return
+	}
+
+	var posRecolteVillX, posRecolteVillY int
+	distance := 2000
+
+	for i = ress.GetX() - pnj.portee; i <= ress.GetX() + pnj.portee; i++{
+		for j = ress.GetY() - pnj.portee; j <= ress.GetY() + pnj.portee; j++{
+			if ( (Abs(i - pnj.GetX()) + Abs(j - pnj.GetY()) ) < distance &&
+				c.IsEmpty(i, j)){
+				distance = Abs(i - pnj.GetX()) + Abs(j - pnj.GetY())
+				posRecolteVillX = i
+				posRecolteVillY = j
+			}
+		}
+	}
+	// pas d'accès possible pour recolter la ressource
+	if (distance == 2000){
+		return
+	}
+	// on attends que le villageois ait finit son déplacement
+	var wg sync.WaitGroup
+	wg.Add(1)
+    go pnj.MoveTo(c, posRecolteVillX, posRecolteVillY, &wg)
+	wg.Wait()
+
+	// Le villageois se trouve bien à l'emplacement de la recolte?
+	if (pnj.GetX() == (posRecolteVillX) && pnj.GetY() == posRecolteVillY){
+		 go (pnj).Harvest(c, ress, posRecolteVillX, posRecolteVillY)
+	}
+}
+
+
 //Harvest : Harvesting of the ressource
-func (pnj * Npc)Harvest(c carte.Carte, ress *ressource.Ressource,
-	posRecolteVillX int, posRecolteVillY int){
+func (pnj *Npc)Harvest(c carte.Carte, ress *ressource.Ressource, posRecolteVillX int,
+	 posRecolteVillY int){
 	uptimeTicker := time.NewTicker(time.Duration(1 * time.Second))
 	tpsEcoule := 0
 	for {
@@ -238,6 +300,7 @@ func (pnj * Npc)Harvest(c carte.Carte, ress *ressource.Ressource,
 		if (pnj.GetX() != (posRecolteVillX) || pnj.GetY() != posRecolteVillY){
 			break;
 		}
+
 		select {
 		case <-uptimeTicker.C:
 			tpsEcoule++

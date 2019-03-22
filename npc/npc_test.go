@@ -31,7 +31,6 @@ func TestDeplacement(t *testing.T){
 }
 */
 
-
 func TestRecolte(t *testing.T){
 	d.IDMap=d.NewObjectID()
 	d.InitiateActionBuffer()
@@ -40,8 +39,8 @@ func TestRecolte(t *testing.T){
 	c:=carte.New(50)
 	ress:=ressource.Create("tree",2,2)
 	c.AddNewRessource(&ress)
-	(&pnj).MoveHarvest(c)
-	time.Sleep(time.Duration(4000000000))
+	go (&pnj).MoveHarvestTarget(c, &ress)
+	time.Sleep(time.Duration(4*time.Second))
 	if(ress.GetPv()==100){
 		t.Error("la ressource n'a pas perdu de Pv")
 	}
