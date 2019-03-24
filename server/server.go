@@ -1,5 +1,5 @@
 // Package server :
-// All for the clients interactions 
+// All for the clients interactions
 package server
 
 import (
@@ -27,7 +27,7 @@ var server *grpc.Server
 // Arguments :
 // Data structure used in the gRPC method's
 type Arguments struct {
-	g *game.Game 
+	g *game.Game
 	UpdateBuffer []pb.UpdateAsked
 }
 
@@ -36,7 +36,7 @@ type Arguments struct {
 //	Blocking function
 func InitListenerServer(g *game.Game) {
 
-	// Initialization of the socket 
+	// Initialization of the socket
 	// TODO Use of a variable of environment to set de port
 	lis, err := net.Listen("tcp", ":50010")
 	if err != nil {
