@@ -57,27 +57,6 @@ message AskUpdateReply {
     repeated UpdateAsked Array = 1;
 }
 
-/*
-type: list
-    - 0: vide
-    - 1: set case carte
-        - type: int
-            - 0: eau
-            - 1: herbe
-    - 2: set case ressource
-        - type: int
-            - 0: bois
-            - 1: pierre
-    - 3: entité - Update an entity
-        - x: int - current x
-        - y: int - current y
-        - xDest: int - destination x
-        - yDest: int - destination y
-        - hp: int - current hp
-        - hpMax: int - max hp
-        - name: string - username
-
-*/
 message UpdateAsked {
     int32 Type = 1;
     string EntityUUID = 2;

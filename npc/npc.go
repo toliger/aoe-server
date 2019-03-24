@@ -55,7 +55,8 @@ func Create(class string,x int,y int, flag bool,channel *chan []int) (Npc,string
     return pnj,id
 }
 
-func (pnj Npc)stringify() map[string]string{
+//Stringify : create a map[string]string of the main arguments of a NPC
+func (pnj Npc)Stringify() map[string]string{
 	res:=make(map[string]string)
 	res["pv"]=strconv.Itoa(pnj.pv)
 	res["x"]=strconv.Itoa(pnj.x)
@@ -73,9 +74,9 @@ func (pnj Npc)stringify() map[string]string{
 
 //Transmit : add the npc to the communcation's buffer
 func (pnj Npc) Transmit(id string){
-	arr:=pnj.stringify()
+	arr:=pnj.Stringify()
 	for k,e := range arr{
-		data.AddNewAction(constants.ActionNewNpc,id,k,e)
+		data.AddToAllAction(constants.ActionNewNpc,id,k,e)
 	}
 }
 
