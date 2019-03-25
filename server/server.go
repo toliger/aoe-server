@@ -41,7 +41,9 @@ func InitListenerServer(g *game.Game) {
 	lis, err := net.Listen("tcp", ":50010")
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
-	}
+	} else {
+    log.Print("Server listen !")
+  }
 
 	// Initialization of gRPC server
 	arg := Arguments{g: g}
