@@ -1,9 +1,12 @@
 package ressource
 
-import "git.unistra.fr/AOEINT/server/constants"
-import "git.unistra.fr/AOEINT/server/data"
-import "strconv"
-import "sync"
+import (
+  "strconv"
+  "sync"
+  "git.unistra.fr/AOEINT/server/constants"
+  "git.unistra.fr/AOEINT/server/data"
+)
+
 
 //Ressource :
 type Ressource struct{
@@ -13,10 +16,12 @@ type Ressource struct{
     Typ int // 0:water, 1:tree, 2:rock, 3 food ...
 }
 
+
 type safeNumber struct {
 	val int
 	m   sync.Mutex
 }
+
 
 //InitiatePV remplis la structure pv d'une ressource
 func (ress *Ressource)InitiatePV(){
@@ -25,11 +30,13 @@ func (ress *Ressource)InitiatePV(){
 	ress.Pv=i
 }
 
+
 func (i *safeNumber) get() int {
 	i.m.Lock()
 	defer i.m.Unlock()
 	return i.val
 }
+
 
 func (i *safeNumber) set(val int) {
 	i.m.Lock()
@@ -37,15 +44,18 @@ func (i *safeNumber) set(val int) {
 	i.val = val
 }
 
+
 func (i *safeNumber) sub(val int) {
 	i.m.Lock()
 	defer i.m.Unlock()
 	i.val -= val
 }
 
+
 func new(x int, y int, pv *safeNumber, typ int) Ressource {
     return (Ressource{x,y,pv,typ,})
 }
+
 
 //Create : generate a new npc
 func Create(class string, x int, y int) Ressource {
@@ -70,6 +80,7 @@ func Create(class string, x int, y int) Ressource {
     return ress
 }
 
+
 func (ress Ressource)stringify(id string)map[string]string{
 	result:=make(map[string]string)
 	result["x"]=strconv.Itoa(ress.X)
@@ -80,6 +91,7 @@ func (ress Ressource)stringify(id string)map[string]string{
 	return result
 }
 
+
 //Transmit :
 func (ress Ressource) Transmit(id string){
 	arr:=ress.stringify(id)
@@ -88,30 +100,36 @@ func (ress Ressource) Transmit(id string){
 	}
 }
 
+
 //GetType : return the ress type
 func (ress Ressource)GetType() int{
 	return ress.Typ
 }
+
 
 //Damage inflige x degats a la ressource
 func (ress *Ressource)Damage(x int){
 	ress.Pv.sub(x)
 }
 
+
 //GetX : return position X
 func (ress Ressource)GetX() int{
 	return ress.X
 }
+
 
 //GetY : return position Y
 func (ress Ressource)GetY() int{
 	return ress.Y
 }
 
+
 //GetPv : return PV
 func (ress Ressource)GetPv() int{
 	return ress.Pv.get()
 }
+
 
 //IsHarvestable : is the ress harvestable?
 func (ress Ressource)IsHarvestable() bool{

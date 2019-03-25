@@ -1,11 +1,15 @@
 package joueur
 
-import npc "git.unistra.fr/AOEINT/server/npc"
-import  "git.unistra.fr/AOEINT/server/batiment"
-import  "git.unistra.fr/AOEINT/server/constants"
-import 	"git.unistra.fr/AOEINT/server/data"
-import "fmt"
-import "strconv"
+
+import (
+  "git.unistra.fr/AOEINT/server/utils"
+  "git.unistra.fr/AOEINT/server/npc"
+  "git.unistra.fr/AOEINT/server/batiment"
+  "git.unistra.fr/AOEINT/server/constants"
+  "git.unistra.fr/AOEINT/server/data"
+  "strconv"
+)
+
 
 //Joueur :
 type Joueur struct{
@@ -22,6 +26,7 @@ type Joueur struct{
 	ressourceChannel chan []int
 }
 
+
 //GetChannel retourne le channel de ressource du joueur
 func(j *Joueur)GetChannel() *(chan []int){
 	return &j.ressourceChannel
@@ -35,14 +40,19 @@ func Create(faction bool,nom string,uid string) Joueur{
 	go (&res).ressourceUpdate()
 	return res
 }
+
+
 //GetFaction : return the faction
 func (j Joueur) GetFaction() bool{
 	return j.faction
 }
+
+
 //GetNom : return the name
 func (j Joueur) GetNom() string{
 	return j.nom
 }
+
 
 func (j Joueur) stringify() map[string]string{
 	result:=make(map[string]string)
@@ -55,6 +65,7 @@ func (j Joueur) stringify() map[string]string{
 	return result
 }
 
+
 //Transmit ajoute le joueur au buffer d'action
 func (j Joueur) Transmit(){
 	arr:=j.stringify()
@@ -63,12 +74,13 @@ func (j Joueur) Transmit(){
 	}
 }
 
+
 /*ressourceUpdate :Met automatiquement a jour les ressources du joueur a partir des int[3] envoyes au channel du joueur
 arrêt du thread dedié si la premiere valeur du tableau reçu par le channel est -1
 */
 func (j *Joueur)ressourceUpdate(){
 	var res []int
-	fmt.Println(j.nom,":channel actif")
+	utils.Debug(j.nom + ":channel actif")
 	for{
 		res=<-j.ressourceChannel
 		if(res[0]!=1){
@@ -79,32 +91,42 @@ func (j *Joueur)ressourceUpdate(){
 			break
 		}
 	}
-	fmt.Println(j.nom,":channel inactif")
+	utils.Debug(j.nom + ":channel inactif")
 }
 
+
 //Retourne la quantité de d'une ressource d'un joueur
+
 
 //GetStone :
 func (j Joueur) GetStone() int{
 	return j.stone
 }
+
+
 //GetWood :
 func (j Joueur) GetWood() int{
 	return j.wood
 }
+
+
 //GetFood :
 func (j Joueur) GetFood() int{
 	return j.food
 }
+
+
 //GetNpc :
 func (j Joueur) GetNpc(i int) npc.Npc{
 	return *(j.entities[i])
 }
 
+
 //GetBatiment :
 func (j Joueur) GetBatiment(i int) batiment.Batiment{
 	return *(j.batiments[i])
 }
+
 
 //Adding ressources
 
@@ -112,19 +134,25 @@ func (j Joueur) GetBatiment(i int) batiment.Batiment{
 func (j *Joueur) AddStone(s int){
 	(*j).stone +=s
 }
+
+
 //AddWood :
 func (j *Joueur) AddWood(w int){
 	(*j).wood +=w
 }
+
+
 //AddFood :
 func (j *Joueur) AddFood(f int){
 	(*j).food+= f
 }
 
+
 //AddBuilding : add a new building to the player
 func (j *Joueur)AddBuilding(b *batiment.Batiment){
 	(*j).batiments=append(j.batiments,b)
 }
+
 
 //AddNpc : add a new NPC to the player
 func (j *Joueur)AddNpc(entity *npc.Npc){

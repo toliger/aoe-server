@@ -2,21 +2,19 @@
 // All for the clients interactions
 package server
 
-import (
-	"git.unistra.fr/AOEINT/server/npc"
-	"git.unistra.fr/AOEINT/server/data"
-	"git.unistra.fr/AOEINT/server/game"
 
-	/*"git.unistra.fr/AOEINT/server/ressource"
-	"git.unistra.fr/AOEINT/server/joueur"
-	"git.unistra.fr/AOEINT/server/batiment"*/
-	"fmt"
+import (
 	"context"
 	"log"
 	"net"
 	"google.golang.org/grpc"
+	"git.unistra.fr/AOEINT/server/utils"
+	"git.unistra.fr/AOEINT/server/npc"
+	"git.unistra.fr/AOEINT/server/data"
+	"git.unistra.fr/AOEINT/server/game"
 	pb "git.unistra.fr/AOEINT/server/grpc"
 )
+
 
 ///////////////////////////////////////////////////////////////////////////////
 // General
@@ -24,12 +22,14 @@ import (
 
 var server *grpc.Server
 
+
 // Arguments :
 // Data structure used in the gRPC method's
 type Arguments struct {
 	g *game.Game
 	UpdateBuffer []pb.UpdateAsked
 }
+
 
 // InitListenerServer :
 //	Function starting gRPC interactions
@@ -57,17 +57,20 @@ func InitListenerServer(g *game.Game) {
 	}
 }
 
+
 // StopListenerServer :
 // Function stopping the gRPC interactions (clean stop)
 func StopListenerServer() {
 	server.GracefulStop()
 }
 
+
 // KillListenerServer :
 // Function stopping the gRPC interactions (dirty stop)
 func KillListenerServer() {
 	server.Stop()
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////
 // Client -> Server
@@ -76,9 +79,10 @@ func KillListenerServer() {
 // SayHello :
 // Function of the service Hello: SayHello
 func (s *Arguments) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
-	fmt.Println("Reception d'un HelloRequest et envoie d'un HelloReply")
+	utils.Debug("Reception d'un HelloRequest et envoie d'un HelloReply")
 	return &pb.HelloReply{}, nil
 }
+
 
 // RightClick :
 // Function of the service Interactions: RightClick
@@ -130,6 +134,7 @@ func (s *Arguments) RightClick(ctx context.Context, in *pb.RightClickRequest) (*
 
 	return &pb.RightClickReply{Path: sendPath}, nil
 }
+
 
 // AskUpdate :
 // Function of the service Interactions: AskUpdate
