@@ -7,5 +7,6 @@
 *.exe
 *.png
 
+.vscode/
 perso/
 *.txt
