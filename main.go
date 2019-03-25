@@ -1,7 +1,6 @@
 package main
 
 import (
-  "fmt"
   "git.unistra.fr/AOEINT/server/game"
   d "git.unistra.fr/AOEINT/server/data"
   "git.unistra.fr/AOEINT/server/server"
@@ -17,8 +16,7 @@ func main() {
 	d.InitiateActionBuffer()
 	data:=game.ExtractData()
 	(&g).GenerateMap(data)
-	fmt.Println("Data struct extracted from json:",data)
-	fmt.Println("buffer",d.ActionBuffer)
+
 	// On lance le faux client pour tester les fonctions de liaison
 	go (&g).GameLoop()
 

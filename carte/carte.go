@@ -1,10 +1,13 @@
 package carte
 
-import tuile "git.unistra.fr/AOEINT/server/carte/tuile"
-import "fmt"
-import "git.unistra.fr/AOEINT/server/batiment"
-import "git.unistra.fr/AOEINT/server/ressource"
-import "git.unistra.fr/AOEINT/server/data"
+import (
+  tuile "git.unistra.fr/AOEINT/server/carte/tuile"
+  "git.unistra.fr/AOEINT/server/utils"
+  "git.unistra.fr/AOEINT/server/batiment"
+  "git.unistra.fr/AOEINT/server/ressource"
+  "git.unistra.fr/AOEINT/server/data"
+)
+
 
 //Carte : Structure detaillant une carte de tuiles
 type Carte struct{
@@ -12,11 +15,13 @@ type Carte struct{
 	matrice[][] tuile.Tuile
 }
 
+
 //New : Creation d'une carte de taille n [int]
 func New(size int) Carte{
 	var mat Carte
 	mat.size=size
 	mat.matrice=make([][]tuile.Tuile,size)
+
 	for i := 0; i < size; i++ {
 		mat.matrice[i]= make([]tuile.Tuile,size)
 		mat.matrice[i][i%size]=tuile.New()
@@ -24,36 +29,47 @@ func New(size int) Carte{
 	return mat
 }
 
+
 //IsEmpty : Verifie si la cade est vide
 func (c Carte) IsEmpty(x int, y int) bool{
 		return c.matrice[x][y].GetType() ==0
 }
+
 
 //GetSize : Renvoie la taille d'une carte
 func (c Carte)GetSize() int{
 	return c.size
 }
 
+
 //GetTile : Renvoie la tuile pour la position demandee
 func (c Carte) GetTile(x int, y int) *tuile.Tuile{
 	return &(c.matrice[x][y])
 }
+
+
 //AddNewRessource : Ajoute une ressource(pointee) a la carte
 func (c Carte)AddNewRessource(res *ressource.Ressource) bool{
 	x:=(*res).GetX()
 	y:=(*res).GetY()
+
 	if(!c.IsEmpty(x,y)){
 		return false
 	}
+
 	(c.GetTile(x,y)).AddRessource(res)
 	id:=(&data.IDMap).AddObject(res)
 	(*res).Transmit(id)
+
 	return true
 }
+
+
 //AddNewBuilding : Ajoute un batiment(pointe) a la carte
 func (c Carte)AddNewBuilding(bat *batiment.Batiment) bool{
 	x:=(*bat).GetX()
 	y:=(*bat).GetY()
+
 	for i:=0;i<(*bat).GetLongueur();i++{
 		for j:=0;j<(*bat).GetLargeur();j++{
 			if(!c.IsEmpty(x+i,y+j)){
@@ -61,26 +77,30 @@ func (c Carte)AddNewBuilding(bat *batiment.Batiment) bool{
 			}
 		}
 	}
+
 	for i:=0;i<(*bat).GetLongueur();i++{
 		for j:=0;j<(*bat).GetLargeur();j++{
 			(c.GetTile(x+i,y+j)).AddBuilding(bat)
 		}
 	}
+
 	id:=(&data.IDMap).AddObject(bat)
 	(*bat).Transmit(id)
+
 	return true
 }
+
 
 //Debug : Affichage de debuguage sur terminal
 func Debug(mat Carte){
 	for i:=0;i<mat.size;i++{
 		for j:=0;j<mat.size;j++{
-			fmt.Print(mat.matrice[i][j].GetType())
-			fmt.Print(" ");
+			utils.Debug(string(mat.matrice[i][j].GetType()))
 		}
-		fmt.Println("")
+		utils.Debug("")
 	}
 }
+
 
 //Case : Structure d'une case, []Case correspond a un chemin
 type Case struct{
@@ -89,40 +109,49 @@ type Case struct{
 	tile tuile.Tuile
 }
 
+
 //GetPathX : Renvoie la valeur X d'une case
 func (c Case) GetPathX() int{
 	return c.x
 }
+
 
 //GetPathY : Renvoie la valeur Y d'une case
 func (c Case) GetPathY() int{
 	return c.y
 }
 
+
 //GetPathTile : Get the tile designed by a case
 func (c Case) GetPathTile() tuile.Tuile{
 	return c.tile
 }
 
+
 func validCoords(x int,y int, size int) bool{
 	return ((x>=0 && x<size) && (y>=0 && y<size))
 }
 
+
 func  printMatrix(weightMatrix [][]int){
 	for i:=0;i<len(weightMatrix);i++{
 		for j:=0;j<len(weightMatrix);j++{
-			fmt.Print(weightMatrix[i][j])
-			fmt.Print(" ")
+			utils.Debug(string(weightMatrix[i][j]))
+			utils.Debug(" ")
 		}
-		fmt.Println("")
+		utils.Debug("")
 	}
 }
+
 
 //UNVISITED valeur de case non parcourue lors de l'attribution de poids
 const UNVISITED=-1
 
+
 //OBSTACLE valeur de case contenant un obstacle lors de l'attribution de poids
 const OBSTACLE=-2
+
+
 func attribuerPoids(weightMatrix [][]int,x int,y int, step int) [][]int{
 	if(validCoords(x,y,len(weightMatrix))){
 		if(weightMatrix[x][y]==UNVISITED){
@@ -131,6 +160,7 @@ func attribuerPoids(weightMatrix [][]int,x int,y int, step int) [][]int{
 	}
 	return weightMatrix
 }
+
 
 func shortestPathAux(weightMatrix [][]int,c Carte, x int, y int, currX *int, currY *int, step int, path []Case, modif *bool) bool{
 	if(validCoords(x,y,len(weightMatrix))){
@@ -147,16 +177,19 @@ func shortestPathAux(weightMatrix [][]int,c Carte, x int, y int, currX *int, cur
 	return false
 }
 
+
 //Selectionne le chemin le plus court a partir de la matrice des poids
 func shortestPath(weightMatrix [][]int,destx int, desty int,c Carte,path []Case) []Case{
 	if(weightMatrix[destx][desty]==UNVISITED){
 		return (nil)
 	}
+
 	path=make([]Case,weightMatrix[destx][desty]+1)
 	path[len(path)-1]=(Case{destx,desty,*(c.GetTile(destx,desty))})
 	currX:=destx
 	currY:=desty
 	modif:=false
+
 	for step:=weightMatrix[destx][desty]+1;step>0;step--{
 		modif=false
 		if(shortestPathAux(weightMatrix,c, currX, currY+1, &currX, &currY, step,path, &modif)){
@@ -187,6 +220,7 @@ func (c Carte) GetPathFromTo(x int, y int, destx int, desty int) []Case{
 	var path []Case
 	var weightMatrix [][]int
 	weightMatrix=make([][]int,c.size)
+
 	for i := 0; i < c.size; i++ {
 		weightMatrix[i]= make([]int,c.size)
 		for j:=0;j<c.size;j++{
@@ -197,8 +231,10 @@ func (c Carte) GetPathFromTo(x int, y int, destx int, desty int) []Case{
 			}
 		}
 	}
+
 	weightMatrix[x][y]=0 //Case source visitee
 	//Fin de l'initialisation
+
 	for step:=0;step<c.size*c.size;step++{
 		for i:=0;i<c.size;i++{
 			for j:=0;j<c.size;j++{
@@ -215,7 +251,7 @@ func (c Carte) GetPathFromTo(x int, y int, destx int, desty int) []Case{
 			}
 		}
 	}
-	//printMatrix(weightMatrix)
+
 	//Une matrice de poids est cree
 	return shortestPath(weightMatrix,destx, desty,c,path)
 }
