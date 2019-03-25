@@ -76,7 +76,7 @@ func (pnj Npc)stringify() map[string]string{
 }
 
 
-//Transmit: add the npc to the communcation's buffer
+//Transmit : add the npc to the communcation's buffer
 func (pnj Npc) Transmit(id string){
 	arr:=pnj.stringify()
 	for k,e := range arr{
