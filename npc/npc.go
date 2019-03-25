@@ -62,7 +62,8 @@ func Create(class string,x int,y int, flag bool,channel *chan []int) (Npc,string
     return pnj,id
 }
 
-func (pnj Npc)stringify() map[string]string{
+//Stringify : create a map[string]string of the main arguments of a NPC
+func (pnj Npc)Stringify() map[string]string{
 	res:=make(map[string]string)
 	res["pv"]=strconv.Itoa(pnj.pv)
 	res["x"]=strconv.Itoa(pnj.x)
@@ -73,19 +74,18 @@ func (pnj Npc)stringify() map[string]string{
 	res["offensive"]=strconv.FormatBool(pnj.offensive)
 	res["vue"]=strconv.Itoa(pnj.vue)
 	res["portee"]=strconv.Itoa(pnj.portee)
-	res["PlayerUUID"]=pnj.PlayerUUID
 	res["TeamFlag"]=strconv.FormatBool(pnj.TeamFlag)
+	res["PlayerUUID"]=pnj.PlayerUUID
 	return res
 }
 
 //Transmit : add the npc to the communcation's buffer
 func (pnj Npc) Transmit(id string){
-	arr:=pnj.stringify()
+	arr:=pnj.Stringify()
 	for k,e := range arr{
-		data.AddNewAction(constants.ActionNewNpc,id,k,e)
+		data.AddToAllAction(constants.ActionNewNpc,id,k,e)
 	}
 }
-
 
 //GetX : return the position X
 func (pnj Npc) GetX() int{
@@ -151,7 +151,6 @@ func (pnj Npc)GetSpeed() int{
 	return pnj.vitesse
 }
 
-
 //RecoltePossible : return true if te villager can acces to a tile to harvest the resource in x, y
 func RecoltePossible(c carte.Carte, x int, y int) bool{
 	for i := x-1; i <= x+1; i++{
@@ -164,9 +163,7 @@ func RecoltePossible(c carte.Carte, x int, y int) bool{
 	return false
 }
 
-/*MoveHarvest : (move to the nreast ressource in the villagers's vision).
-Triggered when a villager is inactive, cancelled when the player moves the npc
-*/
+//MoveHarvest : (move to the nreast ressource in the villagers's vision)
 func (pnj *Npc)MoveHarvest(c carte.Carte){
 	var i, j int
 	var ress *ressource.Ressource

@@ -1,5 +1,17 @@
 package constants
 
+import (
+  "os"
+)
+
+func getenv(key, fallback string) string {
+    value := os.Getenv(key)
+    if len(value) == 0 {
+        return fallback
+    }
+    return value
+}
+
 //Listes des differentes constantes de jeu
 //constantes de debug
 const (
@@ -8,6 +20,18 @@ const (
 	//Mode verbose eventuel
 	DEBUG = false
 )
+
+var (
+	//PlayerUID1 Name of the first player
+	PlayerUID1 = "DEFAULT"
+	//PlayerUID2 Name of the first player
+	PlayerUID2 = "DEFAULT"
+	//PlayerUID3 Name of the first player
+	PlayerUID3 = "DEFAULT"
+	//PlayerUID4 Name of the first player
+	PlayerUID4 = "DEFAULT"
+)
+
 //constantes liees aux actions
 const (
 //NPC
