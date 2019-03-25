@@ -70,7 +70,7 @@ func (j Joueur) stringify() map[string]string{
 func (j Joueur) Transmit(){
 	arr:=j.stringify()
 	for k,e := range arr{
-		data.AddNewAction(constants.ActionPlayerRessource,j.UID,k,e)
+		data.AddNewAction(j.UID,constants.ActionPlayerRessource,j.UID,k,e)
 	}
 }
 

@@ -96,7 +96,7 @@ func (ress Ressource)stringify(id string)map[string]string{
 func (ress Ressource) Transmit(id string){
 	arr:=ress.stringify(id)
 	for k,e := range arr{
-		data.AddNewAction(constants.ActionNewRessource,id,k,e)
+		data.AddToAllAction(constants.ActionNewRessource,id,k,e)
 	}
 }
 
