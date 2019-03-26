@@ -35,6 +35,10 @@ func clientInit() {
 	}
 }
 
+func TestVide(t *testing.T){
+	return
+}
+
 func TestMain(m *testing.M) {
 	go clientInit()
 	go InitListenerServer(nil)
