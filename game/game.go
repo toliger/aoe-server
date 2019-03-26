@@ -124,8 +124,8 @@ Modification: Changement pour des valeurs statiques (temporaire)
 */
 func (g *Game) GetPlayerData() {
 	(*g).Joueurs = make([]joueur.Joueur, 2)
-	(*g).Joueurs[0] = joueur.Create(false, "Bob", "b33d954f-c63e-4b48-88eb-8b5e86d94246")
-	(*g).Joueurs[1] = joueur.Create(true, "Alice", "1982N19N2")
+	(*g).Joueurs[0] = joueur.Create(0, "Bob", "b33d954f-c63e-4b48-88eb-8b5e86d94246")
+	(*g).Joueurs[1] = joueur.Create(1, "Alice", "1982N19N2")
 	constants.PlayerUID1 = (*g).Joueurs[0].UID
 	constants.PlayerUID2 = (*g).Joueurs[1].UID
 	if len((*g).Joueurs) > 2 {

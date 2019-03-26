@@ -14,7 +14,7 @@ import (
 var client *grpc.Server
 
 func clientInit() {
-	lis, err := net.Listen("tcp", ":50011")
+	lis, err := net.Listen("tcp", ":50020")
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	} else {
@@ -35,12 +35,9 @@ func clientInit() {
 	}
 }
 
-func TestServerInit(t *testing.T) {
-	InitListenerServer(nil)
-}
-
 func TestMain(m *testing.M) {
-	clientInit()
+	go clientInit()
+	go InitListenerServer(nil)
 	flag.Parse()
 	exitCode := m.Run()
 
