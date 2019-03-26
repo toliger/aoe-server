@@ -7,6 +7,7 @@ import (
 	"os"
 	"testing"
 
+	"git.unistra.fr/AOEINT/server/game"
 	pb "git.unistra.fr/AOEINT/server/grpc"
 	"google.golang.org/grpc"
 )
@@ -35,13 +36,14 @@ func clientInit() {
 	}
 }
 
-func TestVide(t *testing.T){
+func TestVide(t *testing.T) {
 	return
 }
 
 func TestMain(m *testing.M) {
 	go clientInit()
-	go InitListenerServer(nil)
+	var g game.Game
+	go InitListenerServer(&g)
 	flag.Parse()
 	exitCode := m.Run()
 
