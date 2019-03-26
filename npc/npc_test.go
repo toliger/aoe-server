@@ -31,18 +31,18 @@ func TestDeplacement(t *testing.T){
 }
 */
 
-func TestRecolte(t *testing.T){
-	d.IDMap=d.NewObjectID()
+func TestRecolte(t *testing.T) {
+	d.IDMap = d.NewObjectID()
 	d.InitiateActionBuffer()
-	bip := make(chan[]int,100)
-	pnj,_:=Create("harvester",0,0,false,&bip)
-	c:=carte.New(50)
-	ress:=ressource.Create("tree",2,2)
+	bip := make(chan []int, 100)
+	pnj, _ := Create("harvester", 0, 0, 0, &bip)
+	c := carte.New(50)
+	ress := ressource.Create("tree", 2, 2)
 	c.AddNewRessource(&ress)
 	go (&pnj).MoveHarvestTarget(c, &ress)
-	time.Sleep(time.Duration(4*time.Second))
-	if(ress.GetPv()==100){
+	time.Sleep(time.Duration(4 * time.Second))
+	if ress.GetPv() == 100 {
 		t.Error("la ressource n'a pas perdu de Pv")
 	}
-	t.Log("pv: ",ress.GetPv())
+	t.Log("pv: ", ress.GetPv())
 }
