@@ -11,7 +11,6 @@ import (
 	Carte "git.unistra.fr/AOEINT/server/carte"
 	"git.unistra.fr/AOEINT/server/constants"
 	"git.unistra.fr/AOEINT/server/joueur"
-	"git.unistra.fr/AOEINT/server/npc"
 	"git.unistra.fr/AOEINT/server/ressource"
 	"git.unistra.fr/AOEINT/server/utils"
 )
@@ -84,11 +83,6 @@ func (g *Game) GenerateMap(data Data) {
 	(*g).Carte = Carte.New(data.Size)
 	//On attribue les auberges
 	if len((*g).Joueurs) == 2 { //Si Seulement 2 Joueurs fournis, fait en sorte de leur donner des bases adverses
-		//ajout des npc de base
-		pnj, id := npc.Create("villager", 10, 10, g.Joueurs[0].GetFaction(), (&(g.Joueurs[0])).GetChannel())
-		g.Joueurs[0].AddNpc(&pnj)
-		pnj.Transmit(id)
-		(*g).Joueurs[0].AddBuilding(&data.Buildings[0])
 
 		if (*g).Carte.AddNewBuilding(&(data.Buildings[0])) == false {
 			log.Fatal("Erreur lors du placement d'une auberge")
@@ -110,6 +104,17 @@ func (g *Game) GenerateMap(data Data) {
 			}
 		}
 	}
+	//ajout des npc de base
+	for i := 0; i < len((*g).Joueurs); i++ {
+		for j := 0; j < 5; j++ {
+			if i < 2 {
+				(*g).Joueurs[i].AddAndCreateNpc("villager", 0, 0)
+			} else {
+				(*g).Joueurs[i].AddAndCreateNpc("villager", g.Carte.GetSize()-1, g.Carte.GetSize()-1)
+			}
+		}
+	}
+	//Ajout des ressources
 	for i := 0; i < len(data.Ressources); i++ {
 		(&data.Ressources[i]).InitiatePV()
 		if (*g).Carte.AddNewRessource(&(data.Ressources[i])) == false {

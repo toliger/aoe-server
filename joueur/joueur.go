@@ -150,3 +150,21 @@ func (j *Joueur) AddNpc(entity *npc.Npc) {
 	}
 	entity.PlayerUUID = j.UID
 }
+
+//AddAndCreateNpc : create and add a new NPC to the player
+func (j *Joueur) AddAndCreateNpc(class string, x int, y int) {
+	entity, id := npc.Create(class, x, y, j.faction, &j.ressourceChannel)
+	test := false
+	for i := 0; i < len(j.entities); i++ {
+		if j.entities[i] == nil {
+			j.entities[i] = &entity
+			test = true
+			break
+		}
+	}
+	if !test {
+		(*j).entities = append(j.entities, &entity)
+	}
+	entity.PlayerUUID = j.UID
+	entity.Transmit(id)
+}
