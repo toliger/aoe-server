@@ -148,4 +148,5 @@ func (j *Joueur) AddNpc(entity *npc.Npc) {
 	if !test {
 		(*j).entities = append(j.entities, entity)
 	}
+	entity.PlayerUUID = j.UID
 }

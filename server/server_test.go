@@ -1,13 +1,13 @@
 package server
 
 import (
-	"flag"
+	//"flag"
 	"log"
 	"net"
-	"os"
+	//"os"
 	"testing"
 
-	"git.unistra.fr/AOEINT/server/game"
+	//"git.unistra.fr/AOEINT/server/game"
 	pb "git.unistra.fr/AOEINT/server/grpc"
 	"google.golang.org/grpc"
 )
@@ -41,7 +41,7 @@ func TestVide(t *testing.T) {
 }
 
 func TestMain(m *testing.M) {
-	go clientInit()
+	/*go clientInit()
 	var g game.Game
 	go InitListenerServer(&g)
 	flag.Parse()
@@ -49,5 +49,5 @@ func TestMain(m *testing.M) {
 
 	StopListenerServer()
 	client.GracefulStop()
-	os.Exit(exitCode)
+	os.Exit(exitCode)*/
 }
