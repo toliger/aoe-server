@@ -79,7 +79,7 @@ message AskUpdateReply {
 }
 
 /*
-  * 0 : Création d'un NPC
+* 0 : Création d'un NPC
     ** EntityUUID : Identifiant de l'entité créé
     ** Arg :
         *** Key :
@@ -104,11 +104,10 @@ message AskUpdateReply {
             - "pv" -> Point de vie
             - "x" -> Coordonnée x
             - "y" -> Coordonnée y
-            - "destX" -> Destination coordonnée x
-            - "destY" -> Destination coordonnée y
+            - "destX" -> Destination coordonnée x (-1 si pas de chemin)
+            - "destY" -> Destination coordonnée y (-1 si pas de chemin)
             - "vitesse" -> Vitesse de déplacement
             - "damage" -> Dégats prit par le NPC
-            - "offensive" -> Booleen à s'il peut attaquer ou pas
             - "vue" -> Distance de vue du NPC
             - "portee" -> Distance de la portée d'attaque
         *** Value : Valeur en fonction de la donnée
@@ -129,7 +128,7 @@ message AskUpdateReply {
         *** Key :
             - "0" -> Coordonnée X
             - "1" -> Coordonnée Y
-            - "2" -> PV
+            - "2" -> Nouveau PV
         *** Value : Valeur en fonction de la donnée
 
 * 5 : Destruction d'une ressource

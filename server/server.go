@@ -12,6 +12,7 @@ import (
 	"git.unistra.fr/AOEINT/server/npc"
 	"git.unistra.fr/AOEINT/server/data"
 	"git.unistra.fr/AOEINT/server/game"
+	"git.unistra.fr/AOEINT/server/constants"
 	pb "git.unistra.fr/AOEINT/server/grpc"
 )
 
@@ -91,7 +92,6 @@ func (s *Arguments) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.Hell
 func (s *Arguments) RightClick(ctx context.Context, in *pb.RightClickRequest) (*pb.RightClickReply, error) {
 
 	// Loop on each entity
-	var action []data.Action
 	for i:=0 ; i<len(in.EntitySelectionUUID) ; i++ {
 
 		// Get the entity
@@ -100,32 +100,22 @@ func (s *Arguments) RightClick(ctx context.Context, in *pb.RightClickRequest) (*
 		// Get the path of the entity
 		path := entity.MoveTo(s.g.Carte, int(in.Point.X), int(in.Point.Y), nil)
 
-		// Filling action with the right data
-		action[3].Description[in.EntitySelectionUUID[i]] = entity.Stringify()
-		delete(action[3].Description[in.EntitySelectionUUID[i]], "type")
-		delete(action[3].Description[in.EntitySelectionUUID[i]], "TeamFlag")
-		delete(action[3].Description[in.EntitySelectionUUID[i]], "PlayerUUID")
+		// Filling ActionBuffer with the right data
+		entityData := entity.Stringify()
+		data.AddToAllAction(constants.ActionHarmNpc, in.EntitySelectionUUID[i], "pv", entityData["pv"])
+		data.AddToAllAction(constants.ActionHarmNpc, in.EntitySelectionUUID[i], "x", entityData["x"])
+		data.AddToAllAction(constants.ActionHarmNpc, in.EntitySelectionUUID[i], "y", entityData["y"])
+		data.AddToAllAction(constants.ActionHarmNpc, in.EntitySelectionUUID[i], "vitesse", entityData["vitesse"])
+		data.AddToAllAction(constants.ActionHarmNpc, in.EntitySelectionUUID[i], "damage", entityData["damage"])
+		data.AddToAllAction(constants.ActionHarmNpc, in.EntitySelectionUUID[i], "vue", entityData["vue"])
+		data.AddToAllAction(constants.ActionHarmNpc, in.EntitySelectionUUID[i], "portee", entityData["portee"])
+		data.AddToAllAction(constants.ActionHarmNpc, in.EntitySelectionUUID[i], "pv", entityData["pv"])
 		if len(path) != 0 {
-			action[3].Description[in.EntitySelectionUUID[i]]["destX"] = string(path[len(path)-1].GetPathX())
-			action[3].Description[in.EntitySelectionUUID[i]]["destY"] = string(path[len(path)-1].GetPathY())
+			data.AddToAllAction(constants.ActionHarmNpc, in.EntitySelectionUUID[i], "destX", string(path[len(path)-1].GetPathX()))
+			data.AddToAllAction(constants.ActionHarmNpc, in.EntitySelectionUUID[i], "destY",  string(path[len(path)-1].GetPathY()))
 		} else {
-			action[3].Description[in.EntitySelectionUUID[i]]["destX"] = "-1"
-			action[3].Description[in.EntitySelectionUUID[i]]["destY"] = "-1"
-		}
-	}
-
-	// Put data in ActionBuffer
-	for playerUUID := range data.ActionBuffer {
-		for entityUUID := range action[3].Description {
-			_, value := data.ActionBuffer[playerUUID][3].Description[entityUUID]
-
-			// !value is true if .Description[entityUUID] is not define
-			if !value {
-				data.ActionBuffer[playerUUID][3].Description[entityUUID] = action[3].Description[entityUUID]
-			} else {
-				data.ActionBuffer[playerUUID][3].Description[entityUUID]["destX"] = action[3].Description[entityUUID]["destX"]
-				data.ActionBuffer[playerUUID][3].Description[entityUUID]["destY"] = action[3].Description[entityUUID]["destY"]
-			}
+			data.AddToAllAction(constants.ActionHarmNpc, in.EntitySelectionUUID[i], "destX", "-1")
+			data.AddToAllAction(constants.ActionHarmNpc, in.EntitySelectionUUID[i], "destY",  "-1")
 		}
 	}
 
@@ -165,8 +155,6 @@ func (s *Arguments) AskUpdate(ctx context.Context, in *pb.AskUpdateRequest) (*pb
 
 	// Deletin the historic of updates waiting for the client
 	data.CleanPlayerActionBuffer(playerUUID.UUID)
-
-	log.Print(data.ActionBuffer)
 
 	return &pb.AskUpdateReply{Array: toSend}, nil
 }
