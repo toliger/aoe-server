@@ -1,6 +1,7 @@
 package npc
 
 import (
+	"fmt"
 	"log"
 	"strconv"
 	"sync"
@@ -17,6 +18,8 @@ import (
 type Npc struct {
 	x                int
 	y                int
+	px               float64
+	py               float64
 	pv               int
 	vitesse          int
 	vue              int
@@ -40,7 +43,7 @@ type safeNumber struct {
 
 //New : new NPC
 func New(x int, y int, pv int, vitesse int, vue int, portee int, offensive bool, size int, damage int, selectable bool, typ int, flag int, channel *chan []int) Npc {
-	pnj := Npc{x, y, pv, vitesse, vue, portee, offensive, size, damage, selectable, typ, flag, *channel, false, ""}
+	pnj := Npc{x, y, 0, 0, pv, vitesse, vue, portee, offensive, size, damage, selectable, typ, flag, *channel, false, ""}
 	return pnj
 }
 
@@ -77,6 +80,8 @@ func (pnj Npc) Stringify() map[string]string {
 	res["portee"] = strconv.Itoa(pnj.portee)
 	res["TeamFlag"] = strconv.Itoa(pnj.TeamFlag)
 	res["PlayerUUID"] = pnj.PlayerUUID
+	res["px"] = fmt.Sprintf("%f", pnj.px)
+	res["py"] = fmt.Sprintf("%f", pnj.py)
 	return res
 }
 
