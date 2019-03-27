@@ -34,8 +34,8 @@ const (
 	//ActionDelNpc action destruction npc
 	ActionDelNpc = 1
 
-	// ActionHarmNpc degats infliges a un npc
-	ActionHarmNpc = 2
+	// ActionAlterationNpc degats infliges a un npc
+	ActionAlterationNpc = 2
 
 	//PLAYER
 	//ActionPlayerRessource maj d'un joueur

@@ -2,20 +2,19 @@
 // All for the clients interactions
 package server
 
-
 import (
 	"context"
 	"log"
 	"net"
-	"google.golang.org/grpc"
-	"git.unistra.fr/AOEINT/server/utils"
-	"git.unistra.fr/AOEINT/server/npc"
+
+	"git.unistra.fr/AOEINT/server/constants"
 	"git.unistra.fr/AOEINT/server/data"
 	"git.unistra.fr/AOEINT/server/game"
-	"git.unistra.fr/AOEINT/server/constants"
 	pb "git.unistra.fr/AOEINT/server/grpc"
+	"git.unistra.fr/AOEINT/server/npc"
+	"git.unistra.fr/AOEINT/server/utils"
+	"google.golang.org/grpc"
 )
-
 
 ///////////////////////////////////////////////////////////////////////////////
 // General
@@ -23,14 +22,12 @@ import (
 
 var server *grpc.Server
 
-
 // Arguments :
 // Data structure used in the gRPC method's
 type Arguments struct {
-	g *game.Game
+	g            *game.Game
 	UpdateBuffer []pb.UpdateAsked
 }
-
 
 // InitListenerServer :
 //	Function starting gRPC interactions
@@ -43,8 +40,8 @@ func InitListenerServer(g *game.Game) {
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	} else {
-    log.Print("Server listen !")
-  }
+		log.Print("Server listen !")
+	}
 
 	// Initialization of gRPC server
 	arg := Arguments{g: g}
@@ -60,20 +57,17 @@ func InitListenerServer(g *game.Game) {
 	}
 }
 
-
 // StopListenerServer :
 // Function stopping the gRPC interactions (clean stop)
 func StopListenerServer() {
 	server.GracefulStop()
 }
 
-
 // KillListenerServer :
 // Function stopping the gRPC interactions (dirty stop)
 func KillListenerServer() {
 	server.Stop()
 }
-
 
 ///////////////////////////////////////////////////////////////////////////////
 // Client -> Server
@@ -86,13 +80,12 @@ func (s *Arguments) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.Hell
 	return &pb.HelloReply{}, nil
 }
 
-
 // RightClick :
 // Function of the service Interactions: RightClick
 func (s *Arguments) RightClick(ctx context.Context, in *pb.RightClickRequest) (*pb.RightClickReply, error) {
 
 	// Loop on each entity
-	for i:=0 ; i<len(in.EntitySelectionUUID) ; i++ {
+	for i := 0; i < len(in.EntitySelectionUUID); i++ {
 
 		// Get the entity
 		entity := data.IDMap.GetObjectFromID(in.EntitySelectionUUID[i]).(*npc.Npc)
@@ -102,26 +95,25 @@ func (s *Arguments) RightClick(ctx context.Context, in *pb.RightClickRequest) (*
 
 		// Filling ActionBuffer with the right data
 		entityData := entity.Stringify()
-		data.AddToAllAction(constants.ActionHarmNpc, in.EntitySelectionUUID[i], "pv", entityData["pv"])
-		data.AddToAllAction(constants.ActionHarmNpc, in.EntitySelectionUUID[i], "x", entityData["x"])
-		data.AddToAllAction(constants.ActionHarmNpc, in.EntitySelectionUUID[i], "y", entityData["y"])
-		data.AddToAllAction(constants.ActionHarmNpc, in.EntitySelectionUUID[i], "vitesse", entityData["vitesse"])
-		data.AddToAllAction(constants.ActionHarmNpc, in.EntitySelectionUUID[i], "damage", entityData["damage"])
-		data.AddToAllAction(constants.ActionHarmNpc, in.EntitySelectionUUID[i], "vue", entityData["vue"])
-		data.AddToAllAction(constants.ActionHarmNpc, in.EntitySelectionUUID[i], "portee", entityData["portee"])
-		data.AddToAllAction(constants.ActionHarmNpc, in.EntitySelectionUUID[i], "pv", entityData["pv"])
+		data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "pv", entityData["pv"])
+		data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "x", entityData["x"])
+		data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "y", entityData["y"])
+		data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "vitesse", entityData["vitesse"])
+		data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "damage", entityData["damage"])
+		data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "vue", entityData["vue"])
+		data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "portee", entityData["portee"])
+		data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "pv", entityData["pv"])
 		if len(path) != 0 {
-			data.AddToAllAction(constants.ActionHarmNpc, in.EntitySelectionUUID[i], "destX", string(path[len(path)-1].GetPathX()))
-			data.AddToAllAction(constants.ActionHarmNpc, in.EntitySelectionUUID[i], "destY",  string(path[len(path)-1].GetPathY()))
+			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "destX", string(path[len(path)-1].GetPathX()))
+			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "destY", string(path[len(path)-1].GetPathY()))
 		} else {
-			data.AddToAllAction(constants.ActionHarmNpc, in.EntitySelectionUUID[i], "destX", "-1")
-			data.AddToAllAction(constants.ActionHarmNpc, in.EntitySelectionUUID[i], "destY",  "-1")
+			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "destX", "-1")
+			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "destY", "-1")
 		}
 	}
 
 	return &pb.RightClickReply{}, nil
 }
-
 
 // AskUpdate :
 // Function of the service Interactions: AskUpdate
@@ -136,7 +128,7 @@ func (s *Arguments) AskUpdate(ctx context.Context, in *pb.AskUpdateRequest) (*pb
 	toSend := make([]*pb.UpdateAsked, 0)
 
 	// Verify if the playerUUID exist in the map
-	if _, isFilled := data.ActionBuffer[playerUUID.UUID] ; isFilled {
+	if _, isFilled := data.ActionBuffer[playerUUID.UUID]; isFilled {
 		for actionType := range data.ActionBuffer[playerUUID.UUID] {
 			for entityUUID := range data.ActionBuffer[playerUUID.UUID][actionType].Description {
 				upAsk := pb.UpdateAsked{Type: int32(actionType), EntityUUID: entityUUID}
