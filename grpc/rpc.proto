@@ -32,31 +32,152 @@ service Interactions {
 }
 
 // Messages liés à RightClick
+/* * Demande du Client : Demande le déplacement de une ou plusieurs unités
+* Argument donné par Client :
+
+    ** Point : Variable de type coordonnée servant de destination.
+    ** EntitySelectionUUID : Tableau des identifiants concerné par la requête.
+    ** Target : Chaine de caractère représentant l'entité qui doit être attaquer.
+    Cela peut être :
+        *** Un identifiant de NPC
+        *** Un identifiant de batiment
+        *** Une paire de coordonnée de ressource
+*/
 message RightClickRequest {
     Coordinates Point = 1;
     repeated string EntitySelectionUUID = 2;
     string Target = 3;
 }
-message RightClickReply {
-    map<string, RPCoordinates> Path = 1;
-}
-message RPCoordinates {
-    repeated Coordinates Coord = 1;
-}
+/* * Reponse du Serveur : Un message vide
+* Argument donné par Serveur :  Aucun, pas d'information dans le message */
+message RightClickReply {}
+/* * X : Entier de 32 bits donnant la composante x de la coordonnée sur le carte
+* Y : Entier de 32 bits donnant la composante y de la coordonnée sur le carte */
 message Coordinates {
     int32 X = 1;
     int32 Y = 2;
   }
 
-// Message liés à MoveTo
+// Message liés à AskUpdate
+/* * Demande du Client : Demande les actions qui ont été signaler au serveur pour mettre à jour le client.
+* Argument donné par Client :
+    ** Token : Suite de caractère permettant d'identifier et authentifier le client au près du serveur */
 message AskUpdateRequest {
     string Token = 1;
 }
+/* * Reponse du Serveur : Message contenant un tableau des actions * signaler au serveur
+* Argument donné par Serveur :
+    ** Array : Tableau contenant les actions entreprissent depuis la dernière mise à jour
+        ** Type : Type de l'action décrite dans la suite du message (entier)
+        ** EntityUUID : Entité designé par l'action décrite (string)
+        ** Arg : Tableau d'argument variable lié au type d'action
+            ** Key : Nom de la valeur (string)
+            ** Value : Valeur lié à la clé (string) */
 message AskUpdateReply {
     // Si vide rien
     repeated UpdateAsked Array = 1;
 }
 
+/*
+  * 0 : Création d'un NPC
+    ** EntityUUID : Identifiant de l'entité créé
+    ** Arg :
+        *** Key :
+            - "pv" -> Point de vie
+            - "x" -> Coordonnée x
+            - "y" -> Coordonnée y
+            - "vitesse" -> Vitesse de déplacement
+            - "type" -> Type de NPC (0:villager | 1:harvester | 2:soldier)
+            - "damage" -> Dégats qu'inflige le NPC
+            - "vue" -> Distance de vue du NPC
+            - "portee" -> Distance de la portée d'attaque
+        *** Value : Valeur en fonction de la donnée
+        
+* 1 : Destruction d'un NPC
+    ** EntityUUID : Identifiant de l'entité conserné
+    ** Arg : Vide
+
+* 2 : Modification d'un NPC
+    ** EntityUUID : Identifiant de l'entité conserné
+    ** Arg :
+        *** Key :
+            - "pv" -> Point de vie
+            - "x" -> Coordonnée x
+            - "y" -> Coordonnée y
+            - "destX" -> Destination coordonnée x
+            - "destY" -> Destination coordonnée y
+            - "vitesse" -> Vitesse de déplacement
+            - "damage" -> Dégats prit par le NPC
+            - "offensive" -> Booleen à s'il peut attaquer ou pas
+            - "vue" -> Distance de vue du NPC
+            - "portee" -> Distance de la portée d'attaque
+        *** Value : Valeur en fonction de la donnée
+        
+* 3 : Mise à jour des ressource d'un joueur
+    ** EntityUUID : Identifiant du joueur conserné
+    ** Arg :
+        *** Key :
+            - "0" -> Eau
+            - "1" -> Bois
+            - "2" -> Pierre
+            - "3" -> Nourriture
+        *** Value : Nombre d'élément que possède le joueur
+
+* 4 : Endommagement d'une ressource
+    ** EntityUUID : Coordonnée de la ressource conserné
+    ** Arg :
+        *** Key :
+            - "0" -> Coordonnée X
+            - "1" -> Coordonnée Y
+            - "2" -> PV
+        *** Value : Valeur en fonction de la donnée
+
+* 5 : Destruction d'une ressource
+    ** EntityUUID : Coordonnée de la ressource conserné
+    ** Arg :
+        *** Key :
+            - "0" -> Coordonnée X
+            - "1" -> Coordonnée Y
+        *** Value : Valeur en fonction de la donnée
+
+* 6 : Création d'une ressource
+    ** EntityUUID : Coordonnée de la ressource conserné
+    ** Arg :
+        *** Key :
+            - "0" -> Coordonnée X
+            - "1" -> Coordonnée Y
+            - "2" -> PV
+            - "3" -> Type
+            - "4" -> ID
+        *** Value : Valeur en fonction de la donnée
+            - "3" -> "0"->Eau | "1"->Bois | "2"->Pierre | "3"->Nourriture
+    
+* 7 : Endommagement d'un bâtiment
+    ** EntityUUID : Identifiant du bâtiment conserné
+    ** Arg :
+        *** Key :
+            - "0" -> Nouveau PV
+        *** Value : Valeur en fonction de la donnée
+
+* 8 : Destruction d'un bâtiment
+    ** EntityUUID : Identifiant du bâtiment conserné
+    ** Arg : Vide
+
+* 9 : Création d'un bâtiment
+    ** EntityUUID : Identifiant du bâtiment conserné
+    ** Arg :
+        *** Key :
+            - "0" -> Coordonnée X
+            - "1" -> Coordonnée Y
+            - "2" -> PV
+            - "2" -> Type
+            - "3" -> PlayerUUID
+        *** Value : Valeur en fonction de la donnée
+    
+* 10 : Fin du jeu
+    ** EntityUUID : Vide
+    ** Arg : Vide
+*/
 message UpdateAsked {
     int32 Type = 1;
     string EntityUUID = 2;
