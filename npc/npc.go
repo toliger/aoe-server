@@ -25,6 +25,7 @@ type Npc struct {
   offensive bool//true=soldier else harvester
   size int
   damage int
+  tauxRecolte int
   selectable bool //false=villager
 	typ int // 0:villager, 1:harvester, 2:soldier
 	TeamFlag bool
@@ -49,8 +50,8 @@ type safeNumberInt struct {
 
 
 //New : new NPC
-func New(x *safeNumberInt,y *safeNumberInt,pv *safeNumberInt,vitesse int, vue int, portee int, offensive bool,size int, damage int,selectable bool, typ int,flag bool, channel *chan []int) Npc{
-	pnj:=Npc{x,y,pv,vitesse,vue,portee,offensive,size,damage,selectable,typ,flag,*channel,false,"", make(map[int](chan bool))}
+func New(x *safeNumberInt,y *safeNumberInt,pv *safeNumberInt,vitesse int, vue int, portee int, offensive bool,size int, damage int, tauxRecolte int, selectable bool, typ int,flag bool, channel *chan []int) Npc{
+	pnj:=Npc{x,y,pv,vitesse,vue,portee,offensive,size,damage,tauxRecolte,selectable,typ,flag,*channel,false,"", make(map[int](chan bool))}
 	return pnj
 }
 
@@ -67,15 +68,15 @@ func Create(class string,x int,y int, flag bool,channel *chan []int) (Npc,string
 		case "soldier":
 			sfPv.val = constants.SoldierPv
 			pnj=New(sfX,sfY,sfPv,constants.SoldierVitesse,constants.SoldierVue,
-				constants.SoldierPortee, true,constants.SoldierSize,constants.SoldierDamage,true,2,flag,channel)
+				constants.SoldierPortee, true,constants.SoldierSize,constants.SoldierDamage,0,true,2,flag,channel)
 		case "harvester":
 			sfPv.val = constants.HarvesterPv
 			pnj=New(sfX,sfY,sfPv,constants.HarvesterVitesse,constants.HarvesterVue,
-				constants.HarvesterVillPortee,false,constants.HarvesterSize,constants.HarvesterDamage,true,1,flag,channel)
+				constants.HarvesterVillPortee,false,constants.HarvesterSize,constants.MinimumDmg,constants.TauxRecolteHarvester,true,1,flag,channel)
 		default:
 			sfPv.val = constants.VillagerPv
 			pnj=New(sfX,sfY,sfPv,constants.VillagerVitesse,constants.VillagerVue,
-				constants.HarvesterVillPortee,false,constants.VillagerSize,constants.VillagerDamage,false,0,flag,channel)
+				constants.HarvesterVillPortee,false,constants.VillagerSize,constants.MinimumDmg,constants.TauxRecolteVill,false,0,flag,channel)
 	}
 	id:=(&data.IDMap).AddObject(&pnj)
 	//pnj.Transmit(id)
@@ -92,6 +93,7 @@ func (pnj Npc)Stringify() map[string]string{
 	res["vitesse"]=strconv.Itoa(pnj.vitesse)
 	res["type"]=strconv.Itoa(pnj.typ)
 	res["damage"]=strconv.Itoa(pnj.damage)
+	res["tauxRecolte"]=strconv.Itoa(pnj.tauxRecolte)
 	res["offensive"]=strconv.FormatBool(pnj.offensive)
 	res["vue"]=strconv.Itoa(pnj.vue)
 	res["portee"]=strconv.Itoa(pnj.portee)
@@ -532,8 +534,8 @@ func (pnj *Npc)Harvest(c carte.Carte, ress *ressource.Ressource, posRecolteVillX
 				if((*ress).GetPv()<=0){
 					c.GetTile(ress.X,ress.Y).Empty()
 				}else{
-					ress.Damage(pnj.damage)
-					tabRessources[0]=pnj.damage
+					ress.Damage(pnj.tauxRecolte)
+					tabRessources[0]=pnj.tauxRecolte
 					pnj.ressourceChannel<-tabRessources
 				}
 			case 2:
@@ -541,8 +543,8 @@ func (pnj *Npc)Harvest(c carte.Carte, ress *ressource.Ressource, posRecolteVillX
 				if((*ress).GetPv()<=0){
 					c.GetTile(ress.X,ress.Y).Empty()
 				}else{
-					ress.Damage(pnj.damage)
-					tabRessources[1]=pnj.damage
+					ress.Damage(pnj.tauxRecolte)
+					tabRessources[1]=pnj.tauxRecolte
 					pnj.ressourceChannel<-tabRessources
 				}
 			case 3:
@@ -550,8 +552,8 @@ func (pnj *Npc)Harvest(c carte.Carte, ress *ressource.Ressource, posRecolteVillX
 				if((*ress).GetPv()<=0){
 					c.GetTile(ress.X,ress.Y).Empty()
 				}else{
-					tabRessources[2]=pnj.damage
-					ress.Damage(pnj.damage)
+					tabRessources[2]=pnj.tauxRecolte
+					ress.Damage(pnj.tauxRecolte)
 					pnj.ressourceChannel<-tabRessources
 				}
 			default:

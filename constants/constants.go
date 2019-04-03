@@ -209,6 +209,15 @@ const (
 //HarvesterVillPortee  portee d'un harvester
 const HarvesterVillPortee=1
 
+//MinimumDmg degats minimum d'un NPC
+const MinimumDmg=1
+
+//TauxRecolteVill
+const TauxRecolteVill=5
+
+//TauxRecolteHarvester
+const TauxRecolteHarvester=7
+
 //SoldierPv pv d'un  soldat
 const SoldierPv=8
 

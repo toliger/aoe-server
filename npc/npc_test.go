@@ -43,10 +43,17 @@ func TestRecolte(t *testing.T){
 	c.AddNewRessource(&ress)
 	ch := make(chan bool, 2)
 	ch2 := make(chan bool, 2)
+	ch3 := make(chan bool, 2)
 	go (&pnj).MoveHarvestTarget(c, &ress, &ch)
 	time.Sleep(time.Duration(2*time.Second))
 	go (&pnj).MoveTo(c, 10,10, nil, &ch2)
-	time.Sleep(time.Duration(6*time.Second))
+	time.Sleep(time.Duration(1*time.Second))
+	go (&pnj).MoveTo(c, 16,18, nil, &ch3)
+	time.Sleep(time.Duration(5*time.Second))
+	if(pnj.GetX() != 16 || pnj.GetY() != 18){
+		t.Error("le pnj n'est pas au bon endroit")
+		t.Log("pnjX :", pnj.GetX()," pnjY :", pnj.GetY())
+	}
 	if(ress.GetPv()==100){
 		t.Error("la ressource n'a pas perdu de Pv")
 	}
@@ -62,9 +69,14 @@ func TestFight(t *testing.T){
 	pnj1,_:=Create("soldier",10,10,false,&bip1)
 	pnj2,_:=Create("soldier",14,13,true,&bip2)
 	c := carte.New(50)
+	ress:=ressource.Create("tree",16,18)
+	c.AddNewRessource(&ress)
 	ch := make(chan bool, 2)
+	ch2 := make(chan bool, 2)
 	go (&pnj1).MoveFight(c, &pnj2, &ch)
 	time.Sleep(time.Duration(4*time.Second))
+	go (&pnj1).MoveHarvestTarget(c, &ress, &ch2)
+	time.Sleep(time.Duration(6*time.Second))
 	if(pnj2.GetPv()==constants.SoldierPv){
 		t.Error("la cible n'a pas perdu de Pv")
 		t.Log("pv de la cible: ", pnj2.GetPv())
