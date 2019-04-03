@@ -1,18 +1,73 @@
 package server
 
 import (
-	//"flag"
+	
+	"fmt"
 	"log"
+	"time"
+	"context"
+	//"flag"
+	
 	"net"
 	//"os"
 	"testing"
 
-	//"git.unistra.fr/AOEINT/server/game"
 	pb "git.unistra.fr/AOEINT/server/grpc"
 	"google.golang.org/grpc"
 )
 
 var client *grpc.Server
+
+const (
+	addrClientCo = "localhost:50010"
+	token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJncm91cCI6InBsYXllciIsIm5hbWUiOiJQaWVycmUgQyIsInV1aWQiOiJiMzNkOTU0Zi1jNjNlLTRiNDgtODhlYi04YjVlODZkOTQyNDYiLCJpYXQiOjE1MTYyMzkwMjJ9.0btft-GVpqZSFvO_8o9qy5Nl9rNFgePXBfwz6bfR-P8"
+)
+
+func clientHello() {
+	// Set up a connection to the server.
+	conn, err := grpc.Dial(addrClientCo, grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("did not connect: %v", err)
+	}
+	defer conn.Close()
+	c := pb.NewHelloClient(conn)
+
+	// Contact the server and print out its response.
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+
+	reply, err := c.SayHello(ctx, &pb.HelloRequest{Name: "Salut"})
+	if err != nil {
+		log.Fatalf("could not greet: %v", err)
+	}
+	log.Println("Reception d'un SayHello")
+
+	log.Println(reply)
+}
+
+func clientRightClick() {
+	// Set up a connection to the server.
+	conn, err := grpc.Dial(addrClientCo, grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("did not connect: %v", err)
+	}
+	defer conn.Close()
+	c := pb.NewInteractionsClient(conn)
+
+	// Contact the server and print out its response.
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+
+	request := pb.AskUpdateRequest{Token: token}
+
+	reply, err := c.AskUpdate(ctx, &request)
+	if err != nil {
+		log.Fatalf("could not greet: %v", err)
+	}
+	log.Println("Reception d'un AskUpdateReply")
+
+	log.Println(reply)
+}
 
 func clientInit() {
 	lis, err := net.Listen("tcp", ":50020")
@@ -36,11 +91,18 @@ func clientInit() {
 	}
 }
 
-func TestVide(t *testing.T) {
-	return
-}
-
 func TestMain(m *testing.M) {
+
+	s := Arguments{}
+	ctx := context.WithTimeout(context.Background(), time.Second)
+
+	fmt.Println("Test de SayHello")
+	s.SayHello(ctx, )
+
+	fmt.Println("Test de RightClick")
+
+	fmt.Println("Test de AskUpdate")
+
 	/*go clientInit()
 	var g game.Game
 	go InitListenerServer(&g)
