@@ -73,10 +73,13 @@ func TestFight(t *testing.T){
 	c.AddNewRessource(&ress)
 	ch := make(chan bool, 2)
 	ch2 := make(chan bool, 2)
+	ch3 := make(chan bool, 2)
 	go (&pnj1).MoveFight(c, &pnj2, &ch)
 	time.Sleep(time.Duration(4*time.Second))
 	go (&pnj1).MoveHarvestTarget(c, &ress, &ch2)
 	time.Sleep(time.Duration(6*time.Second))
+	go (&pnj1).MoveFight(c, &pnj2, &ch3)
+	time.Sleep(time.Duration(4*time.Second))
 	if(pnj2.GetPv()==constants.SoldierPv){
 		t.Error("la cible n'a pas perdu de Pv")
 		t.Log("pv de la cible: ", pnj2.GetPv())
