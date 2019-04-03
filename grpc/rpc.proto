@@ -110,12 +110,10 @@ message AskUpdateReply {
     ** Arg :
         *** Key :
             - "pv" -> Point de vie
-            - "x" -> Coordonnée x
-            - "y" -> Coordonnée y
-            - "px" -> float64 coordonnée X
-            - "py" -> float64 coordonnée y
-            - "destX" -> Destination coordonnée x (-1 si pas de chemin)
-            - "destY" -> Destination coordonnée y (-1 si pas de chemin)
+            - "x" -> Coordonnée x float64
+            - "y" -> Coordonnée y float64
+            - "destX" -> Destination coordonnée x (-1 si pas de chemin) float64
+            - "destY" -> Destination coordonnée y (-1 si pas de chemin) float64
             - "vitesse" -> Vitesse de déplacement
             - "type" ->Type du NPC (0:villager | 1:harvester | 2:soldier)
             - "damage" -> Dégats prit par le NPC
