@@ -33,7 +33,9 @@ service Interactions {
 
   // Fonction permettant au client de demander les mises à jour
   rpc AskUpdate (AskUpdateRequest) returns (AskUpdateReply) {}
-
+  
+  // Fonction de création(npc ou batiment)
+  rpc AskCreation(AskCreationRequest) returns (AskCreationReply) {}
 }
 
 // Messages liés à RightClick
@@ -90,6 +92,16 @@ message AskUpdateRequest {
 message AskUpdateReply {
     // Si vide rien
     repeated UpdateAsked Array = 1;
+}
+
+message AskCreationRequest {
+    int32 Type = 1;
+    int32 TypeUnit = 2;
+    Coordinates Case = 3;
+}
+
+message AskCreationReply {
+    bool Validation = 1;
 }
 
 /*
