@@ -341,12 +341,13 @@ func (pnj *Npc)MoveFight(c carte.Carte, target *Npc, moveA *chan bool){
 			// The aggressor finished his movement and so can start fighting him
 			if (pnj.GetX() == (posFightPnjX) && pnj.GetY() == posFightPnjY){
 				ch := make(chan bool, 2)
-				chTarget := make(chan bool, 2)
+				//chTarget := make(chan bool, 2)
 				//Fight
 				go pnj.Fight(c, target, posFightPnjX, posFightPnjY, &ch)
 				//The target fights back after a short delay
-				time.Sleep(time.Duration((1 * time.Second)/4))
-				target.Fight(c, pnj, target.GetX(), target.GetY(), &chTarget)
+				// on met en suspend cette fonction
+				// time.Sleep(time.Duration((1 * time.Second)/4))
+				// target.Fight(c, pnj, target.GetX(), target.GetY(), &chTarget)
 				break;
 			}
 		}

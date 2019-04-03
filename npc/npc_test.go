@@ -84,7 +84,7 @@ func TestFight(t *testing.T){
 		t.Error("la cible n'a pas perdu de Pv")
 		t.Log("pv de la cible: ", pnj2.GetPv())
 	}
-	if(pnj1.GetPv()==constants.SoldierPv){
+	if(pnj2.GetPv()==constants.SoldierPv){
 		t.Error("l'agresseur n'a pas perdu de Pv")
 		t.Log("pv de l'agresseur': ", pnj1.GetPv())
 	}
