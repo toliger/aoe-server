@@ -153,7 +153,7 @@ func (j *Joueur) AddNpc(entity *npc.Npc) {
 
 //AddAndCreateNpc : create and add a new NPC to the player
 func (j *Joueur) AddAndCreateNpc(class string, x int, y int) {
-	entity, id := npc.Create(class, x, y, j.faction, &j.ressourceChannel)
+	entity, id := npc.Create(class, float64(x), float64(y), j.faction, &j.ressourceChannel)
 	test := false
 	for i := 0; i < len(j.entities); i++ {
 		if j.entities[i] == nil {

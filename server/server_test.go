@@ -6,10 +6,6 @@ import (
 	"log"
 	"time"
 	"context"
-	//"flag"
-	
-	"net"
-	//"os"
 	"testing"
 
 	pb "git.unistra.fr/AOEINT/server/grpc"
@@ -23,93 +19,59 @@ const (
 	token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJncm91cCI6InBsYXllciIsIm5hbWUiOiJQaWVycmUgQyIsInV1aWQiOiJiMzNkOTU0Zi1jNjNlLTRiNDgtODhlYi04YjVlODZkOTQyNDYiLCJpYXQiOjE1MTYyMzkwMjJ9.0btft-GVpqZSFvO_8o9qy5Nl9rNFgePXBfwz6bfR-P8"
 )
 
-func clientHello() {
-	// Set up a connection to the server.
-	conn, err := grpc.Dial(addrClientCo, grpc.WithInsecure())
-	if err != nil {
-		log.Fatalf("did not connect: %v", err)
-	}
-	defer conn.Close()
-	c := pb.NewHelloClient(conn)
+func TestSayHello(t *testing.T) {
+	
+	s := Arguments{}
+	ctx ,cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
 
-	// Contact the server and print out its response.
+	fmt.Println("Lancement des tests de SayHello")
+
+	reply, err := s.SayHello(ctx, &pb.HelloRequest{});
+	if err != nil {
+		log.Println(err)
+		t.Errorf("")
+	}
+	fmt.Println(reply)
+}
+
+func TestRightClick(t *testing.T) {
+	
+	s := Arguments{}
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	reply, err := c.SayHello(ctx, &pb.HelloRequest{Name: "Salut"})
-	if err != nil {
-		log.Fatalf("could not greet: %v", err)
-	}
-	log.Println("Reception d'un SayHello")
+	fmt.Println("Lancement des tests de RightClick")
 
-	log.Println(reply)
+	reply, err := s.RightClick(ctx, &pb.RightClickRequest{});
+	if err != nil {
+		log.Println(err)
+		t.Errorf("")
+	}
+	fmt.Println(reply)
 }
 
-func clientRightClick() {
-	// Set up a connection to the server.
-	conn, err := grpc.Dial(addrClientCo, grpc.WithInsecure())
-	if err != nil {
-		log.Fatalf("did not connect: %v", err)
-	}
-	defer conn.Close()
-	c := pb.NewInteractionsClient(conn)
-
-	// Contact the server and print out its response.
+func TestAskUpdate(t *testing.T) {
+	
+	s := Arguments{}
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	request := pb.AskUpdateRequest{Token: token}
+	fmt.Println("Lancement des tests de AskUpdate")
 
-	reply, err := c.AskUpdate(ctx, &request)
+	reply, err := s.AskUpdate(ctx, &pb.AskUpdateRequest{});
 	if err != nil {
-		log.Fatalf("could not greet: %v", err)
+		log.Println(err)
+		t.Errorf("")
 	}
-	log.Println("Reception d'un AskUpdateReply")
-
-	log.Println(reply)
-}
-
-func clientInit() {
-	lis, err := net.Listen("tcp", ":50020")
-	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
-	} else {
-		log.Print("Server listen !")
-	}
-
-	// Initialization of gRPC server
-	arg := Arguments{}
-	client = grpc.NewServer()
-
-	// Registration of services Hello and Interactions
-	pb.RegisterHelloServer(client, &arg)
-	pb.RegisterInteractionsServer(client, &arg)
-
-	// Make listen the server
-	if err := client.Serve(lis); err != nil {
-		log.Fatalf("failed to serve gRPC: %v", err)
-	}
+	fmt.Println(reply)
 }
 
 func TestMain(m *testing.M) {
 
-	s := Arguments{}
-	ctx := context.WithTimeout(context.Background(), time.Second)
+	TestSayHello(&testing.T{})
 
-	fmt.Println("Test de SayHello")
-	s.SayHello(ctx, )
+	TestRightClick(&testing.T{})
 
-	fmt.Println("Test de RightClick")
-
-	fmt.Println("Test de AskUpdate")
-
-	/*go clientInit()
-	var g game.Game
-	go InitListenerServer(&g)
-	flag.Parse()
-	exitCode := m.Run()
-
-	StopListenerServer()
-	client.GracefulStop()
-	os.Exit(exitCode)*/
+	TestAskUpdate(&testing.T{})
 }

@@ -3,6 +3,11 @@ syntax = "proto3";
 package communication;
 
 ///////////////////////////////////////////////////////////////////////////////
+// Nouvelles fonctions de communication à implémenter
+///////////////////////////////////////////////////////////////////////////////
+
+
+///////////////////////////////////////////////////////////////////////////////
 // Service de test de connection
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -41,7 +46,7 @@ service Interactions {
     Cela peut être :
         *** Un identifiant de NPC
         *** Un identifiant de batiment
-        *** Une paire de coordonnée de ressource
+        *** Un identifiant de ressource
 */
 message RightClickRequest {
     Coordinates Point = 1;
@@ -54,8 +59,8 @@ message RightClickReply {}
 /* * X : Entier de 32 bits donnant la composante x de la coordonnée sur le carte
 * Y : Entier de 32 bits donnant la composante y de la coordonnée sur le carte */
 message Coordinates {
-    int32 X = 1;
-    int32 Y = 2;
+    float X = 1;
+    float Y = 2;
   }
 
 // Message liés à AskUpdate
@@ -105,12 +110,10 @@ message AskUpdateReply {
     ** Arg :
         *** Key :
             - "pv" -> Point de vie
-            - "x" -> Coordonnée x
-            - "y" -> Coordonnée y
-            - "px" -> float64 coordonnée X
-            - "py" -> float64 coordonnée y
-            - "destX" -> Destination coordonnée x (-1 si pas de chemin)
-            - "destY" -> Destination coordonnée y (-1 si pas de chemin)
+            - "x" -> Coordonnée x float64
+            - "y" -> Coordonnée y float64
+            - "destX" -> Destination coordonnée x (-1 si pas de chemin) float64
+            - "destY" -> Destination coordonnée y (-1 si pas de chemin) float64
             - "vitesse" -> Vitesse de déplacement
             - "type" ->Type du NPC (0:villager | 1:harvester | 2:soldier)
             - "damage" -> Dégats prit par le NPC

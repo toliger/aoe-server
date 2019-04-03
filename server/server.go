@@ -3,8 +3,8 @@
 package server
 
 import (
-	"strconv"
 	"context"
+	"fmt"
 	"log"
 	"net"
 
@@ -104,8 +104,8 @@ func (s *Arguments) RightClick(ctx context.Context, in *pb.RightClickRequest) (*
 		data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "portee", entityData["portee"])
 		data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "pv", entityData["pv"])
 		if len(path) != 0 {
-			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "destX", strconv.Itoa(path[len(path)-1].GetPathX()))
-			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "destY",  strconv.Itoa(path[len(path)-1].GetPathY()))
+			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "destX", fmt.Sprintf("%f", in.Point.X))
+			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "destY", fmt.Sprintf("%f", in.Point.Y))
 		} else {
 			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "destX", "-1")
 			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "destY", "-1")

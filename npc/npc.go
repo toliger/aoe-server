@@ -3,6 +3,7 @@ package npc
 import (
 	"fmt"
 	"log"
+	"math"
 	"strconv"
 	"sync"
 	"time"
@@ -16,10 +17,8 @@ import (
 
 //Npc :
 type Npc struct {
-	x                int
-	y                int
-	px               float64
-	py               float64
+	x                float64
+	y                float64
 	pv               int
 	vitesse          int
 	vue              int
@@ -42,13 +41,13 @@ type safeNumber struct {
 }
 
 //New : new NPC
-func New(x int, y int, pv int, vitesse int, vue int, portee int, offensive bool, size int, damage int, selectable bool, typ int, flag int, channel *chan []int) Npc {
-	pnj := Npc{x, y, float64(x), float64(y), pv, vitesse, vue, portee, offensive, size, damage, selectable, typ, flag, *channel, false, ""}
+func New(x float64, y float64, pv int, vitesse int, vue int, portee int, offensive bool, size int, damage int, selectable bool, typ int, flag int, channel *chan []int) Npc {
+	pnj := Npc{x, y, pv, vitesse, vue, portee, offensive, size, damage, selectable, typ, flag, *channel, false, ""}
 	return pnj
 }
 
 //Create : generate a new NPC
-func Create(class string, x int, y int, flag int, channel *chan []int) (Npc, string) {
+func Create(class string, x float64, y float64, flag int, channel *chan []int) (Npc, string) {
 	var pnj Npc
 	switch class {
 	case "soldier":
@@ -70,18 +69,14 @@ func Create(class string, x int, y int, flag int, channel *chan []int) (Npc, str
 func (pnj Npc) Stringify() map[string]string {
 	res := make(map[string]string)
 	res["pv"] = strconv.Itoa(pnj.pv)
-	res["x"] = strconv.Itoa(pnj.x)
-	res["y"] = strconv.Itoa(pnj.y)
+	res["x"] = fmt.Sprintf("%f", pnj.x)
+	res["y"] = fmt.Sprintf("%f", pnj.y)
 	res["vitesse"] = strconv.Itoa(pnj.vitesse)
 	res["type"] = strconv.Itoa(pnj.typ)
 	res["damage"] = strconv.Itoa(pnj.damage)
-	//res["offensive"] = strconv.FormatBool(pnj.offensive)
 	res["vue"] = strconv.Itoa(pnj.vue)
 	res["portee"] = strconv.Itoa(pnj.portee)
-	//res["TeamFlag"] = strconv.Itoa(pnj.TeamFlag)
 	res["PlayerUUID"] = pnj.PlayerUUID
-	res["px"] = fmt.Sprintf("%f", pnj.px)
-	res["py"] = fmt.Sprintf("%f", pnj.py)
 	return res
 }
 
@@ -95,12 +90,12 @@ func (pnj Npc) Transmit(id string) {
 
 //GetX : return the position X
 func (pnj Npc) GetX() int {
-	return pnj.x
+	return int(math.Floor(pnj.x))
 }
 
 //GetY : return the position Y
 func (pnj Npc) GetY() int {
-	return pnj.y
+	return int(math.Floor(pnj.y))
 }
 
 //GetVue : return villager's vision
@@ -124,8 +119,8 @@ func (pnj *Npc) deplacement(path []carte.Case, wg *sync.WaitGroup) {
 		vdep := (1000000000 / pnj.vitesse)
 		for i := 0; i <= ndep; i++ {
 			time.Sleep(time.Duration(vdep))
-			pnj.x = path[i].GetPathX()
-			pnj.y = path[i].GetPathY()
+			pnj.x = float64(path[i].GetPathX())
+			pnj.y = float64(path[i].GetPathY())
 		}
 		if wg != nil {
 			wg.Done()
@@ -138,7 +133,7 @@ func (pnj *Npc) MoveTo(c carte.Carte, destx int, desty int, wg *sync.WaitGroup) 
 	var path []carte.Case
 	path = nil
 	if c.GetTile(destx, desty).GetType() == 0 {
-		path = c.GetPathFromTo(pnj.x, pnj.y, destx, desty)
+		path = c.GetPathFromTo(int(math.Floor(pnj.x)), int(math.Floor(pnj.y)), destx, desty)
 		go pnj.deplacement(path, wg)
 	}
 	return path
