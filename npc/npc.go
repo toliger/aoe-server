@@ -16,8 +16,8 @@ import (
 
 //Npc :
 type Npc struct {
-  x int
-  y int
+  x *safeNumberInt
+  y *safeNumberInt
   pv *safeNumberInt
   vitesse int
   vue int
@@ -32,6 +32,7 @@ type Npc struct {
 	hasOrder bool //Si un déplacement a dejà été demandé par le joueur (disable auto movement)
 	// isMoving *safeNumber
 	PlayerUUID string
+	moveAction map[int](chan bool)
 }
 
 
@@ -48,8 +49,8 @@ type safeNumberInt struct {
 
 
 //New : new NPC
-func New(x int,y int,pv *safeNumberInt,vitesse int, vue int, portee int, offensive bool,size int, damage int,selectable bool, typ int,flag bool, channel *chan []int) Npc{
-	pnj:=Npc{x,y,pv,vitesse,vue,portee,offensive,size,damage,selectable,typ,flag,*channel,false,""}
+func New(x *safeNumberInt,y *safeNumberInt,pv *safeNumberInt,vitesse int, vue int, portee int, offensive bool,size int, damage int,selectable bool, typ int,flag bool, channel *chan []int) Npc{
+	pnj:=Npc{x,y,pv,vitesse,vue,portee,offensive,size,damage,selectable,typ,flag,*channel,false,"", make(map[int](chan bool))}
 	return pnj
 }
 
@@ -57,19 +58,23 @@ func New(x int,y int,pv *safeNumberInt,vitesse int, vue int, portee int, offensi
 //Create : generate a new NPC
 func Create(class string,x int,y int, flag bool,channel *chan []int) (Npc,string){
 	var pnj Npc
-	i := &safeNumberInt{}
+	sfPv := &safeNumberInt{}
+	sfX := &safeNumberInt{}
+	sfX.val = x
+	sfY := &safeNumberInt{}
+	sfY.val = y
 	switch class{
 		case "soldier":
-			i.val = constants.SoldierPv
-			pnj=New(x,y,i,constants.SoldierVitesse,constants.SoldierVue,
+			sfPv.val = constants.SoldierPv
+			pnj=New(sfX,sfY,sfPv,constants.SoldierVitesse,constants.SoldierVue,
 				constants.SoldierPortee, true,constants.SoldierSize,constants.SoldierDamage,true,2,flag,channel)
 		case "harvester":
-			i.val = constants.HarvesterPv
-			pnj=New(x,y,i,constants.HarvesterVitesse,constants.HarvesterVue,
+			sfPv.val = constants.HarvesterPv
+			pnj=New(sfX,sfY,sfPv,constants.HarvesterVitesse,constants.HarvesterVue,
 				constants.HarvesterVillPortee,false,constants.HarvesterSize,constants.HarvesterDamage,true,1,flag,channel)
 		default:
-			i.val = constants.VillagerPv
-			pnj=New(x,y,i,constants.VillagerVitesse,constants.VillagerVue,
+			sfPv.val = constants.VillagerPv
+			pnj=New(sfX,sfY,sfPv,constants.VillagerVitesse,constants.VillagerVue,
 				constants.HarvesterVillPortee,false,constants.VillagerSize,constants.VillagerDamage,false,0,flag,channel)
 	}
 	id:=(&data.IDMap).AddObject(&pnj)
@@ -82,8 +87,8 @@ func Create(class string,x int,y int, flag bool,channel *chan []int) (Npc,string
 func (pnj Npc)Stringify() map[string]string{
 	res:=make(map[string]string)
 	res["pv"]=strconv.Itoa(pnj.GetPv())
-	res["x"]=strconv.Itoa(pnj.x)
-	res["y"]=strconv.Itoa(pnj.y)
+	res["x"]=strconv.Itoa(pnj.GetX())
+	res["y"]=strconv.Itoa(pnj.GetY())
 	res["vitesse"]=strconv.Itoa(pnj.vitesse)
 	res["type"]=strconv.Itoa(pnj.typ)
 	res["damage"]=strconv.Itoa(pnj.damage)
@@ -104,37 +109,67 @@ func (pnj Npc) Transmit(id string){
 	}
 }
 
-//GetPv : return pv
+
+func (i *safeNumberInt) get() int {
+	i.m.Lock()
+	defer i.m.Unlock()
+	return i.val
+}
+
+
+func (i *safeNumberInt) set(val int) {
+	i.m.Lock()
+	defer i.m.Unlock()
+	i.val = val
+}
+
+
+func (i *safeNumberInt) sub(val int) {
+	i.m.Lock()
+	defer i.m.Unlock()
+	i.val -= val
+}
+
+
+//GetPv : return the HP
 func (pnj Npc) GetPv() int {
-	pnj.pv.m.Lock()
-	defer pnj.pv.m.Unlock()
-	return pnj.pv.val
+	return pnj.pv.get()
 }
 
-//SetPv : set new pv's value
-func (pnj Npc) SetPv(val int) {
-	pnj.pv.m.Lock()
-	defer pnj.pv.m.Unlock()
-	pnj.pv.val = val
+
+//SetPv : set the npc's HP value
+func (pnj *Npc) SetPv(val int) {
+	pnj.pv.set(val)
 }
 
-//SubPv : decrement pv's value
-func (pnj Npc) SubPv(val int) {
-	pnj.pv.m.Lock()
-	defer pnj.pv.m.Unlock()
-	pnj.pv.val -= val
+
+//SubPv : decrement the npc's HP value
+func (pnj *Npc) SubPv(val int) {
+	pnj.pv.sub(val)
 }
 
 
 //GetX : return the position X
 func (pnj Npc) GetX() int{
-	return pnj.x
+	return pnj.x.get()
+}
+
+
+//SetX : set the npc's X value
+func (pnj *Npc) SetX(val int) {
+	pnj.x.set(val)
 }
 
 
 //GetY : return the position Y
 func (pnj Npc) GetY() int{
-	return pnj.y
+	return pnj.y.get()
+}
+
+
+//SetY : set the npc's Y value
+func (pnj *Npc) SetY(val int) {
+	pnj.y.set(val)
 }
 
 
@@ -157,14 +192,35 @@ func (pnj Npc)GetSpeed() int{
 
 
 
-func (pnj *Npc)deplacement(path []carte.Case, wg *sync.WaitGroup) {
+func (pnj *Npc)deplacement(path []carte.Case, wg *sync.WaitGroup, moveA *chan bool) {
 	if(path!=nil) {
+		// Cancel the old movement
+		index:=len(pnj.moveAction)-1
+		pnj.moveAction[index] = make(chan bool, 2)
+		pnj.moveAction[index] <- true
+		pnj.moveAction[index] <- true
+		pnj.moveAction[index] = *moveA
+		delete(pnj.moveAction,index)
+		//var initialposX, initialposY int
 		ndep:=len(path)-1
 		vdep:=(1000000000/pnj.vitesse)
 		for i:=0;i<=ndep;i++{
-			time.Sleep(time.Duration(vdep))
-			pnj.x=path[i].GetPathX()
-			pnj.y=path[i].GetPathY()
+			select {
+			case <- *moveA:
+				wg.Done()
+				return
+			default:
+				//initialposX, initialposY = pnj.GetX(), pnj.GetY()
+				time.Sleep(time.Duration(vdep))
+				/*
+				if(pnj.GetX() != initialposX || pnj.GetY() != initialposY){
+					wg.Done()
+					return
+				}
+				*/
+				pnj.SetX(path[i].GetPathX())
+				pnj.SetY(path[i].GetPathY())
+			}
 		}
 		if (wg != nil) {
 			wg.Done()
@@ -174,12 +230,12 @@ func (pnj *Npc)deplacement(path []carte.Case, wg *sync.WaitGroup) {
 
 
 //MoveTo : move a npc from his position(x,y) to another position(x,y)
-func (pnj *Npc) MoveTo(c carte.Carte, destx int, desty int, wg *sync.WaitGroup) []carte.Case{
+func (pnj *Npc) MoveTo(c carte.Carte, destx int, desty int, wg *sync.WaitGroup, moveA *chan bool) []carte.Case{
 	var path []carte.Case
 	path=nil
 	if(c.GetTile(destx,desty).GetType()==0){
-		path= c.GetPathFromTo(pnj.x,pnj.y,destx,desty)
-		go pnj.deplacement(path, wg)
+		path= c.GetPathFromTo(pnj.GetX(),pnj.GetY(),destx,desty)
+		go pnj.deplacement(path, wg, moveA)
 	}
 	return path
 }
@@ -192,7 +248,6 @@ func Abs(x int) int {
 	}
 	return x
 }
-
 
 
 //RecoltePossible : return true if te villager can acces to a tile to harvest the resource in x, y
@@ -208,17 +263,22 @@ func RecoltePossible(c carte.Carte, x int, y int) bool{
 }
 
 
-//MoveFight :
-func (pnj *Npc)MoveFight(c carte.Carte, target *Npc){
+/*MoveFight : attack a given npc and also trigger the fight-back
+* Both the aggressor and the target while fight and chase unless the player orders
+another action or loses vision of the other NPC
+*/
+func (pnj *Npc)MoveFight(c carte.Carte, target *Npc, moveA *chan bool){
 
 	if (pnj.GetVue() < (Abs(target.GetX() - pnj.GetX()) + Abs(target.GetY() - pnj.GetY())) ){
 		log.Print("Le npc ciblé n'est pas dans la vue du npc")
 		return
 	}
-
+	initialPosTargetX, initialPosTargetY  := target.GetX(), target.GetY()
 	var posFightPnjX, posFightPnjY int
-	distance := 2000
+
 	var i, j int
+
+	distance := 2000
 
 	for i = target.GetX() - pnj.portee; i <= target.GetX() + pnj.portee; i++{
 		for j = target.GetY() - pnj.portee; j <= target.GetY() + pnj.portee; j++{
@@ -230,34 +290,83 @@ func (pnj *Npc)MoveFight(c carte.Carte, target *Npc){
 			}
 		}
 	}
+
+
 	// No space available to attack the ennemy
 	if (distance == 2000){
 		return
 	}
 	// Wait that the npc is in the range to attack
-	var wg sync.WaitGroup
-	wg.Add(1)
-    go pnj.MoveTo(c, posFightPnjX, posFightPnjY, &wg)
-	wg.Wait()
+	go pnj.MoveTo(c, posFightPnjX, posFightPnjY, nil, moveA)
 
-	// Verification that the movement worked well
-	if (pnj.GetX() == (posFightPnjX) && pnj.GetY() == posFightPnjY){
-		//Fight
-		go pnj.Fight(c, target, posFightPnjX, posFightPnjY)
-		//The target fights back after a short delay
-		time.Sleep(time.Duration((1 * time.Second)/4))
-		target.Fight(c, pnj, target.GetX(), target.GetY())
+	/* Verify each x ms that the target didn't move from his initial position
+	*  if he did move, do MoveTo to the new position, if not fight him when the
+	*  movement is finished
+	*/
+	uptimeTicker := time.NewTicker(time.Duration(10 * time.Millisecond))
+	for{
+		select {
+		case <-uptimeTicker.C:
+			// if the target is not in the aggressor's vision anymore, he stops chasing him
+			if (pnj.GetVue() < (Abs(target.GetX() - pnj.GetX()) + Abs(target.GetY() - pnj.GetY())) ){
+				log.Print("Le npc ciblé n'est pas dans la vue du npc")
+				return
+			}
+
+			ch := make(chan bool, 2)
+
+			if (initialPosTargetX != target.GetX() || initialPosTargetY != target.GetY()){
+				distance = 2000
+
+				for i = target.GetX() - pnj.portee; i <= target.GetX() + pnj.portee; i++{
+					for j = target.GetY() - pnj.portee; j <= target.GetY() + pnj.portee; j++{
+						if ( (Abs(i - pnj.GetX()) + Abs(j - pnj.GetY()) ) < distance &&
+							c.IsEmpty(i, j)){
+							distance = Abs(i - pnj.GetX()) + Abs(j - pnj.GetY())
+							posFightPnjX = i
+							posFightPnjY = j
+						}
+					}
+				}
+
+				// No space available to attack the ennemy
+				if (distance == 2000){
+					return
+				}
+				// Wait that the npc is in the range to attack
+				go pnj.MoveTo(c, posFightPnjX, posFightPnjY,nil, &ch)
+			}
+			// The aggressor finished his movement and so can start fighting him
+			if (pnj.GetX() == (posFightPnjX) && pnj.GetY() == posFightPnjY){
+				ch := make(chan bool, 2)
+				chTarget := make(chan bool, 2)
+				//Fight
+				go pnj.Fight(c, target, posFightPnjX, posFightPnjY, &ch)
+				//The target fights back after a short delay
+				time.Sleep(time.Duration((1 * time.Second)/4))
+				target.Fight(c, pnj, target.GetX(), target.GetY(), &chTarget)
+				break;
+			}
+		}
 	}
-
 }
 
 //Fight : attack a npc
 func (pnj *Npc)Fight(c carte.Carte, target *Npc, posFightPnjX int,
-	 posFightPnjY int){
+	 posFightPnjY int, moveA *chan bool){
 	uptimeTicker := time.NewTicker(time.Duration(1 * time.Second))
-	tpsEcoule := 0
 	initialPosTargetX, initialPosTargetY  := target.GetX(), target.GetY()
 	for {
+		// if the target is not in the aggressor's vision anymore, he stops chasing him
+		if (pnj.GetVue() < (Abs(target.GetX() - pnj.GetX()) + Abs(target.GetY() - pnj.GetY())) ){
+			log.Print("Le npc ciblé n'est pas dans la vue du npc")
+			return
+		}
+		// if the target moved start chasing him again
+		if (initialPosTargetX != target.GetX() || initialPosTargetY != target.GetY()){
+			go pnj.MoveFight(c, target, moveA)
+			return
+		}
 		//The target or the attacker is dead
 		if (target.GetPv() == 0 || pnj.GetPv() == 0){
 			break
@@ -272,15 +381,16 @@ func (pnj *Npc)Fight(c carte.Carte, target *Npc, posFightPnjX int,
 		}
 
 		select {
+		case <- *moveA:
+			return
 		case <-uptimeTicker.C:
-			tpsEcoule++
 			target.SubPv(pnj.damage)
 		}
 	}
 }
 
-
-//MoveHarvest : (move to the nreast ressource in the villagers's vision)
+/*
+//MoveHarvest : (move to the neareast ressource in the villagers's vision)
 func (pnj *Npc)MoveHarvest(c carte.Carte){
 	var i, j int
 	var ress *ressource.Ressource
@@ -345,12 +455,12 @@ func (pnj *Npc)MoveHarvest(c carte.Carte){
 		 go (pnj).Harvest(c, ress, posRecolteVillX, posRecolteVillY)
 	}
 }
-
+*/
 
 /*MoveHarvestTarget : (move to the nreast ressource in the villagers's vision).
 Triggered when a villager is inactive, cancelled when the player moves the npc
 */
-func (pnj *Npc)MoveHarvestTarget(c carte.Carte, ress *ressource.Ressource){
+func (pnj *Npc)MoveHarvestTarget(c carte.Carte, ress *ressource.Ressource, moveA *chan bool){
 	var i, j int
 	//Verify the parameters
 	if (pnj.GetType() == 2){
@@ -386,19 +496,19 @@ func (pnj *Npc)MoveHarvestTarget(c carte.Carte, ress *ressource.Ressource){
 	// on attends que le villageois ait finit son déplacement
 	var wg sync.WaitGroup
 	wg.Add(1)
-    go pnj.MoveTo(c, posRecolteVillX, posRecolteVillY, &wg)
+    go pnj.MoveTo(c, posRecolteVillX, posRecolteVillY, &wg, moveA)
 	wg.Wait()
 
 	// Le villageois se trouve bien à l'emplacement de la recolte?
 	if (pnj.GetX() == (posRecolteVillX) && pnj.GetY() == posRecolteVillY){
-		 go (pnj).Harvest(c, ress, posRecolteVillX, posRecolteVillY)
+		 go (pnj).Harvest(c, ress, posRecolteVillX, posRecolteVillY, moveA)
 	}
 }
 
 
 //Harvest : Harvesting of the ressource
 func (pnj *Npc)Harvest(c carte.Carte, ress *ressource.Ressource, posRecolteVillX int,
-	 posRecolteVillY int){
+	 posRecolteVillY int, moveA *chan bool){
 	uptimeTicker := time.NewTicker(time.Duration(1 * time.Second))
 	tpsEcoule := 0
 	for {
@@ -408,10 +518,12 @@ func (pnj *Npc)Harvest(c carte.Carte, ress *ressource.Ressource, posRecolteVillX
 		}
 		// Le villageois ne se trouve plus à l'emplacement de la ressource
 		if (pnj.GetX() != (posRecolteVillX) || pnj.GetY() != posRecolteVillY){
-			break;
+			break
 		}
 
 		select {
+		case <- *moveA:
+			return
 		case <-uptimeTicker.C:
 			tpsEcoule++
 			switch ress.GetType(){

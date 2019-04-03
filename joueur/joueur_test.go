@@ -22,7 +22,8 @@ func TestCreation(t *testing.T){
     auberge2 := b.Create("auberge",47,47)
     (&player1).AddBuilding(&auberge1)
     (&player2).AddBuilding(&auberge2)
-    if (player1.GetNpc(0) != vill1 || player2.GetNpc(0) != vill2){
+    if (d.IDMap.GetIDFromObject(player1.GetNpc(0)) != d.IDMap.GetIDFromObject(&vill1) ||
+    d.IDMap.GetIDFromObject(player2.GetNpc(0)) != d.IDMap.GetIDFromObject(&vill2)){
         t.Error("probleme dans l'ajout de NPC")
     }
 }

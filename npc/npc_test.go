@@ -32,6 +32,7 @@ func TestDeplacement(t *testing.T){
 }
 */
 
+
 func TestRecolte(t *testing.T){
 	d.IDMap=d.NewObjectID()
 	d.InitiateActionBuffer()
@@ -40,13 +41,18 @@ func TestRecolte(t *testing.T){
 	c:=carte.New(50)
 	ress:=ressource.Create("tree",2,2)
 	c.AddNewRessource(&ress)
-	go (&pnj).MoveHarvestTarget(c, &ress)
-	time.Sleep(time.Duration(4*time.Second))
+	ch := make(chan bool, 2)
+	ch2 := make(chan bool, 2)
+	go (&pnj).MoveHarvestTarget(c, &ress, &ch)
+	time.Sleep(time.Duration(2*time.Second))
+	go (&pnj).MoveTo(c, 10,10, nil, &ch2)
+	time.Sleep(time.Duration(6*time.Second))
 	if(ress.GetPv()==100){
 		t.Error("la ressource n'a pas perdu de Pv")
 	}
 	t.Log("pv: ",ress.GetPv())
 }
+
 
 func TestFight(t *testing.T){
 	d.IDMap=d.NewObjectID()
@@ -55,15 +61,16 @@ func TestFight(t *testing.T){
 	bip2 := make(chan[]int,100)
 	pnj1,_:=Create("soldier",10,10,false,&bip1)
 	pnj2,_:=Create("soldier",14,13,true,&bip2)
-	c:=carte.New(50)
-	go (&pnj1).MoveFight(c, &pnj2)
+	c := carte.New(50)
+	ch := make(chan bool, 2)
+	go (&pnj1).MoveFight(c, &pnj2, &ch)
 	time.Sleep(time.Duration(4*time.Second))
 	if(pnj2.GetPv()==constants.SoldierPv){
 		t.Error("la cible n'a pas perdu de Pv")
-		t.Log("pv de la cible: ",pnj2.GetPv())
+		t.Log("pv de la cible: ", pnj2.GetPv())
 	}
 	if(pnj1.GetPv()==constants.SoldierPv){
 		t.Error("l'agresseur n'a pas perdu de Pv")
-		t.Log("pv de l'agresseur': ",pnj1.GetPv())
+		t.Log("pv de l'agresseur': ", pnj1.GetPv())
 	}
 }
