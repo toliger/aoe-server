@@ -59,8 +59,8 @@ message RightClickReply {}
 /* * X : Entier de 32 bits donnant la composante x de la coordonnée sur le carte
 * Y : Entier de 32 bits donnant la composante y de la coordonnée sur le carte */
 message Coordinates {
-    int32 X = 1;
-    int32 Y = 2;
+    float64 X = 1;
+    float64 Y = 2;
   }
 
 // Message liés à AskUpdate
