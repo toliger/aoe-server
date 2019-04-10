@@ -108,6 +108,11 @@ func (j Joueur) GetNpc(i int) npc.Npc {
 	return *(j.entities[i])
 }
 
+//GetPointerNpc :
+func (j Joueur) GetPointerNpc(i int) *npc.Npc {
+	return j.entities[i]
+}
+
 //DeleteNpcFromList retire un pnj de la liste du joueur
 func (j *Joueur) DeleteNpcFromList(x float64, y float64, typ int, pv int) bool {
 	for i := range j.entities {
