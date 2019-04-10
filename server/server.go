@@ -7,13 +7,15 @@ import (
 	"fmt"
 	"log"
 	"net"
-
+	"reflect"
+	"errors"
 
 	"git.unistra.fr/AOEINT/server/utils"
 	"git.unistra.fr/AOEINT/server/constants"
 	"git.unistra.fr/AOEINT/server/data"
 	"git.unistra.fr/AOEINT/server/game"
 
+	"git.unistra.fr/AOEINT/server/ressource"
 	"git.unistra.fr/AOEINT/server/npc"
 	"git.unistra.fr/AOEINT/server/batiment"
 
@@ -92,32 +94,72 @@ func (s *Arguments) RightClick(ctx context.Context, in *pb.RightClickRequest) (*
 	// For Debug Mode
 	utils.Debug("Reception d'un RightClickRequest et envoie d'un RightClickReply")
 
-	// Loop on each entity
-	for i := 0; i < len(in.EntitySelectionUUID); i++ {
+	if (in.Target == "") { // MoveTo request
+		// Loop on each entity
+		for i := 0; i < len(in.EntitySelectionUUID); i++ {
 
-		// Get the entity
-		entity := data.IDMap.GetObjectFromID(in.EntitySelectionUUID[i]).(*npc.Npc)
+			// Get the entity
+			entity := data.IDMap.GetObjectFromID(in.EntitySelectionUUID[i]).(*npc.Npc)
 
-		// Get the path of the entity
-		path := entity.MoveTo(s.g.Carte, int(in.Point.X), int(in.Point.Y), nil, nil)
+			// Get the path of the entity
+			tmp := make(chan bool, 2)
+			path := entity.MoveTo(s.g.Carte, int(in.Point.X), int(in.Point.Y), nil, &tmp)
 
-		// Filling ActionBuffer with the right data
-		entityData := entity.Stringify()
-		data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "pv", entityData["pv"])
-		data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "x", entityData["x"])
-		data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "y", entityData["y"])
-		data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "vitesse", entityData["vitesse"])
-		data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "damage", entityData["damage"])
-		data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "vue", entityData["vue"])
-		data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "portee", entityData["portee"])
-		data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "pv", entityData["pv"])
-		if len(path) != 0 {
-			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "destX", fmt.Sprintf("%f", in.Point.X))
-			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "destY", fmt.Sprintf("%f", in.Point.Y))
-		} else {
-			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "destX", "-1")
-			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "destY", "-1")
+			// Filling ActionBuffer with the right data
+			entityData := entity.Stringify()
+			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "pv", entityData["pv"])
+			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "x", entityData["x"])
+			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "y", entityData["y"])
+			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "vitesse", entityData["vitesse"])
+			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "damage", entityData["damage"])
+			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "vue", entityData["vue"])
+			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "portee", entityData["portee"])
+			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "pv", entityData["pv"])
+			if len(path) != 0 {
+				data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "destX", fmt.Sprintf("%f", in.Point.X))
+				data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "destY", fmt.Sprintf("%f", in.Point.Y))
+			} else {
+				data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "destX", "-1")
+				data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "destY", "-1")
+			}
 		}
+
+	} else { // Attack request
+		// Loop on each entity
+		for i := 0; i < len(in.EntitySelectionUUID); i++ {
+
+			// Get the entities
+			entity := data.IDMap.GetObjectFromID(in.EntitySelectionUUID[i])
+			if (entity == -1) {
+				msg := "Erreur, une entity n'est pas trouvé dans RightClick"
+				log.Println(msg)
+				return &pb.RightClickReply{}, errors.New(msg)
+			}
+			
+			target := data.IDMap.GetObjectFromID(in.Target)
+			if (target == -1) {
+				msg := "Erreur, target n'est pas trouvé dans RightClick"
+				log.Println(msg)
+				return &pb.RightClickReply{}, errors.New(msg)
+			}
+
+			tmp := make(chan bool, 2)
+			switch reflect.TypeOf(target) {
+				case reflect.TypeOf(npc.Npc{}) :
+					go entity.(*npc.Npc).MoveFight(s.g.Carte, target.(*npc.Npc), &tmp)
+
+				case reflect.TypeOf(batiment.Batiment{}) :
+
+				case reflect.TypeOf(ressource.Ressource{}) :
+					go entity.(*npc.Npc).MoveHarvestTarget(s.g.Carte, target.(*ressource.Ressource), &tmp)
+
+				default : 
+					msg := "Erreur, target est invalide dans RightClick"
+					log.Println(msg)
+					return &pb.RightClickReply{}, errors.New(msg)
+			}
+		}
+
 	}
 
 	return &pb.RightClickReply{}, nil
@@ -167,6 +209,9 @@ func (s *Arguments) AskUpdate(ctx context.Context, in *pb.AskUpdateRequest) (*pb
 // Function of creation of a building or NPC
 func (s *Arguments) AskCreation(ctx context.Context, in *pb.AskCreationRequest) (*pb.AskCreationReply, error) {
 	
+	// For Debug Mode
+	utils.Debug("Reception d'un AskCreationRequest et envoie d'un AskCreationReply")
+
 	// Extract data from token to get player's UUID
 	playerUUID := data.ExtractFromToken(in.Token)
 	if playerUUID == nil {
