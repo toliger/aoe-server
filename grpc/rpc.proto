@@ -94,12 +94,27 @@ message AskUpdateReply {
     repeated UpdateAsked Array = 1;
 }
 
+/*
+* Demande du Client : Demande la création d'un batiment ou d'un npc au serveur.
+* Argument donné par Client :
+    ** (string) Token : Suite de caractère permettant d'identifier et authentifier le client au près du serveur
+    ** (int) Type : Entier donnant le type de création (0: NPC | 9:Batiment)
+    ** (int) TypeUnit : Entier donnant le type d'uniter créé
+        *** NPC : 0 -> villager | 1 -> harvester | 2 -> soldier
+        *** Batiment : 0 -> auberge | 1 -> caserne | 2 -> établi
+    ** (Coordinates) Case : Coordonnées d'apparition de l'entité créé
+*/
 message AskCreationRequest {
-    int32 Type = 1;
-    int32 TypeUnit = 2;
-    Coordinates Case = 3;
+    string Token = 1;
+    int32 Type = 2;
+    int32 TypeUnit = 3;
+    Coordinates Case = 4;
 }
-
+/*
+* Reponse du Serveur : Valide ou pas la création d'un batiment ou d'un npc. Les données sont transmisses dans le AskUpdate
+* Argument donné par Serveur :
+    ** (bool) Validation : Booléen valant vrai si la création est validée, sinon faux.
+*/
 message AskCreationReply {
     bool Validation = 1;
 }
