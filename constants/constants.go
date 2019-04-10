@@ -184,13 +184,25 @@ const (
 	TOKENSecretDef = "DEFAULT"
 
 	//RessourceBufferSize taille du buffer de ressources
-	RessourceBufferSize = 50
+	RessourceBufferSize=50
+
+    //BatimentBufferSize taille du buffer de batiments
+    BatimentBufferSize=50
 )
 
 //===== Default PNJ values ======
 
 //HarvesterVillPortee  portee d'un harvester
 const HarvesterVillPortee = 1
+
+//MinimumDmg degats minimum d'un NPC
+const MinimumDmg=1
+
+//TauxRecolteVill taux recolte villageois
+const TauxRecolteVill=5
+
+//TauxRecolteHarvester taux recolte harvester
+const TauxRecolteHarvester=7
 
 //SoldierPv pv d'un  soldat
 const SoldierPv = 8

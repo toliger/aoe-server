@@ -99,7 +99,7 @@ func (s *Arguments) RightClick(ctx context.Context, in *pb.RightClickRequest) (*
 		entity := data.IDMap.GetObjectFromID(in.EntitySelectionUUID[i]).(*npc.Npc)
 
 		// Get the path of the entity
-		path := entity.MoveTo(s.g.Carte, int(in.Point.X), int(in.Point.Y), nil)
+		path := entity.MoveTo(s.g.Carte, int(in.Point.X), int(in.Point.Y), nil, nil)
 
 		// Filling ActionBuffer with the right data
 		entityData := entity.Stringify()
