@@ -2,19 +2,24 @@
 // All for the clients interactions
 package server
 
-
 import (
 	"context"
+	"fmt"
 	"log"
 	"net"
-	"google.golang.org/grpc"
+
+
 	"git.unistra.fr/AOEINT/server/utils"
-	"git.unistra.fr/AOEINT/server/npc"
+	"git.unistra.fr/AOEINT/server/constants"
 	"git.unistra.fr/AOEINT/server/data"
 	"git.unistra.fr/AOEINT/server/game"
-	pb "git.unistra.fr/AOEINT/server/grpc"
-)
 
+	"git.unistra.fr/AOEINT/server/npc"
+	"git.unistra.fr/AOEINT/server/batiment"
+
+	pb "git.unistra.fr/AOEINT/server/grpc"
+	"google.golang.org/grpc"
+)
 
 ///////////////////////////////////////////////////////////////////////////////
 // General
@@ -22,14 +27,11 @@ import (
 
 var server *grpc.Server
 
-
 // Arguments :
 // Data structure used in the gRPC method's
 type Arguments struct {
 	g *game.Game
-	UpdateBuffer []pb.UpdateAsked
 }
-
 
 // InitListenerServer :
 //	Function starting gRPC interactions
@@ -42,8 +44,8 @@ func InitListenerServer(g *game.Game) {
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	} else {
-    log.Print("Server listen !")
-  }
+		log.Print("Server listen !")
+	}
 
 	// Initialization of gRPC server
 	arg := Arguments{g: g}
@@ -59,20 +61,17 @@ func InitListenerServer(g *game.Game) {
 	}
 }
 
-
 // StopListenerServer :
 // Function stopping the gRPC interactions (clean stop)
 func StopListenerServer() {
 	server.GracefulStop()
 }
 
-
 // KillListenerServer :
 // Function stopping the gRPC interactions (dirty stop)
 func KillListenerServer() {
 	server.Stop()
 }
-
 
 ///////////////////////////////////////////////////////////////////////////////
 // Client -> Server
@@ -81,18 +80,20 @@ func KillListenerServer() {
 // SayHello :
 // Function of the service Hello: SayHello
 func (s *Arguments) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
+	// For Debug Mode
 	utils.Debug("Reception d'un HelloRequest et envoie d'un HelloReply")
 	return &pb.HelloReply{}, nil
 }
-
 
 // RightClick :
 // Function of the service Interactions: RightClick
 func (s *Arguments) RightClick(ctx context.Context, in *pb.RightClickRequest) (*pb.RightClickReply, error) {
 
+	// For Debug Mode
+	utils.Debug("Reception d'un RightClickRequest et envoie d'un RightClickReply")
+
 	// Loop on each entity
-	var action []data.Action
-	for i:=0 ; i<len(in.EntitySelectionUUID) ; i++ {
+	for i := 0; i < len(in.EntitySelectionUUID); i++ {
 
 		// Get the entity
 		entity := data.IDMap.GetObjectFromID(in.EntitySelectionUUID[i]).(*npc.Npc)
@@ -100,43 +101,36 @@ func (s *Arguments) RightClick(ctx context.Context, in *pb.RightClickRequest) (*
 		// Get the path of the entity
 		path := entity.MoveTo(s.g.Carte, int(in.Point.X), int(in.Point.Y), nil, nil)
 
-		// Filling action with the right data
-		action[3].Description[in.EntitySelectionUUID[i]] = entity.Stringify()
-		delete(action[3].Description[in.EntitySelectionUUID[i]], "type")
-		delete(action[3].Description[in.EntitySelectionUUID[i]], "TeamFlag")
-		delete(action[3].Description[in.EntitySelectionUUID[i]], "PlayerUUID")
+		// Filling ActionBuffer with the right data
+		entityData := entity.Stringify()
+		data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "pv", entityData["pv"])
+		data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "x", entityData["x"])
+		data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "y", entityData["y"])
+		data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "vitesse", entityData["vitesse"])
+		data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "damage", entityData["damage"])
+		data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "vue", entityData["vue"])
+		data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "portee", entityData["portee"])
+		data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "pv", entityData["pv"])
 		if len(path) != 0 {
-			action[3].Description[in.EntitySelectionUUID[i]]["destX"] = string(path[len(path)-1].GetPathX())
-			action[3].Description[in.EntitySelectionUUID[i]]["destY"] = string(path[len(path)-1].GetPathY())
+			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "destX", fmt.Sprintf("%f", in.Point.X))
+			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "destY", fmt.Sprintf("%f", in.Point.Y))
 		} else {
-			action[3].Description[in.EntitySelectionUUID[i]]["destX"] = "-1"
-			action[3].Description[in.EntitySelectionUUID[i]]["destY"] = "-1"
-		}
-	}
-
-	// Put data in ActionBuffer
-	for playerUUID := range data.ActionBuffer {
-		for entityUUID := range action[3].Description {
-			_, value := data.ActionBuffer[playerUUID][3].Description[entityUUID]
-
-			// !value is true if .Description[entityUUID] is not define
-			if !value {
-				data.ActionBuffer[playerUUID][3].Description[entityUUID] = action[3].Description[entityUUID]
-			} else {
-				data.ActionBuffer[playerUUID][3].Description[entityUUID]["destX"] = action[3].Description[entityUUID]["destX"]
-				data.ActionBuffer[playerUUID][3].Description[entityUUID]["destY"] = action[3].Description[entityUUID]["destY"]
-			}
+			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "destX", "-1")
+			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "destY", "-1")
 		}
 	}
 
 	return &pb.RightClickReply{}, nil
 }
 
-
 // AskUpdate :
 // Function of the service Interactions: AskUpdate
 func (s *Arguments) AskUpdate(ctx context.Context, in *pb.AskUpdateRequest) (*pb.AskUpdateReply, error) {
 
+	// For Debug Mode
+	utils.Debug("Reception d'un AskUpdateRequest et envoie d'un AskUpdateReply")
+
+	// Extract data from token to get player's UUID
 	playerUUID := data.ExtractFromToken(in.Token)
 	if playerUUID == nil {
 		log.Print("Token invalide dans AskUpdate")
@@ -146,7 +140,7 @@ func (s *Arguments) AskUpdate(ctx context.Context, in *pb.AskUpdateRequest) (*pb
 	toSend := make([]*pb.UpdateAsked, 0)
 
 	// Verify if the playerUUID exist in the map
-	if _, isFilled := data.ActionBuffer[playerUUID.UUID] ; isFilled {
+	if _, isFilled := data.ActionBuffer[playerUUID.UUID]; isFilled {
 		for actionType := range data.ActionBuffer[playerUUID.UUID] {
 			for entityUUID := range data.ActionBuffer[playerUUID.UUID][actionType].Description {
 				upAsk := pb.UpdateAsked{Type: int32(actionType), EntityUUID: entityUUID}
@@ -166,7 +160,72 @@ func (s *Arguments) AskUpdate(ctx context.Context, in *pb.AskUpdateRequest) (*pb
 	// Deletin the historic of updates waiting for the client
 	data.CleanPlayerActionBuffer(playerUUID.UUID)
 
-	log.Print(data.ActionBuffer)
-
 	return &pb.AskUpdateReply{Array: toSend}, nil
+}
+
+// AskCreation :
+// Function of creation of a building or NPC
+func (s *Arguments) AskCreation(ctx context.Context, in *pb.AskCreationRequest) (*pb.AskCreationReply, error) {
+	
+	// Extract data from token to get player's UUID
+	playerUUID := data.ExtractFromToken(in.Token)
+	if playerUUID == nil {
+		log.Print("Token invalide dans AskCreation")
+		return &pb.AskCreationReply{Validation: false}, nil
+	}
+
+	actionType := in.Type
+	switch actionType {
+	case constants.ActionNewNpc:
+		
+		// Define class asked
+		var class string
+		if (in.TypeUnit == 0) {
+			class = "villager"
+		} else if (in.TypeUnit == 1) {
+			class = "harvester"
+		} else if (in.TypeUnit == 2) {
+			class = "soldier"
+		} else {
+			log.Print("TypeUnit invalide dans AskCreation")
+			return &pb.AskCreationReply{Validation: false}, nil
+		}
+
+		// Create NPC into the right player and update ActionBuffer
+		player := s.g.GetPlayerFromUID(playerUUID.UUID)
+		player.AddAndCreateNpc(class, int(in.Case.X), int(in.Case.Y))
+		fmt.Println(int(in.Case.X), int(in.Case.Y))
+
+	case constants.ActionNewBuilding:
+
+		// Define class asked and create it to the right player
+		var class string
+		if (in.TypeUnit == 0) {
+			class = "auberge"
+		} else if (in.TypeUnit == 1) {
+			class = "caserne"
+		} else if (in.TypeUnit == 2) {
+			class = "etabli"
+		} else {
+			log.Print("TypeUnit invalide dans AskCreation")
+			return &pb.AskCreationReply{Validation: false}, nil
+		}
+
+		// Create NPC into the right player and update ActionBuffer
+		player := s.g.GetPlayerFromUID(playerUUID.UUID)
+		b := batiment.Create(class, int(in.Case.X), int(in.Case.Y))
+		if s.g.Carte.AddNewBuilding(&b) != true {
+			log.Print("Erreur, peut pas créer un batiment dans AskCreation")
+			return &pb.AskCreationReply{Validation: false}, nil
+		}
+		player.AddBuilding(&b)
+
+
+	default:
+		log.Print("Format de requête invalide dans AskCreation")
+		log.Print("Voici in : ", in)
+		return &pb.AskCreationReply{Validation: false}, nil
+	}
+
+	return &pb.AskCreationReply{Validation: true}, nil
 }

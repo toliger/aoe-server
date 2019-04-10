@@ -88,17 +88,14 @@ func Create(class string, x float64, y float64, flag bool, channel *chan []int) 
 //Stringify : create a map[string]string of the main arguments of a NPC
 func (pnj Npc) Stringify() map[string]string {
 	res := make(map[string]string)
-	res["pv"] = strconv.Itoa(pnj.GetPv())
-	res["x"] = strconv.Itoa(pnj.GetX())
-	res["y"] = strconv.Itoa(pnj.GetY())
+	res["pv"] = strconv.Itoa(pnj.pv)
+	res["x"] = fmt.Sprintf("%f", pnj.x)
+	res["y"] = fmt.Sprintf("%f", pnj.y)
 	res["vitesse"] = strconv.Itoa(pnj.vitesse)
 	res["type"] = strconv.Itoa(pnj.typ)
 	res["damage"] = strconv.Itoa(pnj.damage)
-	res["tauxRecolte"] = strconv.Itoa(pnj.tauxRecolte)
-	res["offensive"] = strconv.FormatBool(pnj.offensive)
 	res["vue"] = strconv.Itoa(pnj.vue)
 	res["portee"] = strconv.Itoa(pnj.portee)
-	res["TeamFlag"] = strconv.FormatBool(pnj.TeamFlag)
 	res["PlayerUUID"] = pnj.PlayerUUID
 	return res
 }
@@ -485,26 +482,26 @@ func (pnj *Npc)MoveHarvest(c carte.Carte){
 	var i, j int
 	var ress *ressource.Ressource
 	distance := 2000
-	if (pnj.GetType() == 2){
+	if pnj.GetType() == 2 {
 		utils.Debug("Un soldat ne peut pas recolter de ressources")
 		return
 	}
-	for i = pnj.GetX() - pnj.GetVue(); i <= pnj.GetX() + pnj.GetVue() || i > c.GetSize(); i++{
-		if (i < 0){
+	for i = pnj.GetX() - pnj.GetVue(); i <= pnj.GetX()+pnj.GetVue() || i > c.GetSize(); i++ {
+		if i < 0 {
 			i = 0
 		}
-		for j = pnj.GetY() - pnj.GetVue(); j <= pnj.GetY() + pnj.GetVue() || j > c.GetSize(); j++{
-			if (j < 0){
+		for j = pnj.GetY() - pnj.GetVue(); j <= pnj.GetY()+pnj.GetVue() || j > c.GetSize(); j++ {
+			if j < 0 {
 				j = 0
 			}
-			if (c.GetTile(i, j).GetType() == 2){
-				if (c.GetTile(i, j).GetRess().GetType() == 2 && pnj.GetType() != 0){
+			if c.GetTile(i, j).GetType() == 2 {
+				if c.GetTile(i, j).GetRess().GetType() == 2 && pnj.GetType() != 0 {
 					utils.Debug("Seul un harvester peut recolter de la pierre")
-					continue;
+					continue
 				}
-				if ((Abs(i - pnj.GetX()) + Abs(j - pnj.GetY())) < distance &&
-					RecoltePossible(c, i, j)){
-					distance = Abs(i - pnj.GetX()) + Abs(j - pnj.GetY())
+				if (Abs(i-pnj.GetX())+Abs(j-pnj.GetY())) < distance &&
+					RecoltePossible(c, i, j) {
+					distance = Abs(i-pnj.GetX()) + Abs(j-pnj.GetY())
 					ress = c.GetTile(i, j).GetRess()
 				}
 			}
@@ -512,37 +509,36 @@ func (pnj *Npc)MoveHarvest(c carte.Carte){
 	}
 
 	// pas de ressources dans la vue du villageois
-	if (distance == 2000){
+	if distance == 2000 {
 		return
 	}
 
 	var posRecolteVillX, posRecolteVillY int
 	distance = 2000
 
-	for i = ress.GetX() - pnj.portee; i <= ress.GetX() + pnj.portee; i++{
-		for j = ress.GetY() - pnj.portee; j <= ress.GetY() + pnj.portee; j++{
-			if ( (Abs(i - pnj.GetX()) + Abs(j - pnj.GetY()) ) < distance &&
-				c.IsEmpty(i, j)){
-				distance = Abs(i - pnj.GetX()) + Abs(j - pnj.GetY())
+	for i = ress.GetX() - pnj.portee; i <= ress.GetX()+pnj.portee; i++ {
+		for j = ress.GetY() - pnj.portee; j <= ress.GetY()+pnj.portee; j++ {
+			if (Abs(i-pnj.GetX())+Abs(j-pnj.GetY())) < distance &&
+				c.IsEmpty(i, j) {
+				distance = Abs(i-pnj.GetX()) + Abs(j-pnj.GetY())
 				posRecolteVillX = i
 				posRecolteVillY = j
 			}
 		}
 	}
 	// pas d'accès possible pour recolter la ressource
-	if (distance == 2000){
+	if distance == 2000 {
 		return
 	}
 	// on attends que le villageois ait finit son déplacement
 	var wg sync.WaitGroup
 	wg.Add(1)
-    go pnj.MoveTo(c, posRecolteVillX, posRecolteVillY, &wg)
+	go pnj.MoveTo(c, posRecolteVillX, posRecolteVillY, &wg)
 	wg.Wait()
 
-
 	// Le villageois se trouve bien à l'emplacement de la recolte?
-	if (pnj.GetX() == (posRecolteVillX) && pnj.GetY() == posRecolteVillY){
-		 go (pnj).Harvest(c, ress, posRecolteVillX, posRecolteVillY)
+	if pnj.GetX() == (posRecolteVillX) && pnj.GetY() == posRecolteVillY {
+		go (pnj).Harvest(c, ress, posRecolteVillX, posRecolteVillY)
 	}
 }
 */

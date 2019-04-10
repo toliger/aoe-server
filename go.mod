@@ -2,7 +2,7 @@ module git.unistra.fr/AOEINT/server
 
 require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
-	github.com/golang/protobuf v1.3.0
+	github.com/golang/protobuf v1.3.1
 	github.com/kisielk/errcheck v1.2.0 // indirect
 	golang.org/x/crypto v0.0.0-20190313024323-a1f597ede03a // indirect
 	golang.org/x/net v0.0.0-20190313220215-9f648a60d977 // indirect
