@@ -9,6 +9,7 @@ import (
 	"git.unistra.fr/AOEINT/server/utils"
 	"git.unistra.fr/AOEINT/server/carte"
 	"git.unistra.fr/AOEINT/server/ressource"
+	"git.unistra.fr/AOEINT/server/batiment"
 	"git.unistra.fr/AOEINT/server/constants"
 	"git.unistra.fr/AOEINT/server/data"
 )
@@ -264,6 +265,78 @@ func RecoltePossible(c carte.Carte, x int, y int) bool{
 	return false
 }
 
+//MoveFightBuilding : attack a given building
+func (pnj *Npc)MoveFightBuilding(c carte.Carte, target *batiment.Batiment, moveA *chan bool){
+
+	if (pnj.GetVue() < (Abs(target.GetX() - pnj.GetX()) + Abs(target.GetY() - pnj.GetY())) ){
+		log.Print("Le batiment ciblé n'est pas dans la vue du npc")
+		return
+	}
+	var posFightPnjX, posFightPnjY int
+
+	var i, j int
+
+	distance := 2000
+
+	for i = target.GetX() - pnj.portee; i <= target.GetX() + pnj.portee; i++{
+		for j = target.GetY() - pnj.portee; j <= target.GetY() + pnj.portee; j++{
+			if ( (Abs(i - pnj.GetX()) + Abs(j - pnj.GetY()) ) < distance &&
+				c.IsEmpty(i, j)){
+				distance = Abs(i - pnj.GetX()) + Abs(j - pnj.GetY())
+				posFightPnjX = i
+				posFightPnjY = j
+			}
+		}
+	}
+
+	// No space available to attack the ennemy building
+	if (distance == 2000){
+		return
+	}
+
+	// on attends que le villageois ait finit son déplacement
+	var wg sync.WaitGroup
+	wg.Add(1)
+	// Wait that the npc is in the range to attack
+	go pnj.MoveTo(c, posFightPnjX, posFightPnjY, &wg, moveA)
+	wg.Wait()
+
+	// Verify that the movement worked well
+	if (pnj.GetX() == posFightPnjX && pnj.GetY() == posFightPnjY){
+		ch := make(chan bool, 2)
+		//Fight
+		go pnj.FightBuilding(c, target, posFightPnjX, posFightPnjY, &ch)
+	}
+}
+
+//FightBuilding : attack a building
+func (pnj *Npc)FightBuilding(c carte.Carte, target *batiment.Batiment, posFightPnjX int,
+	 posFightPnjY int, moveA *chan bool){
+	uptimeTicker := time.NewTicker(time.Duration(1 * time.Second))
+	for {
+		// if the target is not in the aggressor's vision anymore, he stops chasing him
+		if (pnj.GetVue() < (Abs(target.GetX() - pnj.GetX()) + Abs(target.GetY() - pnj.GetY())) ){
+			log.Print("Le npc ciblé n'est pas dans la vue du npc")
+			return
+		}
+		//The target or the attacker is dead
+		if (target.GetPv() == 0 || pnj.GetPv() == 0){
+			break
+		}
+		//The attacker moved
+		if (pnj.GetX() != (posFightPnjX) || pnj.GetY() != posFightPnjY){
+			break
+		}
+
+		select {
+		case <- *moveA:
+			return
+		case <-uptimeTicker.C:
+			log.Print("attack building")
+			*(target.GetChannel()) <- (*pnj).damage
+		}
+	}
+}
 
 /*MoveFight : attack a given npc and also trigger the fight-back
 * Both the aggressor and the target while fight and chase unless the player orders
@@ -376,10 +449,6 @@ func (pnj *Npc)Fight(c carte.Carte, target *Npc, posFightPnjX int,
 		}
 		//The attacker moved
 		if (pnj.GetX() != (posFightPnjX) || pnj.GetY() != posFightPnjY){
-			break
-		}
-		//The target moved
-		if (target.GetX() != initialPosTargetX || target.GetY() != initialPosTargetY){
 			break
 		}
 

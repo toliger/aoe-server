@@ -201,6 +201,9 @@ const (
 
 	//RessourceBufferSize taille du buffer de ressources
 	RessourceBufferSize=50
+
+    //BatimentBufferSize taille du buffer de batiments
+    BatimentBufferSize=50
 )
 
 

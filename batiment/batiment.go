@@ -3,7 +3,9 @@ package batiment
 import (
   cst "git.unistra.fr/AOEINT/server/constants"
   "git.unistra.fr/AOEINT/server/data"
+  "git.unistra.fr/AOEINT/server/utils"
   "strconv"
+  "log"
 )
 
 
@@ -16,12 +18,14 @@ type Batiment struct{
 	Longueur int
 	Largeur int
 	PlayerUID string
+    batimentChannel *chan int
 }
 
 
 //New : Constructeur de l'objet Batiment
 func New(x int,y int, typ int, long int, larg int, pv int) Batiment{
-	return (Batiment{x,y,pv,typ,long,larg,""})
+    buffer:=make(chan int,cst.BatimentBufferSize)
+	return (Batiment{x,y,pv,typ,long,larg,"",&buffer })
 }
 
 
@@ -38,6 +42,7 @@ func Create(class string, x int, y int ) Batiment{
 	default: //défaut=auberge
 		bat=New(x, y, 0,cst.LongueurAuberge,cst.LargeurAuberge,cst.PVAuberge)
 	}
+    go (&bat).batimentUpdate()
 	return bat
 }
 
@@ -63,15 +68,46 @@ func (bat Batiment) Transmit(id string){
 }
 
 
+/*batimentUpdate : Met automatiquement a jour les pv du batiment à partir du channel du batiment
+*/
+func (bat *Batiment) batimentUpdate(){
+	utils.Debug("batiment:channel actif")
+    var res int
+	for{
+        res= <- *(bat.batimentChannel)
+        //log.Print(res)
+        bat.SubPv(res)
+        log.Print((*bat).GetPv())
+	}
+	utils.Debug("batiment:channel inactif")
+}
+
+
 //DestroyBuilding : "Detruit" l'objet batiment si il n'y a plus de pv
 func (bat *Batiment)DestroyBuilding(){
 	bat = nil //nil permet assigner la valeur nul à un pointeur
 }
 
 
+//GetChannel retourne le channel de ressource du joueur
+func(bat *Batiment)GetChannel() *(chan int){
+	return bat.batimentChannel
+}
+
+
 //GetPv : Retourne les pv d'un bâtiment
 func (bat Batiment)GetPv() int{
 	return bat.Pv
+}
+
+//SetPv : change des pv d'un bâtiment
+func (bat *Batiment)SetPv(val int){
+    bat.Pv = val
+}
+
+//SubPv : decrement les pv d'un bâtiment de val
+func (bat *Batiment)SubPv(val int){
+    bat.Pv -= val
 }
 
 
