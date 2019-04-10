@@ -100,12 +100,13 @@ func (m *HelloReply) GetName() string {
 	return ""
 }
 
-// * Demande du Client : Demande le déplacement de une ou plusieurs unités
+//
+// Demande du Client : Demande le déplacement de une ou plusieurs unités
 // Argument donné par Client :
 //
-//* Point : Variable de type coordonnée servant de destination.
-//* EntitySelectionUUID : Tableau des identifiants concerné par la requête.
-//* Target : Chaine de caractère représentant l'entité qui doit être attaquer.
+//* (Coordinates) Point : Variable de type coordonnée servant de destination.
+//* ([]string) EntitySelectionUUID : Tableau des identifiants concerné par la requête.
+//* (string) Target : Chaine de caractère représentant l'entité qui doit être attaquer.
 //Cela peut être :
 //** Un identifiant de NPC
 //** Un identifiant de batiment
@@ -165,7 +166,8 @@ func (m *RightClickRequest) GetTarget() string {
 	return ""
 }
 
-// * Reponse du Serveur : Un message vide
+//
+// Reponse du Serveur : Un message vide
 // Argument donné par Serveur :  Aucun, pas d'information dans le message
 type RightClickReply struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
@@ -198,8 +200,9 @@ func (m *RightClickReply) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_RightClickReply proto.InternalMessageInfo
 
-// * X : Entier de 32 bits donnant la composante x de la coordonnée sur le carte
-// Y : Entier de 32 bits donnant la composante y de la coordonnée sur le carte
+//
+// (int32) X : Entier de 32 bits donnant la composante x de la coordonnée sur le carte
+// (int32) Y : Entier de 32 bits donnant la composante y de la coordonnée sur le carte
 type Coordinates struct {
 	X                    float32  `protobuf:"fixed32,1,opt,name=X,proto3" json:"X,omitempty"`
 	Y                    float32  `protobuf:"fixed32,2,opt,name=Y,proto3" json:"Y,omitempty"`
@@ -247,9 +250,10 @@ func (m *Coordinates) GetY() float32 {
 	return 0
 }
 
-// * Demande du Client : Demande les actions qui ont été signaler au serveur pour mettre à jour le client.
+//
+// Demande du Client : Demande les actions qui ont été signaler au serveur pour mettre à jour le client.
 // Argument donné par Client :
-//* Token : Suite de caractère permettant d'identifier et authentifier le client au près du serveur
+//* (string) Token : Suite de caractère permettant d'identifier et authentifier le client au près du serveur
 type AskUpdateRequest struct {
 	Token                string   `protobuf:"bytes,1,opt,name=Token,proto3" json:"Token,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
@@ -289,14 +293,15 @@ func (m *AskUpdateRequest) GetToken() string {
 	return ""
 }
 
-// * Reponse du Serveur : Message contenant un tableau des actions * signaler au serveur
+//
+// Reponse du Serveur : Message contenant un tableau des actions * signaler au serveur
 // Argument donné par Serveur :
-//* Array : Tableau contenant les actions entreprissent depuis la dernière mise à jour
-//* Type : Type de l'action décrite dans la suite du message (entier)
-//* EntityUUID : Entité designé par l'action décrite (string)
-//* Arg : Tableau d'argument variable lié au type d'action
-//* Key : Nom de la valeur (string)
-//* Value : Valeur lié à la clé (string)
+//* ([]UpdateAsked) Array : Tableau contenant les actions entreprissent depuis la dernière mise à jour
+//** (int32) Type : Type de l'action décrite dans la suite du message
+//** (string) EntityUUID : Entité designé par l'action décrite
+//** ([]Param) Arg : Tableau d'argument variable lié au type d'action
+//*** (string) Key : Nom de la valeur
+//*** (string) Value : Valeur lié à la clé
 type AskUpdateReply struct {
 	// Si vide rien
 	Array                []*UpdateAsked `protobuf:"bytes,1,rep,name=Array,proto3" json:"Array,omitempty"`
@@ -337,110 +342,192 @@ func (m *AskUpdateReply) GetArray() []*UpdateAsked {
 	return nil
 }
 
+type AskCreationRequest struct {
+	Type                 int32        `protobuf:"varint,1,opt,name=Type,proto3" json:"Type,omitempty"`
+	TypeUnit             int32        `protobuf:"varint,2,opt,name=TypeUnit,proto3" json:"TypeUnit,omitempty"`
+	Case                 *Coordinates `protobuf:"bytes,3,opt,name=Case,proto3" json:"Case,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}     `json:"-"`
+	XXX_unrecognized     []byte       `json:"-"`
+	XXX_sizecache        int32        `json:"-"`
+}
+
+func (m *AskCreationRequest) Reset()         { *m = AskCreationRequest{} }
+func (m *AskCreationRequest) String() string { return proto.CompactTextString(m) }
+func (*AskCreationRequest) ProtoMessage()    {}
+func (*AskCreationRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_77a6da22d6a3feb1, []int{7}
+}
+
+func (m *AskCreationRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_AskCreationRequest.Unmarshal(m, b)
+}
+func (m *AskCreationRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_AskCreationRequest.Marshal(b, m, deterministic)
+}
+func (m *AskCreationRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AskCreationRequest.Merge(m, src)
+}
+func (m *AskCreationRequest) XXX_Size() int {
+	return xxx_messageInfo_AskCreationRequest.Size(m)
+}
+func (m *AskCreationRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_AskCreationRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AskCreationRequest proto.InternalMessageInfo
+
+func (m *AskCreationRequest) GetType() int32 {
+	if m != nil {
+		return m.Type
+	}
+	return 0
+}
+
+func (m *AskCreationRequest) GetTypeUnit() int32 {
+	if m != nil {
+		return m.TypeUnit
+	}
+	return 0
+}
+
+func (m *AskCreationRequest) GetCase() *Coordinates {
+	if m != nil {
+		return m.Case
+	}
+	return nil
+}
+
+type AskCreationReply struct {
+	Validation           bool     `protobuf:"varint,1,opt,name=Validation,proto3" json:"Validation,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *AskCreationReply) Reset()         { *m = AskCreationReply{} }
+func (m *AskCreationReply) String() string { return proto.CompactTextString(m) }
+func (*AskCreationReply) ProtoMessage()    {}
+func (*AskCreationReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_77a6da22d6a3feb1, []int{8}
+}
+
+func (m *AskCreationReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_AskCreationReply.Unmarshal(m, b)
+}
+func (m *AskCreationReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_AskCreationReply.Marshal(b, m, deterministic)
+}
+func (m *AskCreationReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AskCreationReply.Merge(m, src)
+}
+func (m *AskCreationReply) XXX_Size() int {
+	return xxx_messageInfo_AskCreationReply.Size(m)
+}
+func (m *AskCreationReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_AskCreationReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AskCreationReply proto.InternalMessageInfo
+
+func (m *AskCreationReply) GetValidation() bool {
+	if m != nil {
+		return m.Validation
+	}
+	return false
+}
+
 //
 // 0 : Création d'un NPC
 //* EntityUUID : Identifiant de l'entité créé
 //* Arg :
 //** Key :
-//- "pv" -> Point de vie
-//- "x" -> Coordonnée x
-//- "y" -> Coordonnée y
-//- "px" -> float64 coordonnée X
-//- "py" -> float64 coordonnée y
-//- "vitesse" -> Vitesse de déplacement
-//- "type" -> Type de NPC (0:villager | 1:harvester | 2:soldier)
-//- "damage" -> Dégats qu'inflige le NPC
-//- "vue" -> Distance de vue du NPC
-//- "portee" -> Distance de la portée d'attaque
-//- "PlayerUUID" -> UUID du joueur propriétaire
+//- "pv" -> (int) Point de vie
+//- "x" -> (float) Coordonnée x
+//- "y" -> (float) Coordonnée y
+//- "vitesse" -> (int) Vitesse de déplacement
+//- "type" -> (int) Type de NPC (0:villager | 1:harvester | 2:soldier)
+//- "damage" -> (int) Dégats qu'inflige le NPC
+//- "vue" -> (int) Distance de vue du NPC
+//- "portee" -> (int) Distance de la portée d'attaque
 //** Value : Valeur en fonction de la donnée
 //
 // 1 : Destruction d'un NPC
-//* EntityUUID : Identifiant de l'entité concernée
-//* Arg : Vide/A ne pas prendre en compte
+//* EntityUUID : Identifiant de l'entité conserné
+//* Arg : Vide
 //
 // 2 : Modification d'un NPC
-//* EntityUUID : Identifiant de l'entité concerné
+//* EntityUUID : Identifiant de l'entité conserné
 //* Arg :
 //** Key :
-//- "pv" -> Point de vie
-//- "x" -> Coordonnée x float64
-//- "y" -> Coordonnée y float64
-//- "destX" -> Destination coordonnée x (-1 si pas de chemin) float64
-//- "destY" -> Destination coordonnée y (-1 si pas de chemin) float64
-//- "vitesse" -> Vitesse de déplacement
-//- "type" ->Type du NPC (0:villager | 1:harvester | 2:soldier)
-//- "damage" -> Dégats prit par le NPC
-//- "vue" -> Distance de vue du NPC
-//- "portee" -> Distance de la portée d'attaque
+//- "pv" -> (int) Point de vie
+//- "x" -> (float) Coordonnée x
+//- "y" -> (float) Coordonnée y
+//- "destX" -> (float) Destination coordonnée x (-1 si pas de chemin)
+//- "destY" -> (float) Destination coordonnée y (-1 si pas de chemin)
+//- "vitesse" -> (int) Vitesse de déplacement
+//- "vue" -> (int) Distance de vue du NPC
+//- "portee" -> (int) Distance de la portée d'attaque
 //** Value : Valeur en fonction de la donnée
 //
 // 3 : Mise à jour des ressource d'un joueur
-//* EntityUUID : Identifiant du joueur concerné
+//* EntityUUID : Identifiant du joueur conserné
 //* Arg :
 //** Key :
-//- "nom" -> nom du joueur
-//- "faction" -> équipe (int) du joueur
-//- "uid" -> UUID du joueur
-//- "stone" -> nombre de la ressource possédée
-//- "wood" -> idem
-//- "food" -> idem
-//** Value : -
+//- "water" -> (int) Eau
+//- "wood" -> (int) Bois
+//- "stone" -> (int) Pierre
+//- "food" -> (int) Nourriture
+//** Value : Nombre d'élément que possède le joueur
 //
 // 4 : Endommagement d'une ressource
-//* EntityUUID : Coordonnée de la ressource concerné
+//* EntityUUID : Coordonnée de la ressource conserné
 //* Arg :
 //** Key :
-//- "x" -> Coordonnée X
-//- "y" -> Coordonnée Y
-//- "pv" -> Nouveau PV
-//- "type" -> type de la ressource
-//- "id" -> id de laressource
+//- "x" -> (float) Coordonnée x
+//- "y" -> (float) Coordonnée y
+//- "pv" -> (int) Nouveau point de vie
 //** Value : Valeur en fonction de la donnée
 //
 // 5 : Destruction d'une ressource
-//* EntityUUID : Coordonnée de la ressource concerné
+//* EntityUUID : Coordonnée de la ressource conserné
 //* Arg :
 //** Key :
-//- "x" -> Coordonnée X
-//- "y" -> Coordonnée Y
-//- "id" -> id de la ressource
+//- "x" -> (float) Coordonnée x
+//- "y" -> (float) Coordonnée y
 //** Value : Valeur en fonction de la donnée
 //
 // 6 : Création d'une ressource
-//* EntityUUID : id de la ressource concerné
+//* EntityUUID : Coordonnée de la ressource conserné
 //* Arg :
 //** Key :
-//- "x" -> Coordonnée X
-//- "y" -> Coordonnée Y
-//- "pv" -> PV
-//- "type" -> "0"->Eau | "1"->Bois | "2"->Pierre | "3"->Nourriture
-//- "id" -> ID
+//- "x" -> (float) Coordonnée x
+//- "y" -> (float) Coordonnée y
+//- "pv" -> (int) Point de vie
+//- "type" -> (int) Type
+//- "id" -> (string) ID
 //** Value : Valeur en fonction de la donnée
+//- "type" -> "0"->Eau | "1"->Bois | "2"->Pierre | "3"->Nourriture
 //
 // 7 : Endommagement d'un bâtiment
-//* EntityUUID : Identifiant du bâtiment concerné
+//* EntityUUID : Identifiant du bâtiment conserné
 //* Arg :
 //** Key :
-//- "pv" -> Nouveau PV
-//- "id" -> id batiment
-//- "PlayerUUID" -> id joueur propriétaire
+//- "pv" -> (int) Nouveau point de vie
 //** Value : Valeur en fonction de la donnée
 //
 // 8 : Destruction d'un bâtiment
-//* EntityUUID : Identifiant du bâtiment concerné
+//* EntityUUID : Identifiant du bâtiment conserné
 //* Arg : Vide
 //
 // 9 : Création d'un bâtiment
-//* EntityUUID : Identifiant du bâtiment concerné
+//* EntityUUID : Identifiant du bâtiment conserné
 //* Arg :
 //** Key :
-//- "x" -> Coordonnée X
-//- "y" -> Coordonnée Y
-//- "pv" -> PV
-//- "type" -> Type
-//- "PlayerUUID" -> PlayerUUID
-//- "id" -> id batiment
+//- "x" -> (float) Coordonnée x
+//- "y" -> (float) Coordonnée y
+//- "pv" -> (int) Point de vie
+//- "type" -> (int) Type
+//- "uuid" -> (string) PlayerUUID
 //** Value : Valeur en fonction de la donnée
 //
 // 10 : Fin du jeu
@@ -459,7 +546,7 @@ func (m *UpdateAsked) Reset()         { *m = UpdateAsked{} }
 func (m *UpdateAsked) String() string { return proto.CompactTextString(m) }
 func (*UpdateAsked) ProtoMessage()    {}
 func (*UpdateAsked) Descriptor() ([]byte, []int) {
-	return fileDescriptor_77a6da22d6a3feb1, []int{7}
+	return fileDescriptor_77a6da22d6a3feb1, []int{9}
 }
 
 func (m *UpdateAsked) XXX_Unmarshal(b []byte) error {
@@ -513,7 +600,7 @@ func (m *Param) Reset()         { *m = Param{} }
 func (m *Param) String() string { return proto.CompactTextString(m) }
 func (*Param) ProtoMessage()    {}
 func (*Param) Descriptor() ([]byte, []int) {
-	return fileDescriptor_77a6da22d6a3feb1, []int{8}
+	return fileDescriptor_77a6da22d6a3feb1, []int{10}
 }
 
 func (m *Param) XXX_Unmarshal(b []byte) error {
@@ -556,6 +643,8 @@ func init() {
 	proto.RegisterType((*Coordinates)(nil), "communication.Coordinates")
 	proto.RegisterType((*AskUpdateRequest)(nil), "communication.AskUpdateRequest")
 	proto.RegisterType((*AskUpdateReply)(nil), "communication.AskUpdateReply")
+	proto.RegisterType((*AskCreationRequest)(nil), "communication.AskCreationRequest")
+	proto.RegisterType((*AskCreationReply)(nil), "communication.AskCreationReply")
 	proto.RegisterType((*UpdateAsked)(nil), "communication.UpdateAsked")
 	proto.RegisterType((*Param)(nil), "communication.Param")
 }
@@ -563,34 +652,38 @@ func init() {
 func init() { proto.RegisterFile("rpc.proto", fileDescriptor_77a6da22d6a3feb1) }
 
 var fileDescriptor_77a6da22d6a3feb1 = []byte{
-	// 420 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x93, 0xcf, 0x8e, 0xd3, 0x30,
-	0x10, 0xc6, 0x49, 0x43, 0x56, 0x64, 0x5a, 0x60, 0xd7, 0xac, 0x50, 0x08, 0x62, 0x89, 0x7c, 0x40,
-	0xe5, 0x52, 0xaa, 0xf2, 0x04, 0xa1, 0x45, 0xa2, 0x42, 0x45, 0x95, 0xdb, 0xa2, 0xf6, 0x68, 0x52,
-	0xab, 0x58, 0xf9, 0xe3, 0xe0, 0xb8, 0x87, 0x3c, 0x05, 0x8f, 0xc2, 0x2b, 0x22, 0xdb, 0x29, 0x84,
-	0x10, 0xb8, 0xcd, 0xd8, 0xbf, 0xcc, 0xcc, 0x37, 0x9f, 0x03, 0xbe, 0x2c, 0x93, 0x49, 0x29, 0x85,
-	0x12, 0xe8, 0x61, 0x22, 0xf2, 0xfc, 0x5c, 0xf0, 0x84, 0x2a, 0x2e, 0x0a, 0x8c, 0x61, 0xf4, 0x81,
-	0x65, 0x99, 0x20, 0xec, 0xdb, 0x99, 0x55, 0x0a, 0x21, 0xb8, 0xff, 0x89, 0xe6, 0x2c, 0x70, 0x22,
-	0x67, 0xec, 0x13, 0x13, 0xe3, 0x08, 0xa0, 0x61, 0xca, 0xac, 0xee, 0x25, 0xbe, 0x3b, 0x70, 0x43,
-	0xf8, 0xe9, 0xab, 0x9a, 0x67, 0x3c, 0x49, 0x2f, 0xb5, 0xa6, 0xe0, 0xad, 0x05, 0x2f, 0x94, 0x41,
-	0x87, 0xb3, 0x70, 0xf2, 0x47, 0xeb, 0xc9, 0x5c, 0x08, 0x79, 0xe4, 0x05, 0x55, 0xac, 0x22, 0x16,
-	0x44, 0x53, 0x78, 0xf2, 0xbe, 0x50, 0x5c, 0xd5, 0x1b, 0x96, 0xb1, 0x44, 0x53, 0xbb, 0xdd, 0x72,
-	0x11, 0x0c, 0x22, 0x77, 0xec, 0x93, 0xbe, 0x2b, 0xf4, 0x14, 0xae, 0xb6, 0x54, 0x9e, 0x98, 0x0a,
-	0x5c, 0x33, 0x4f, 0x93, 0xe1, 0x1b, 0x78, 0xdc, 0x1e, 0xa8, 0xcc, 0x6a, 0xfc, 0x1a, 0x86, 0xad,
-	0x96, 0x68, 0x04, 0xce, 0xde, 0x4c, 0x36, 0x20, 0xce, 0x5e, 0x67, 0x87, 0x60, 0x60, 0xb3, 0x03,
-	0x1e, 0xc3, 0x75, 0x5c, 0xa5, 0xbb, 0xf2, 0x48, 0x15, 0xbb, 0xa8, 0xb9, 0x05, 0x6f, 0x2b, 0x52,
-	0x56, 0x34, 0xc2, 0x6d, 0x82, 0xdf, 0xc1, 0xa3, 0x16, 0xa9, 0xf7, 0x33, 0x05, 0x2f, 0x96, 0x92,
-	0xd6, 0x81, 0x13, 0xb9, 0x3d, 0xaa, 0x2d, 0x1a, 0x57, 0x29, 0x3b, 0x12, 0x0b, 0x62, 0x0e, 0xc3,
-	0xd6, 0xa9, 0x5e, 0xf0, 0xb6, 0x2e, 0xed, 0x82, 0x3d, 0x62, 0x62, 0x74, 0x07, 0x60, 0xd5, 0x37,
-	0xfb, 0xd0, 0x13, 0xb4, 0x4e, 0xd0, 0x2b, 0x70, 0x63, 0x79, 0x0a, 0x5c, 0xd3, 0xf2, 0xb6, 0xd3,
-	0x72, 0x4d, 0x25, 0xcd, 0x89, 0x06, 0xf0, 0x1b, 0xf0, 0x4c, 0x86, 0xae, 0xc1, 0xfd, 0xc8, 0xea,
-	0x46, 0x8b, 0x0e, 0xb5, 0xbe, 0xcf, 0x34, 0x3b, 0xb3, 0xa6, 0xba, 0x4d, 0x66, 0x2b, 0xf0, 0x8c,
-	0xf7, 0x68, 0x01, 0x0f, 0x36, 0xb4, 0xb6, 0xf1, 0xf3, 0x4e, 0x83, 0xf6, 0x0b, 0x0a, 0x9f, 0xf5,
-	0x5f, 0x6a, 0x07, 0xee, 0xcd, 0x7e, 0x38, 0x30, 0x5a, 0x16, 0x8a, 0x49, 0x6a, 0x2c, 0xac, 0xd0,
-	0x1a, 0xe0, 0xb7, 0x4f, 0x28, 0xea, 0x7c, 0xfb, 0xd7, 0x9b, 0x0a, 0xef, 0xfe, 0x43, 0x98, 0x16,
-	0x68, 0x05, 0xfe, 0x2f, 0x47, 0xd0, 0xcb, 0x0e, 0xde, 0x75, 0x35, 0x7c, 0xf1, 0x6f, 0xc0, 0x94,
-	0xfb, 0x72, 0x65, 0x7e, 0x9b, 0xb7, 0x3f, 0x03, 0x00, 0x00, 0xff, 0xff, 0x90, 0x41, 0xc7, 0xbc,
-	0x43, 0x03, 0x00, 0x00,
+	// 493 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x94, 0x51, 0x6f, 0xd3, 0x30,
+	0x10, 0xc7, 0x49, 0xb3, 0x4c, 0xed, 0xb5, 0xc0, 0x66, 0x26, 0x14, 0x82, 0xe8, 0x8a, 0x1f, 0x50,
+	0x79, 0x29, 0x55, 0xf9, 0x04, 0xa1, 0x43, 0x62, 0x42, 0x43, 0x95, 0xdb, 0x4e, 0xdb, 0xa3, 0x49,
+	0xad, 0x62, 0x25, 0x4d, 0x82, 0xe3, 0x3e, 0xe4, 0x9d, 0x77, 0xbe, 0x32, 0xf2, 0x39, 0xdb, 0x42,
+	0x96, 0xf5, 0xa9, 0x3e, 0xfb, 0xd7, 0xbb, 0xff, 0xdd, 0xfd, 0x15, 0xe8, 0xa9, 0x3c, 0x9a, 0xe4,
+	0x2a, 0xd3, 0x19, 0x79, 0x1e, 0x65, 0xbb, 0xdd, 0x3e, 0x95, 0x11, 0xd7, 0x32, 0x4b, 0x29, 0x85,
+	0xc1, 0x37, 0x91, 0x24, 0x19, 0x13, 0xbf, 0xf7, 0xa2, 0xd0, 0x84, 0xc0, 0xd1, 0x0f, 0xbe, 0x13,
+	0xbe, 0x33, 0x72, 0xc6, 0x3d, 0x86, 0x67, 0x3a, 0x02, 0xa8, 0x98, 0x3c, 0x29, 0x5b, 0x89, 0xbf,
+	0x0e, 0x9c, 0x32, 0xb9, 0xfd, 0xa5, 0xe7, 0x89, 0x8c, 0xe2, 0xbb, 0x5c, 0x53, 0xf0, 0x16, 0x99,
+	0x4c, 0x35, 0xa2, 0xfd, 0x59, 0x30, 0xf9, 0xaf, 0xf4, 0x64, 0x9e, 0x65, 0x6a, 0x23, 0x53, 0xae,
+	0x45, 0xc1, 0x2c, 0x48, 0xa6, 0xf0, 0xea, 0x6b, 0xaa, 0xa5, 0x2e, 0x97, 0x22, 0x11, 0x91, 0xa1,
+	0xd6, 0xeb, 0xcb, 0x0b, 0xbf, 0x33, 0x72, 0xc7, 0x3d, 0xd6, 0xf6, 0x44, 0x5e, 0xc3, 0xf1, 0x8a,
+	0xab, 0xad, 0xd0, 0xbe, 0x8b, 0x7a, 0xaa, 0x88, 0x9e, 0xc2, 0xcb, 0xba, 0xa0, 0x3c, 0x29, 0xe9,
+	0x47, 0xe8, 0xd7, 0x4a, 0x92, 0x01, 0x38, 0x37, 0xa8, 0xac, 0xc3, 0x9c, 0x1b, 0x13, 0xdd, 0xfa,
+	0x1d, 0x1b, 0xdd, 0xd2, 0x31, 0x9c, 0x84, 0x45, 0xbc, 0xce, 0x37, 0x5c, 0x8b, 0xbb, 0x6e, 0xce,
+	0xc0, 0x5b, 0x65, 0xb1, 0x48, 0xab, 0xc6, 0x6d, 0x40, 0xbf, 0xc0, 0x8b, 0x1a, 0x69, 0xe6, 0x33,
+	0x05, 0x2f, 0x54, 0x8a, 0x97, 0xbe, 0x33, 0x72, 0x5b, 0xba, 0xb6, 0x68, 0x58, 0xc4, 0x62, 0xc3,
+	0x2c, 0x48, 0x35, 0x90, 0xb0, 0x88, 0xe7, 0x4a, 0x20, 0x51, 0xdb, 0xc4, 0xaa, 0xcc, 0xed, 0x9c,
+	0x3d, 0x86, 0x67, 0x12, 0x40, 0xd7, 0xfc, 0xae, 0x53, 0xa9, 0x51, 0xac, 0xc7, 0xee, 0x63, 0x32,
+	0x81, 0xa3, 0x39, 0x2f, 0x04, 0xce, 0xe1, 0xf0, 0xb0, 0x91, 0xa3, 0x33, 0xec, 0xf1, 0xa1, 0xaa,
+	0xd1, 0x3e, 0x04, 0xb8, 0xe6, 0x89, 0xdc, 0xe0, 0x15, 0x56, 0xee, 0xb2, 0xda, 0x0d, 0x95, 0xd0,
+	0xaf, 0xe9, 0x6f, 0x95, 0x38, 0x04, 0xb0, 0x7b, 0xaa, 0x36, 0x67, 0x66, 0x55, 0xbb, 0x21, 0x1f,
+	0xc0, 0x0d, 0xd5, 0xd6, 0x77, 0x71, 0x38, 0x67, 0x0d, 0x95, 0x0b, 0xae, 0xf8, 0x8e, 0x19, 0x80,
+	0x7e, 0x02, 0x0f, 0x23, 0x72, 0x02, 0xee, 0x77, 0x51, 0x56, 0x53, 0x37, 0x47, 0xb3, 0x89, 0x6b,
+	0x9e, 0xec, 0x45, 0x95, 0xdd, 0x06, 0xb3, 0x2b, 0xf0, 0xd0, 0xa5, 0xe4, 0x02, 0xba, 0x4b, 0x5e,
+	0xda, 0xf3, 0xdb, 0x46, 0x81, 0xba, 0xd7, 0x83, 0x37, 0xed, 0x8f, 0xc6, 0x2b, 0xcf, 0x66, 0x7f,
+	0x3a, 0x30, 0xb8, 0x4c, 0xb5, 0x50, 0x1c, 0xcd, 0x56, 0x90, 0x05, 0xc0, 0x83, 0xa3, 0xc8, 0xa8,
+	0xf1, 0xdf, 0x47, 0xee, 0x0f, 0x86, 0x07, 0x08, 0x2c, 0x41, 0xae, 0xa0, 0x77, 0xef, 0x1d, 0x72,
+	0xde, 0xc0, 0x9b, 0xfe, 0x0b, 0xde, 0x3d, 0x0d, 0xd8, 0x74, 0x4b, 0xe8, 0xd7, 0x16, 0x4a, 0xde,
+	0x3f, 0xe6, 0x1b, 0x16, 0x0b, 0xce, 0x0f, 0x21, 0x98, 0xf4, 0xe7, 0x31, 0x7e, 0x35, 0x3e, 0xff,
+	0x0b, 0x00, 0x00, 0xff, 0xff, 0x5f, 0xd1, 0xec, 0xa0, 0x42, 0x04, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -675,6 +768,8 @@ type InteractionsClient interface {
 	RightClick(ctx context.Context, in *RightClickRequest, opts ...grpc.CallOption) (*RightClickReply, error)
 	// Fonction permettant au client de demander les mises à jour
 	AskUpdate(ctx context.Context, in *AskUpdateRequest, opts ...grpc.CallOption) (*AskUpdateReply, error)
+	// Fonction de création(npc ou batiment)
+	AskCreation(ctx context.Context, in *AskCreationRequest, opts ...grpc.CallOption) (*AskCreationReply, error)
 }
 
 type interactionsClient struct {
@@ -703,12 +798,23 @@ func (c *interactionsClient) AskUpdate(ctx context.Context, in *AskUpdateRequest
 	return out, nil
 }
 
+func (c *interactionsClient) AskCreation(ctx context.Context, in *AskCreationRequest, opts ...grpc.CallOption) (*AskCreationReply, error) {
+	out := new(AskCreationReply)
+	err := c.cc.Invoke(ctx, "/communication.Interactions/AskCreation", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // InteractionsServer is the server API for Interactions service.
 type InteractionsServer interface {
 	// Fonction transmettant un click du client au serveur
 	RightClick(context.Context, *RightClickRequest) (*RightClickReply, error)
 	// Fonction permettant au client de demander les mises à jour
 	AskUpdate(context.Context, *AskUpdateRequest) (*AskUpdateReply, error)
+	// Fonction de création(npc ou batiment)
+	AskCreation(context.Context, *AskCreationRequest) (*AskCreationReply, error)
 }
 
 func RegisterInteractionsServer(s *grpc.Server, srv InteractionsServer) {
@@ -751,6 +857,24 @@ func _Interactions_AskUpdate_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Interactions_AskCreation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AskCreationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(InteractionsServer).AskCreation(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/communication.Interactions/AskCreation",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(InteractionsServer).AskCreation(ctx, req.(*AskCreationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Interactions_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "communication.Interactions",
 	HandlerType: (*InteractionsServer)(nil),
@@ -762,6 +886,10 @@ var _Interactions_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AskUpdate",
 			Handler:    _Interactions_AskUpdate_Handler,
+		},
+		{
+			MethodName: "AskCreation",
+			Handler:    _Interactions_AskCreation_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
