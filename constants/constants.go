@@ -104,22 +104,22 @@ const MAXOBJECTS = 200
 //===== Batiments =====
 
 //LongueurAuberge longueur auberge
-const LongueurAuberge = 2
+const LongueurAuberge = 1
 
 //LargeurAuberge largeur auberge
-const LargeurAuberge = 2
+const LargeurAuberge = 1
 
 //LongueurCaserne longueur caserne
-const LongueurCaserne = 2
+const LongueurCaserne = 1
 
 //LargeurCaserne largeur caserne
-const LargeurCaserne = 2
+const LargeurCaserne = 1
 
 //LongueurEtabli longueur etabli
-const LongueurEtabli = 2
+const LongueurEtabli = 1
 
 //LargeurEtabli largeur etabli
-const LargeurEtabli = 2
+const LargeurEtabli = 1
 
 //PVAuberge pv auberge
 const PVAuberge = 100

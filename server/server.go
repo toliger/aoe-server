@@ -150,3 +150,8 @@ func (s *Arguments) AskUpdate(ctx context.Context, in *pb.AskUpdateRequest) (*pb
 
 	return &pb.AskUpdateReply{Array: toSend}, nil
 }
+
+//AskCreation Function of the service Interactions: AskCreation
+//func (s *Arguments) AskCreation(ctx context.Context, in *pb.AskCreationRequest) {
+//
+//}
