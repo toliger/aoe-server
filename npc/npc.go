@@ -98,6 +98,16 @@ func (pnj Npc) GetY() int {
 	return int(math.Floor(pnj.y))
 }
 
+//Get64X : return the position X
+func (pnj Npc) Get64X() float64 {
+	return pnj.x
+}
+
+//Get64Y : return the position Y
+func (pnj Npc) Get64Y() float64 {
+	return pnj.y
+}
+
 //GetVue : return villager's vision
 func (pnj Npc) GetVue() int {
 	return pnj.vue

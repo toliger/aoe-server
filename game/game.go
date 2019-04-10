@@ -12,6 +12,7 @@ import (
 	"git.unistra.fr/AOEINT/server/constants"
 	"git.unistra.fr/AOEINT/server/data"
 	"git.unistra.fr/AOEINT/server/joueur"
+	"git.unistra.fr/AOEINT/server/npc"
 	"git.unistra.fr/AOEINT/server/ressource"
 	"git.unistra.fr/AOEINT/server/utils"
 )
@@ -67,8 +68,8 @@ func (g *Game) GetPlayerFromUID(uid string) *joueur.Joueur {
 	return nil
 }
 
-//Delete supprime un batiment, le retire de la liste du joueur et des ID, puis envoie une action
-func (g *Game) Delete(bat *batiment.Batiment) bool {
+//DeleteBuilding supprime un batiment, le retire de la liste du joueur et des ID, puis envoie une action
+func (g *Game) DeleteBuilding(bat *batiment.Batiment) bool {
 	//On recupere l'id du batiment
 	id := data.IDMap.GetIDFromObject(bat)
 	if id == "-1" {
@@ -81,6 +82,24 @@ func (g *Game) Delete(bat *batiment.Batiment) bool {
 		return false
 	}
 	data.AddToAllAction(constants.ActionDestroyBuilding, id, "useless", "useless")
+	bat = nil
+	return true
+}
+
+//DeleteNpc Supprime un pnj, le retire de la liste du joueur et des ID, puis envoie une action DelNPC
+func (g *Game) DeleteNpc(pnj *npc.Npc) bool {
+	//On récupère l'id du npc
+	id := data.IDMap.GetIDFromObject(pnj)
+	if id == "-1" {
+		return false
+	}
+	//On retire le pnj de la liste des pnj du jeu
+	data.IDMap.DeleteObjectFromID(id)
+	//On retire le pnj de la liste des pnj du joueur
+	if !g.GetPlayerFromUID(pnj.PlayerUUID).DeleteNpcFromList(pnj.Get64X(), pnj.Get64Y(), pnj.GetType(), pnj.GetPv()) {
+		return false
+	}
+	data.AddToAllAction(constants.ActionDelNpc, id, "useless", "useless")
 	return true
 }
 
