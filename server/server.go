@@ -152,6 +152,7 @@ func (s *Arguments) AskUpdate(ctx context.Context, in *pb.AskUpdateRequest) (*pb
 }
 
 //AskCreation Function of the service Interactions: AskCreation
-//func (s *Arguments) AskCreation(ctx context.Context, in *pb.AskCreationRequest) {
-//
-//}
+func (s *Arguments) AskCreation(ctx context.Context, in *pb.AskCreationRequest) (*pb.AskCreationReply, error) {
+
+	return &pb.AskCreationReply{Validation: false}, nil
+}
