@@ -2,6 +2,8 @@ package data
 
 import (
 	"encoding/json"
+	"io/ioutil"
+	"net/http"
 
 	"strconv"
 	"strings"
@@ -155,4 +157,29 @@ func ExtractFromToken(tokenString string) *TokenValue {
 		return nil
 	}
 	return &extract
+}
+
+//Curl method POST/GET, query body ex: mutation{login(email: "gege@hotmail.fr",  password: "un")  }
+func Curl(queryBody string) (string, bool) {
+	body := strings.NewReader(`{ "query": "` + queryBody + `" }`)
+	req, err := http.NewRequest("POST", constants.APIHOST+":"+constants.APIPORT, body)
+	if err != nil {
+		return "", false
+	}
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return "", false
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		return "", false
+	}
+	bodyBytes, err2 := ioutil.ReadAll(resp.Body)
+	if err2 != nil {
+		return "", false
+	}
+	bodyString := string(bodyBytes)
+	return bodyString, true
 }
