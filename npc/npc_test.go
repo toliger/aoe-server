@@ -4,7 +4,6 @@ import (
  "testing"
  "git.unistra.fr/AOEINT/server/carte"
  d "git.unistra.fr/AOEINT/server/data"
- "git.unistra.fr/AOEINT/server/batiment"
  "git.unistra.fr/AOEINT/server/ressource"
  "time"
  "git.unistra.fr/AOEINT/server/constants"

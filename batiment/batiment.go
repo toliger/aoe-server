@@ -100,10 +100,12 @@ func (bat Batiment)GetPv() int{
 	return bat.Pv
 }
 
+
 //SetPv : change des pv d'un bâtiment
 func (bat *Batiment)SetPv(val int){
     bat.Pv = val
 }
+
 
 //SubPv : decrement les pv d'un bâtiment de val
 func (bat *Batiment)SubPv(val int){
