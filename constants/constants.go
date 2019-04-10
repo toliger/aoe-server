@@ -1,21 +1,8 @@
 package constants
 
-
 import (
-  "os"
+	"git.unistra.fr/AOEINT/server/utils"
 )
-
-
-func getenv(key, fallback string) string {
-    value := os.Getenv(key)
-
-    if len(value) == 0 {
-        return fallback
-    }
-
-    return value
-}
-
 
 //Listes des differentes constantes de jeu
 //constantes de debug
@@ -26,7 +13,6 @@ const (
 	//Mode verbose eventuel
 	DEBUG = false
 )
-
 
 var (
 	//PlayerUID1 Name of the first player
@@ -39,24 +25,23 @@ var (
 	PlayerUID4 = "DEFAULT"
 )
 
-
 //constantes liees aux actions
 const (
-//NPC
-//ActionNewNpc action creation npc
+	//NPC
+	//ActionNewNpc action creation npc
 	ActionNewNpc = 0
 
-  //ActionDelNpc action destruction npc
+	//ActionDelNpc action destruction npc
 	ActionDelNpc = 1
 
-	// ActionHarmNpc degats infliges a un npc
-	ActionHarmNpc = 2
+	// ActionAlterationNpc degats infliges a un npc
+	ActionAlterationNpc = 2
 
-  //PLAYER
-  //ActionPlayerRessource maj d'un joueur
+	//PLAYER
+	//ActionPlayerRessource maj d'un joueur
 	ActionPlayerRessource = 3
 
-  //RESSOURCE
+	//RESSOURCE
 	//ActionHarmRessource degats infliges a une ressource
 	ActionHarmRessource = 4
 
@@ -69,7 +54,7 @@ const (
 	//RessourcePv
 	RessourcePv = 100
 
-  //BUILDING
+	//BUILDING
 	//ActionHarmBuilding degats infliges a un batiment
 	ActionHarmBuilding = 7
 
@@ -79,7 +64,7 @@ const (
 	//ActionNewBuilding creation batiment
 	ActionNewBuilding = 9
 
-  //GAME
+	//GAME
 	//ActionEndOfGame fin de jeu
 	ActionEndOfGame = 10
 )
@@ -116,26 +101,25 @@ const StartingFood = 50
 //MAXOBJECTS nb objets du buffer objets
 const MAXOBJECTS = 200
 
-
 //===== Batiments =====
 
 //LongueurAuberge longueur auberge
-const LongueurAuberge = 2
+const LongueurAuberge = 1
 
 //LargeurAuberge largeur auberge
-const LargeurAuberge = 2
+const LargeurAuberge = 1
 
 //LongueurCaserne longueur caserne
-const LongueurCaserne = 2
+const LongueurCaserne = 1
 
 //LargeurCaserne largeur caserne
-const LargeurCaserne = 2
+const LargeurCaserne = 1
 
 //LongueurEtabli longueur etabli
-const LongueurEtabli = 2
+const LongueurEtabli = 1
 
 //LargeurEtabli largeur etabli
-const LargeurEtabli = 2
+const LargeurEtabli = 1
 
 //PVAuberge pv auberge
 const PVAuberge = 100
@@ -168,22 +152,22 @@ const PrixWoodEtabli = 5
 
 //DataRecup consts
 var (
-  //GameUUID id de partie
-	GameUUID string
+	//GameUUID id de partie
+	GameUUID string = utils.Getenv("GAMEUUID", "DEFAULT")
 
-  //APIHost API
-	APIHost string
+	//APIHost API
+	APIHost string = utils.Getenv("APIHOST", "DEFAULT")
 
-  //Token Token
-	Token string
+	//Token Token
+	Token string = utils.Getenv("TOKEN", "DEFAULT")
 
-  //TokenSecret Token secret
-	TokenSecret string
+	//TokenSecret Token secret
+	TokenSecret string = utils.Getenv("TOKEN_SECRET", "DEFAULT")
 )
-const (
-  //DataFileName : chemin vers les données de jeu
-	DataFileName = "server/data/Gamedata.json"
 
+const (
+	//DataFileName : chemin vers les données de jeu
+	DataFileName = "server/data/Gamedata.json"
 
 	//Valeurs par defaut uniquement si non fournies en variables d'environnement (4*)
 
@@ -200,59 +184,58 @@ const (
 	TOKENSecretDef = "DEFAULT"
 
 	//RessourceBufferSize taille du buffer de ressources
-	RessourceBufferSize=50
+	RessourceBufferSize = 50
 )
-
 
 //===== Default PNJ values ======
 
 //HarvesterVillPortee  portee d'un harvester
-const HarvesterVillPortee=1
+const HarvesterVillPortee = 1
 
 //SoldierPv pv d'un  soldat
-const SoldierPv=8
+const SoldierPv = 8
 
 //SoldierVitesse vitesse d'un soldat
-const SoldierVitesse=3
+const SoldierVitesse = 3
 
 //SoldierVue vue d'un soldat
-const SoldierVue=10
+const SoldierVue = 10
 
 //SoldierPortee portee d'un soldat
-const SoldierPortee=1
+const SoldierPortee = 1
 
 //SoldierSize taille d'un soldat
-const SoldierSize=1
+const SoldierSize = 1
 
 //SoldierDamage degats d'un soldat
-const SoldierDamage=2
+const SoldierDamage = 2
 
 //HarvesterPv pv d'un harvester
-const HarvesterPv=6
+const HarvesterPv = 6
 
 //HarvesterVitesse vitesse d'un harvester
-const HarvesterVitesse=4
+const HarvesterVitesse = 4
 
 //HarvesterVue vue d'un harvester
-const HarvesterVue=10
+const HarvesterVue = 10
 
 //HarvesterSize taille d'un harvester
-const HarvesterSize=1
+const HarvesterSize = 1
 
 //HarvesterDamage degats d'un harvester
-const HarvesterDamage=7
+const HarvesterDamage = 7
 
 //VillagerPv pv d'un villager
-const VillagerPv=4
+const VillagerPv = 4
 
 //VillagerVitesse vitesse d'un villager
-const VillagerVitesse=4
+const VillagerVitesse = 4
 
 //VillagerVue vue d'un villager
-const VillagerVue=10
+const VillagerVue = 10
 
 //VillagerSize taille d'un villager
-const VillagerSize=1
+const VillagerSize = 1
 
 //VillagerDamage degats d'un villager
-const VillagerDamage=5
+const VillagerDamage = 5
