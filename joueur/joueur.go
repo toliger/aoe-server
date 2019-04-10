@@ -79,6 +79,9 @@ func (j *Joueur) ressourceUpdate() {
 			j.AddWood(res[0])
 			j.AddStone(res[1])
 			j.AddFood(res[2])
+			data.AddToAllAction(constants.ActionPlayerRessource, j.UID, "stone", strconv.Itoa(j.GetStone()))
+			data.AddToAllAction(constants.ActionPlayerRessource, j.UID, "food", strconv.Itoa(j.GetFood()))
+			data.AddToAllAction(constants.ActionPlayerRessource, j.UID, "wood", strconv.Itoa(j.GetWood()))
 		} else {
 			break
 		}
