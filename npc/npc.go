@@ -1,6 +1,7 @@
 package npc
 
 import (
+	"fmt"
 	"log"
 	"math"
 	"strconv"
@@ -29,7 +30,7 @@ type Npc struct {
 	tauxRecolte      int
 	selectable       bool //false=villager
 	typ              int  // 0:villager, 1:harvester, 2:soldier
-	TeamFlag         bool
+	TeamFlag         int
 	ressourceChannel chan []int
 	hasOrder         bool //Si un déplacement a dejà été demandé par le joueur (disable auto movement)
 	// isMoving *safeNumber
@@ -53,13 +54,13 @@ type safeNumberInt struct {
 }
 
 //New : new NPC
-func New(x *safeNumberFloat, y *safeNumberFloat, pv *safeNumberInt, vitesse int, vue int, portee int, offensive bool, size int, damage int, tauxRecolte int, selectable bool, typ int, flag bool, channel *chan []int) Npc {
+func New(x *safeNumberFloat, y *safeNumberFloat, pv *safeNumberInt, vitesse int, vue int, portee int, offensive bool, size int, damage int, tauxRecolte int, selectable bool, typ int, flag int, channel *chan []int) Npc {
 	pnj := Npc{x, y, pv, vitesse, vue, portee, offensive, size, damage, tauxRecolte, selectable, typ, flag, *channel, false, "", make(map[int](chan bool))}
 	return pnj
 }
 
 //Create : generate a new NPC
-func Create(class string, x float64, y float64, flag bool, channel *chan []int) (Npc, string) {
+func Create(class string, x float64, y float64, flag int, channel *chan []int) (Npc, string) {
 	var pnj Npc
 	sfPv := &safeNumberInt{}
 	sfX := &safeNumberFloat{}
@@ -88,9 +89,9 @@ func Create(class string, x float64, y float64, flag bool, channel *chan []int) 
 //Stringify : create a map[string]string of the main arguments of a NPC
 func (pnj Npc) Stringify() map[string]string {
 	res := make(map[string]string)
-	res["pv"] = strconv.Itoa(pnj.pv)
-	res["x"] = fmt.Sprintf("%f", pnj.x)
-	res["y"] = fmt.Sprintf("%f", pnj.y)
+	res["pv"] = strconv.Itoa(pnj.GetPv())
+	res["x"] = fmt.Sprintf("%f", pnj.Get64X())
+	res["y"] = fmt.Sprintf("%f", pnj.Get64Y())
 	res["vitesse"] = strconv.Itoa(pnj.vitesse)
 	res["type"] = strconv.Itoa(pnj.typ)
 	res["damage"] = strconv.Itoa(pnj.damage)
