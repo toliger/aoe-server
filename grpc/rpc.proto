@@ -62,8 +62,8 @@ message RightClickRequest {
 */
 message RightClickReply {}
 /*
-* (int32) X : Entier de 32 bits donnant la composante x de la coordonnée sur le carte
-* (int32) Y : Entier de 32 bits donnant la composante y de la coordonnée sur le carte
+* (float) X : Réel de 32 bits donnant la composante x de la coordonnée sur le carte
+* (float) Y : Réel de 32 bits donnant la composante y de la coordonnée sur le carte
 */
 message Coordinates {
     float X = 1;

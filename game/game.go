@@ -10,6 +10,7 @@ import (
 	"git.unistra.fr/AOEINT/server/batiment"
 	Carte "git.unistra.fr/AOEINT/server/carte"
 	"git.unistra.fr/AOEINT/server/constants"
+	"git.unistra.fr/AOEINT/server/data"
 	"git.unistra.fr/AOEINT/server/joueur"
 	"git.unistra.fr/AOEINT/server/ressource"
 	"git.unistra.fr/AOEINT/server/utils"
@@ -57,13 +58,30 @@ func ExtractData() Data {
 }
 
 //GetPlayerFromUID : Permet de recuperer l'instance d'un joueur à partir de son uid
-func (g Game) GetPlayerFromUID(uid string) *joueur.Joueur {
+func (g *Game) GetPlayerFromUID(uid string) *joueur.Joueur {
 	for i := 0; i < len(g.Joueurs); i++ {
 		if g.Joueurs[i].UID == uid {
 			return &(g.Joueurs[i])
 		}
 	}
 	return nil
+}
+
+//Delete supprime un batiment, le retire de la liste du joueur et des ID, puis envoie une action
+func (g *Game) Delete(bat *batiment.Batiment) bool {
+	//On recupere l'id du batiment
+	id := data.IDMap.GetIDFromObject(bat)
+	if id == "-1" {
+		return false
+	}
+	//On retire le batiment de la liste des batiments du jeu
+	data.IDMap.DeleteObjectFromID(id)
+	//On retire le batiment de la liste du joueur
+	if !g.GetPlayerFromUID(bat.PlayerUID).DeleteBatimentFromList(bat.X, bat.Y, bat.Typ) {
+		return false
+	}
+	data.AddToAllAction(constants.ActionDestroyBuilding, id, "useless", "useless")
+	return true
 }
 
 //EndOfGame : Interromps la boucle principale du jeu

@@ -8,12 +8,16 @@ import (
 	"log"
 	"net"
 
+
+	"git.unistra.fr/AOEINT/server/utils"
 	"git.unistra.fr/AOEINT/server/constants"
 	"git.unistra.fr/AOEINT/server/data"
 	"git.unistra.fr/AOEINT/server/game"
-	pb "git.unistra.fr/AOEINT/server/grpc"
+
 	"git.unistra.fr/AOEINT/server/npc"
-	"git.unistra.fr/AOEINT/server/utils"
+	"git.unistra.fr/AOEINT/server/batiment"
+
+	pb "git.unistra.fr/AOEINT/server/grpc"
 	"google.golang.org/grpc"
 )
 
@@ -76,6 +80,7 @@ func KillListenerServer() {
 // SayHello :
 // Function of the service Hello: SayHello
 func (s *Arguments) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
+	// For Debug Mode
 	utils.Debug("Reception d'un HelloRequest et envoie d'un HelloReply")
 	return &pb.HelloReply{}, nil
 }
@@ -83,6 +88,9 @@ func (s *Arguments) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.Hell
 // RightClick :
 // Function of the service Interactions: RightClick
 func (s *Arguments) RightClick(ctx context.Context, in *pb.RightClickRequest) (*pb.RightClickReply, error) {
+
+	// For Debug Mode
+	utils.Debug("Reception d'un RightClickRequest et envoie d'un RightClickReply")
 
 	// Loop on each entity
 	for i := 0; i < len(in.EntitySelectionUUID); i++ {
@@ -119,6 +127,10 @@ func (s *Arguments) RightClick(ctx context.Context, in *pb.RightClickRequest) (*
 // Function of the service Interactions: AskUpdate
 func (s *Arguments) AskUpdate(ctx context.Context, in *pb.AskUpdateRequest) (*pb.AskUpdateReply, error) {
 
+	// For Debug Mode
+	utils.Debug("Reception d'un AskUpdateRequest et envoie d'un AskUpdateReply")
+
+	// Extract data from token to get player's UUID
 	playerUUID := data.ExtractFromToken(in.Token)
 	if playerUUID == nil {
 		log.Print("Token invalide dans AskUpdate")
@@ -151,8 +163,69 @@ func (s *Arguments) AskUpdate(ctx context.Context, in *pb.AskUpdateRequest) (*pb
 	return &pb.AskUpdateReply{Array: toSend}, nil
 }
 
-//AskCreation Function of the service Interactions: AskCreation
+// AskCreation :
+// Function of creation of a building or NPC
 func (s *Arguments) AskCreation(ctx context.Context, in *pb.AskCreationRequest) (*pb.AskCreationReply, error) {
+	
+	// Extract data from token to get player's UUID
+	playerUUID := data.ExtractFromToken(in.Token)
+	if playerUUID == nil {
+		log.Print("Token invalide dans AskCreation")
+		return &pb.AskCreationReply{Validation: false}, nil
+	}
 
-	return &pb.AskCreationReply{Validation: false}, nil
+	actionType := in.Type
+	switch actionType {
+	case constants.ActionNewNpc:
+		
+		// Define class asked
+		var class string
+		if (in.TypeUnit == 0) {
+			class = "villager"
+		} else if (in.TypeUnit == 1) {
+			class = "harvester"
+		} else if (in.TypeUnit == 2) {
+			class = "soldier"
+		} else {
+			log.Print("TypeUnit invalide dans AskCreation")
+			return &pb.AskCreationReply{Validation: false}, nil
+		}
+
+		// Create NPC into the right player and update ActionBuffer
+		player := s.g.GetPlayerFromUID(playerUUID.UUID)
+		player.AddAndCreateNpc(class, int(in.Case.X), int(in.Case.Y))
+		fmt.Println(int(in.Case.X), int(in.Case.Y))
+
+	case constants.ActionNewBuilding:
+
+		// Define class asked and create it to the right player
+		var class string
+		if (in.TypeUnit == 0) {
+			class = "auberge"
+		} else if (in.TypeUnit == 1) {
+			class = "caserne"
+		} else if (in.TypeUnit == 2) {
+			class = "etabli"
+		} else {
+			log.Print("TypeUnit invalide dans AskCreation")
+			return &pb.AskCreationReply{Validation: false}, nil
+		}
+
+		// Create NPC into the right player and update ActionBuffer
+		player := s.g.GetPlayerFromUID(playerUUID.UUID)
+		b := batiment.Create(class, int(in.Case.X), int(in.Case.Y))
+		if s.g.Carte.AddNewBuilding(&b) != true {
+			log.Print("Erreur, peut pas créer un batiment dans AskCreation")
+			return &pb.AskCreationReply{Validation: false}, nil
+		}
+		player.AddBuilding(&b)
+
+
+	default:
+		log.Print("Format de requête invalide dans AskCreation")
+		log.Print("Voici in : ", in)
+		return &pb.AskCreationReply{Validation: false}, nil
+	}
+
+	return &pb.AskCreationReply{Validation: true}, nil
 }

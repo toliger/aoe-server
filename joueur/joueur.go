@@ -113,6 +113,17 @@ func (j Joueur) GetBatiment(i int) batiment.Batiment {
 	return *(j.batiments[i])
 }
 
+//DeleteBatimentFromList retire un batiment de la liste du joueur
+func (j *Joueur) DeleteBatimentFromList(x int, y int, typ int) bool {
+	for i := range j.batiments {
+		if j.batiments[i].X == x && j.batiments[i].Y == y && j.batiments[i].Typ == typ {
+			j.batiments[i] = nil
+			return true
+		}
+	}
+	return false
+}
+
 //Adding ressources
 
 //AddStone :
