@@ -103,6 +103,44 @@ func (g *Game) DeleteNpc(pnj *npc.Npc) bool {
 	return true
 }
 
+//LaunchAutomaticFight : launch the AutomaticFight for all inactive npc
+func (g *Game) LaunchAutomaticFight(){
+	uptimeTicker := time.NewTicker(time.Duration(100 * time.Millisecond))
+	for{
+		select {
+		case <-uptimeTicker.C:
+			for _,player := range g.Joueurs{
+				if (player.GetEntities() == nil){
+					break
+				}
+				if (player.GetEntities()) == nil{
+					return
+				}
+				for i := 0; i < len(player.GetEntities()); i++{
+				//for _,pnj := range player.GetEntities(){
+					if !(player.GetNpc(i).IsActive()){
+						g.AutomaticFight(player.GetPointerNpc(i), &player)
+					}
+				}
+			}
+		}
+	}
+}
+
+//AutomaticFight : The given npc stars fighting if there is any ennemies in his range
+func (g *Game)AutomaticFight(pnj *npc.Npc, player *joueur.Joueur){
+
+	for _,p := range g.Joueurs{
+		if (p.GetUID() != (*player).GetUID()){
+			pnjToFight := p.IsThereNpcInRange(pnj)
+			if(pnjToFight != nil){
+				go pnj.StaticFightNpc(pnjToFight)
+			}
+		}
+	}
+}
+
+
 //EndOfGame : Interromps la boucle principale du jeu
 func (g *Game) EndOfGame() {
 	(*g).GameRunning = false

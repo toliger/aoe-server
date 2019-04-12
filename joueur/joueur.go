@@ -38,6 +38,11 @@ func Create(faction int, nom string, uid string) Joueur {
 	return res
 }
 
+//GetUID :
+func (j Joueur) GetUID() string {
+	return j.UID
+}
+
 //GetFaction : return the faction
 func (j Joueur) GetFaction() int {
 	return j.faction
@@ -104,6 +109,11 @@ func (j Joueur) GetWood() int {
 //GetFood :
 func (j Joueur) GetFood() int {
 	return j.food
+}
+
+//GetEntities :
+func (j Joueur) GetEntities() []*npc.Npc {
+	return (j.entities)
 }
 
 //GetNpc :
@@ -197,4 +207,22 @@ func (j *Joueur) AddAndCreateNpc(class string, x int, y int) {
 	}
 	entity.PlayerUUID = j.UID
 	entity.Transmit(id)
+}
+
+
+//IsThereNpcInRange : returns the first npc of the player in range of the given npc if one else nil
+func (j *Joueur)IsThereNpcInRange(pnj *npc.Npc) (*npc.Npc){
+	if (*j).entities == nil{
+		return nil
+	}
+	for i := 0; i < len((*j).entities); i++{
+		for x := pnj.GetX() - pnj.GetPortee(); x <= pnj.GetX()+pnj.GetPortee(); x++ {
+			for y := pnj.GetY() - pnj.GetPortee(); y <= pnj.GetY()+pnj.GetPortee(); y++ {
+				if (*j).entities[i].GetX() == x && (*j).entities[i].GetY() == y{
+					return (*j).entities[i]
+				}
+			}
+		}
+	}
+	return nil
 }
