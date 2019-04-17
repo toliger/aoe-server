@@ -160,26 +160,29 @@ func ExtractFromToken(tokenString string) *TokenValue {
 }
 
 //Curl method POST/GET, query body ex: mutation{login(email: "gege@hotmail.fr",  password: "un")  }
-func Curl(queryBody string) (string, bool) {
+func Curl(queryBody string) (string, error) {
 	body := strings.NewReader(`{ "query": "` + queryBody + `" }`)
 	req, err := http.NewRequest("POST", constants.APIHOST+":"+constants.APIPORT, body)
 	if err != nil {
-		return "", false
+		return "", err
 	}
 	req.Header.Set("Content-Type", "application/json")
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		return "", false
+		return "", err
 	}
-	defer resp.Body.Close()
+	var errClose error
+	defer func() {
+		errClose = resp.Body.Close()
+	}()
 	if resp.StatusCode != http.StatusOK {
-		return "", false
+		return "", err
 	}
-	bodyBytes, err2 := ioutil.ReadAll(resp.Body)
-	if err2 != nil {
-		return "", false
+	bodyBytes, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
 	}
 	bodyString := string(bodyBytes)
-	return bodyString, true
+	return bodyString, errClose
 }
