@@ -119,14 +119,8 @@ func (o *ObjectID) GetObjectFromID(id string) interface{} {
 	obj, test := (*o).IDArray[id]
 	if !test {
 		return nil
-<<<<<<< HEAD
 	}
 	return obj
-=======
-	} else {
-		return obj
-	}
->>>>>>> 181d72e5da3d1e0f227f5cbd557846099692d47a
 }
 
 //ConvertToInter renvoie un interface de l'objet
