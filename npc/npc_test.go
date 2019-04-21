@@ -35,7 +35,7 @@ func TestDeplacement(t *testing.T){
 }
 */
 
-func TestRecolteContraintes(t *testing.T){
+func TestRecolteContraintes(t *testing.T) {
 	d.IDMap = d.NewObjectID()
 	d.InitiateActionBuffer()
 	bip := make(chan []int, 100)

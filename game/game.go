@@ -104,9 +104,9 @@ func (g *Game) DeleteNpc(pnj *npc.Npc) bool {
 }
 
 //LaunchAutomaticFight : launch the AutomaticFight for all inactive npc
-func (g *Game) LaunchAutomaticFight(){
+func (g *Game) LaunchAutomaticFight() {
 	uptimeTicker := time.NewTicker(time.Duration(100 * time.Millisecond))
-	for{
+	for {
 		select {
 		case <-uptimeTicker.C:
 			for _,player := range g.Joueurs{

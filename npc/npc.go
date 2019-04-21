@@ -21,8 +21,8 @@ import (
 type Npc struct {
 	x                *safeNumberFloat
 	y                *safeNumberFloat
-	dextX			 *safeNumberFloat
-	destY			 *safeNumberFloat
+	dextX            *safeNumberFloat
+	destY            *safeNumberFloat
 	pv               *safeNumberInt
 	vitesse          int
 	vue              int
@@ -90,7 +90,6 @@ func Create(class string, x float64, y float64, flag int, channel *chan []int) (
 			constants.HarvesterVillPortee, false, constants.VillagerSize, constants.MinimumDmg, constants.TauxRecolteVill, false, 0, flag, channel)
 	}
 	id := (&data.IDMap).AddObject(&pnj)
-	//pnj.Transmit(id)
 	return &pnj, id
 }
 
@@ -222,7 +221,6 @@ func (pnj *Npc) Set64Y(val float64) {
 	pnj.y.set(val)
 }
 
-
 //GetDestX : return the position X
 func (pnj Npc) GetDestX() int {
 	return int(math.Floor(pnj.x.get()))
@@ -262,7 +260,6 @@ func (pnj *Npc) SetDestY(val int) {
 func (pnj *Npc) Set64DestY(val float64) {
 	pnj.y.set(val)
 }
-
 
 //GetVue : return villager's vision
 func (pnj Npc) GetVue() int {
@@ -393,7 +390,7 @@ func (pnj *Npc) StaticFightNpc(target *Npc) {
 		}
 
 		select {
-		case <- moveA:
+		case <-moveA:
 			pnj.SetActive(false)
 			return
 		case <-uptimeTicker.C:
@@ -553,7 +550,7 @@ func (pnj *Npc) MoveFight(c carte.Carte, target *Npc) {
 	/* Verify each x ms that the target didn't move from his initial position
 	*  if he did move, do MoveTo to the new position, if not fight him when the
 	*  movement is finished
-	*/
+	 */
 	//if destX or destY change value execute a new moveTo
 	uptimeTicker := time.NewTicker(time.Duration(100 * time.Millisecond))
 	for {
@@ -604,7 +601,6 @@ func (pnj *Npc) MoveFight(c carte.Carte, target *Npc) {
 	}
 }
 
-
 //Fight : attack a npc
 func (pnj *Npc) Fight(c carte.Carte, target *Npc, posFightPnjX int,
 	posFightPnjY int) {
@@ -645,7 +641,6 @@ func (pnj *Npc) Fight(c carte.Carte, target *Npc, posFightPnjX int,
 		}
 	}
 }
-
 
 /*
 //MoveHarvest : (move to the neareast ressource in the villagers's vision)
