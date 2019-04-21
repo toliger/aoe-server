@@ -207,7 +207,7 @@ func (j *Joueur)IsThereNpcInRange(pnj *npc.Npc) (*npc.Npc){
 	if (*j).entities == nil{
 		return nil
 	}
-	for i := 0; i < len((*j).entities); i++{
+	for i := 0; i < len((*j).entities); i++ {
 		for x := pnj.GetX() - pnj.GetPortee(); x <= pnj.GetX()+pnj.GetPortee(); x++ {
 			for y := pnj.GetY() - pnj.GetPortee(); y <= pnj.GetY()+pnj.GetPortee(); y++ {
 				if (*j).entities[i] == nil{
