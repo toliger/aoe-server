@@ -99,7 +99,7 @@ func (s *Arguments) RightClick(ctx context.Context, in *pb.RightClickRequest) (*
 		entity := data.IDMap.GetObjectFromID(in.EntitySelectionUUID[i]).(*npc.Npc)
 
 		// Get the path of the entity
-		path := entity.MoveTo(s.g.Carte, int(in.Point.X), int(in.Point.Y), nil, nil)
+		path := entity.MoveTo(s.g.Carte, int(in.Point.X), int(in.Point.Y), nil)
 
 		// Filling ActionBuffer with the right data
 		entityData := entity.Stringify()
@@ -166,7 +166,7 @@ func (s *Arguments) AskUpdate(ctx context.Context, in *pb.AskUpdateRequest) (*pb
 // AskCreation :
 // Function of creation of a building or NPC
 func (s *Arguments) AskCreation(ctx context.Context, in *pb.AskCreationRequest) (*pb.AskCreationReply, error) {
-	
+
 	// Extract data from token to get player's UUID
 	playerUUID := data.ExtractFromToken(in.Token)
 	if playerUUID == nil {
@@ -177,7 +177,7 @@ func (s *Arguments) AskCreation(ctx context.Context, in *pb.AskCreationRequest) 
 	actionType := in.Type
 	switch actionType {
 	case constants.ActionNewNpc:
-		
+
 		// Define class asked
 		var class string
 		if (in.TypeUnit == 0) {
