@@ -194,31 +194,19 @@ func (j *Joueur) AddNpc(entity *npc.Npc) {
 //AddAndCreateNpc : create and add a new NPC to the player
 func (j *Joueur) AddAndCreateNpc(class string, x int, y int) {
 	entity, id := npc.Create(class, float64(x), float64(y), j.faction, &j.ressourceChannel)
-	test := false
-	for i := 0; i < len(j.entities); i++ {
-		if j.entities[i] == nil {
-			j.entities[i] = &entity
-			test = true
-			break
-		}
-	}
-	if !test {
-		(*j).entities = append(j.entities, &entity)
-	}
-	entity.PlayerUUID = j.UID
+	j.AddNpc(entity)
 	entity.Transmit(id)
 }
 
-
 //IsThereNpcInRange : returns the first npc of the player in range of the given npc if one else nil
-func (j *Joueur)IsThereNpcInRange(pnj *npc.Npc) (*npc.Npc){
-	if (*j).entities == nil{
+func (j *Joueur) IsThereNpcInRange(pnj *npc.Npc) *npc.Npc {
+	if (*j).entities == nil {
 		return nil
 	}
-	for i := 0; i < len((*j).entities); i++{
+	for i := 0; i < len((*j).entities); i++ {
 		for x := pnj.GetX() - pnj.GetPortee(); x <= pnj.GetX()+pnj.GetPortee(); x++ {
 			for y := pnj.GetY() - pnj.GetPortee(); y <= pnj.GetY()+pnj.GetPortee(); y++ {
-				if (*j).entities[i].GetX() == x && (*j).entities[i].GetY() == y{
+				if (*j).entities[i].GetX() == x && (*j).entities[i].GetY() == y {
 					return (*j).entities[i]
 				}
 			}

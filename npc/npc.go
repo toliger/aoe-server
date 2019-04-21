@@ -20,8 +20,8 @@ import (
 type Npc struct {
 	x                *safeNumberFloat
 	y                *safeNumberFloat
-	dextX			 *safeNumberFloat
-	destY			 *safeNumberFloat
+	dextX            *safeNumberFloat
+	destY            *safeNumberFloat
 	pv               *safeNumberInt
 	vitesse          int
 	vue              int
@@ -34,10 +34,10 @@ type Npc struct {
 	typ              int  // 0:villager, 1:harvester, 2:soldier
 	TeamFlag         int
 	ressourceChannel chan []int
-	hasOrder         bool //Si un déplacement a dejà été demandé par le joueur (disable auto movement)
-	active		 	 *safeNumberBool // True if active, false if inactive
-	PlayerUUID 		 string
-	moveAction 		 map[int](chan bool)
+	hasOrder         bool            //Si un déplacement a dejà été demandé par le joueur (disable auto movement)
+	active           *safeNumberBool // True if active, false if inactive
+	PlayerUUID       string
+	moveAction       map[int](chan bool)
 }
 
 type safeNumberBool struct {
@@ -64,7 +64,7 @@ func New(x *safeNumberFloat, y *safeNumberFloat, pv *safeNumberInt, vitesse int,
 }
 
 //Create : generate a new NPC
-func Create(class string, x float64, y float64, flag int, channel *chan []int) (Npc, string) {
+func Create(class string, x float64, y float64, flag int, channel *chan []int) (*Npc, string) {
 	var pnj Npc
 	sfPv := &safeNumberInt{}
 	sfX := &safeNumberFloat{}
@@ -86,8 +86,7 @@ func Create(class string, x float64, y float64, flag int, channel *chan []int) (
 			constants.HarvesterVillPortee, false, constants.VillagerSize, constants.MinimumDmg, constants.TauxRecolteVill, false, 0, flag, channel)
 	}
 	id := (&data.IDMap).AddObject(&pnj)
-	//pnj.Transmit(id)
-	return pnj, id
+	return &pnj, id
 }
 
 //Stringify : create a map[string]string of the main arguments of a NPC
@@ -216,7 +215,6 @@ func (pnj *Npc) Set64Y(val float64) {
 	pnj.y.set(val)
 }
 
-
 //GetDestX : return the position X
 func (pnj Npc) GetDestX() int {
 	return int(math.Floor(pnj.x.get()))
@@ -257,7 +255,6 @@ func (pnj *Npc) Set64DestY(val float64) {
 	pnj.y.set(val)
 }
 
-
 //GetVue : return villager's vision
 func (pnj Npc) GetVue() int {
 	return pnj.vue
@@ -287,7 +284,6 @@ func (pnj Npc) IsActive() bool {
 func (pnj Npc) SetActive(val bool) {
 	pnj.active.set(val)
 }
-
 
 func (pnj *Npc) deplacement(path []carte.Case, wg *sync.WaitGroup, moveA *chan bool) {
 	if path != nil {
@@ -356,7 +352,7 @@ func RecoltePossible(c carte.Carte, x int, y int) bool {
 }
 
 //StaticFightNpc : The npc starts fighting the npc until death or movements
-func (pnj *Npc) StaticFightNpc(target *Npc){
+func (pnj *Npc) StaticFightNpc(target *Npc) {
 	pnj.SetActive(true)
 	moveA := make(chan bool, 2)
 	initialPosX, initialPosY := pnj.GetX(), pnj.GetY()
@@ -376,7 +372,7 @@ func (pnj *Npc) StaticFightNpc(target *Npc){
 		}
 
 		select {
-		case <- moveA:
+		case <-moveA:
 			pnj.SetActive(false)
 			return
 		case <-uptimeTicker.C:
@@ -384,7 +380,6 @@ func (pnj *Npc) StaticFightNpc(target *Npc){
 		}
 	}
 }
-
 
 //MoveFightBuilding : attack a given building
 func (pnj *Npc) MoveFightBuilding(c carte.Carte, target *batiment.Batiment, moveA *chan bool) {
@@ -493,7 +488,7 @@ func (pnj *Npc) MoveFight(c carte.Carte, target *Npc, moveA *chan bool) {
 	/* Verify each x ms that the target didn't move from his initial position
 	*  if he did move, do MoveTo to the new position, if not fight him when the
 	*  movement is finished
-	*/
+	 */
 	//if destX or destY change value execute a new moveTo
 	uptimeTicker := time.NewTicker(time.Duration(100 * time.Millisecond))
 	for {
@@ -547,7 +542,6 @@ func (pnj *Npc) MoveFight(c carte.Carte, target *Npc, moveA *chan bool) {
 	}
 }
 
-
 //Fight : attack a npc
 func (pnj *Npc) Fight(c carte.Carte, target *Npc, posFightPnjX int,
 	posFightPnjY int, moveA *chan bool) {
@@ -584,7 +578,6 @@ func (pnj *Npc) Fight(c carte.Carte, target *Npc, posFightPnjX int,
 		}
 	}
 }
-
 
 /*
 //MoveHarvest : (move to the neareast ressource in the villagers's vision)

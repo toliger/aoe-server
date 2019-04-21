@@ -35,7 +35,7 @@ func TestDeplacement(t *testing.T){
 }
 */
 
-func TestRecolteContraintes(t *testing.T){
+func TestRecolteContraintes(t *testing.T) {
 	d.IDMap = d.NewObjectID()
 	d.InitiateActionBuffer()
 	bip := make(chan []int, 100)
@@ -60,7 +60,7 @@ func TestRecolteContraintes(t *testing.T){
 	c.AddNewRessource(&obstacle8)
 	c.AddNewRessource(&ress)
 	ch := make(chan bool, 2)
-	go (&pnj).MoveHarvestTarget(c, &ress, &ch)
+	go (pnj).MoveHarvestTarget(c, &ress, &ch)
 	time.Sleep(time.Duration(5 * time.Second))
 	if pnj.GetX() != 0 || pnj.GetY() != 0 {
 		t.Error("le pnj n'est pas sencé s'etre deplacé car bloqué par des obstacles")
@@ -81,16 +81,16 @@ func TestRecolte(t *testing.T) {
 	ch3 := make(chan bool, 2)
 	ch4 := make(chan bool, 2)
 	// ch5 := make(chan bool, 2)
-	go (&pnj).MoveHarvestTarget(c, &ress2, &ch)
+	go (pnj).MoveHarvestTarget(c, &ress2, &ch)
 	time.Sleep(time.Duration(5 * time.Second))
 	if ress2.GetPv() != 100 {
 		t.Error("la ressource n'est pas sencé avoir perdu de pv car hors de vue")
 	}
-	go (&pnj).MoveHarvestTarget(c, &ress, &ch2)
+	go (pnj).MoveHarvestTarget(c, &ress, &ch2)
 	time.Sleep(time.Duration(2 * time.Second))
-	go (&pnj).MoveTo(c, 10, 10, nil, &ch3)
+	go (pnj).MoveTo(c, 10, 10, nil, &ch3)
 	time.Sleep(time.Duration(1 * time.Second))
-	go (&pnj).MoveTo(c, 16, 18, nil, &ch4)
+	go (pnj).MoveTo(c, 16, 18, nil, &ch4)
 	time.Sleep(time.Duration(5 * time.Second))
 	if pnj.GetX() != 16 || pnj.GetY() != 18 {
 		t.Error("le pnj n'est pas au bon endroit")
@@ -101,12 +101,12 @@ func TestRecolte(t *testing.T) {
 		t.Log("pv: ", ress.GetPv())
 	}
 	/*
-	go (&pnj).MoveTo(c, 40, 49, nil, &ch5)
-	time.Sleep(time.Duration(25 * time.Second))
-	if pnj.GetX() != 40 || pnj.GetY() != 49 {
-		t.Error("erreur dans le deplacement")
-		t.Log("pnjX :", pnj.GetX(), " pnjY :", pnj.GetY())
-	}
+		go (&pnj).MoveTo(c, 40, 49, nil, &ch5)
+		time.Sleep(time.Duration(25 * time.Second))
+		if pnj.GetX() != 40 || pnj.GetY() != 49 {
+			t.Error("erreur dans le deplacement")
+			t.Log("pnjX :", pnj.GetX(), " pnjY :", pnj.GetY())
+		}
 	*/
 }
 
@@ -146,7 +146,7 @@ func TestFightNpc(t *testing.T) {
 	ch2 := make(chan bool, 2)
 	ch3 := make(chan bool, 2)
 	//ch4 := make(chan bool, 2)
-	go (&pnj1).MoveFight(c, &pnj2, &ch)
+	go (pnj1).MoveFight(c, pnj2, &ch)
 	time.Sleep(time.Duration(4 * time.Second))
 	// go (&pnj2).MoveTo(c, 17,15, nil, &ch4)
 	// time.Sleep(time.Duration(4 * time.Second))
@@ -160,9 +160,9 @@ func TestFightNpc(t *testing.T) {
 		t.Log("pv de la cible: ", pnj2.GetPv())
 	}
 
-	go (&pnj1).MoveHarvestTarget(c, &ress, &ch2)
+	go (pnj1).MoveHarvestTarget(c, &ress, &ch2)
 	time.Sleep(time.Duration(6 * time.Second))
-	go (&pnj1).MoveFight(c, &pnj2, &ch3)
+	go (pnj1).MoveFight(c, pnj2, &ch3)
 	time.Sleep(time.Duration(4 * time.Second))
 	if pnj2.GetPv() == constants.SoldierPv {
 		t.Error("la cible n'a pas perdu de Pv")

@@ -19,7 +19,7 @@ import (
 
 //Game : Structure contenant les donnees principales d'une partie
 type Game struct {
-	Joueurs     []joueur.Joueur
+	Joueurs     []*joueur.Joueur
 	Carte       Carte.Carte
 	GameRunning bool
 }
@@ -62,7 +62,7 @@ func ExtractData() Data {
 func (g *Game) GetPlayerFromUID(uid string) *joueur.Joueur {
 	for i := 0; i < len(g.Joueurs); i++ {
 		if g.Joueurs[i].UID == uid {
-			return &(g.Joueurs[i])
+			return (g.Joueurs[i])
 		}
 	}
 	return nil
@@ -104,22 +104,22 @@ func (g *Game) DeleteNpc(pnj *npc.Npc) bool {
 }
 
 //LaunchAutomaticFight : launch the AutomaticFight for all inactive npc
-func (g *Game) LaunchAutomaticFight(){
+func (g *Game) LaunchAutomaticFight() {
 	uptimeTicker := time.NewTicker(time.Duration(100 * time.Millisecond))
-	for{
+	for {
 		select {
 		case <-uptimeTicker.C:
-			for _,player := range g.Joueurs{
-				if (player.GetEntities() == nil){
+			for _, player := range g.Joueurs {
+				if player.GetEntities() == nil {
 					break
 				}
-				if (player.GetEntities()) == nil{
+				if (player.GetEntities()) == nil {
 					return
 				}
-				for i := 0; i < len(player.GetEntities()); i++{
-				//for _,pnj := range player.GetEntities(){
-					if !(player.GetNpc(i).IsActive()){
-						g.AutomaticFight(player.GetPointerNpc(i), &player)
+				for i := 0; i < len(player.GetEntities()); i++ {
+					//for _,pnj := range player.GetEntities(){
+					if !(player.GetNpc(i).IsActive()) {
+						g.AutomaticFight(player.GetPointerNpc(i), player)
 					}
 				}
 			}
@@ -128,18 +128,17 @@ func (g *Game) LaunchAutomaticFight(){
 }
 
 //AutomaticFight : The given npc stars fighting if there is any ennemies in his range
-func (g *Game)AutomaticFight(pnj *npc.Npc, player *joueur.Joueur){
+func (g *Game) AutomaticFight(pnj *npc.Npc, player *joueur.Joueur) {
 
-	for _,p := range g.Joueurs{
-		if (p.GetUID() != (*player).GetUID()){
+	for _, p := range g.Joueurs {
+		if p.GetUID() != (*player).GetUID() {
 			pnjToFight := p.IsThereNpcInRange(pnj)
-			if(pnjToFight != nil){
+			if pnjToFight != nil {
 				go pnj.StaticFightNpc(pnjToFight)
 			}
 		}
 	}
 }
-
 
 //EndOfGame : Interromps la boucle principale du jeu
 func (g *Game) EndOfGame() {
@@ -203,9 +202,11 @@ func (g *Game) GenerateMap(data Data) {
 Modification: Changement pour des valeurs statiques (temporaire)
 */
 func (g *Game) GetPlayerData() {
-	(*g).Joueurs = make([]joueur.Joueur, 2)
-	(*g).Joueurs[0] = joueur.Create(0, "Bob", "b33d954f-c63e-4b48-88eb-8b5e86d94246")
-	(*g).Joueurs[1] = joueur.Create(1, "Alice", "1982N19N2")
+	(*g).Joueurs = make([]*joueur.Joueur, 2)
+	j0 := joueur.Create(0, "Bob", "b33d954f-c63e-4b48-88eb-8b5e86d94246")
+	j1 := joueur.Create(1, "Alice", "1982N19N2")
+	(*g).Joueurs[0] = &j0
+	(*g).Joueurs[1] = &j1
 	constants.PlayerUID1 = (*g).Joueurs[0].UID
 	constants.PlayerUID2 = (*g).Joueurs[1].UID
 	if len((*g).Joueurs) > 2 {

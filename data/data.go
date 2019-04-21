@@ -116,7 +116,17 @@ func (o *ObjectID) DeleteObject(obj interface{}) bool {
 
 //GetObjectFromID Renvoie un pointeur sur l'obj correspondant à l'id fourni
 func (o *ObjectID) GetObjectFromID(id string) interface{} {
-	return (*o).IDArray[id]
+	obj, test := (*o).IDArray[id]
+	if !test {
+		return nil
+	} else {
+		return obj
+	}
+}
+
+//ConvertToInter renvoie un interface de l'objet
+func ConvertToInter(obj interface{}) interface{} {
+	return obj
 }
 
 //GetIDFromObject Renvoie l'id d'un objet à partir de son pointeur
