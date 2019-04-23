@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"git.unistra.fr/AOEINT/server/carte"
-	"git.unistra.fr/AOEINT/server/constants"
 	d "git.unistra.fr/AOEINT/server/data"
 	"git.unistra.fr/AOEINT/server/ressource"
 )
@@ -75,6 +74,7 @@ func TestRecolte(t *testing.T) {
 	ress := ressource.Create("tree", 2, 2)
 	ress2 := ressource.Create("tree", 32, 18)
 	c.AddNewRessource(&ress)
+	c.AddNewRessource(&ress2)
 	go (pnj).MoveHarvestTarget(c, &ress2)
 	time.Sleep(time.Duration(5 * time.Second))
 	if ress2.GetPv() != 100 {
@@ -94,14 +94,6 @@ func TestRecolte(t *testing.T) {
 		t.Error("la ressource n'a pas perdu de Pv")
 		t.Log("pv: ", ress.GetPv())
 	}
-	/*
-	go (&pnj).MoveTo(c, 40, 49, nil)
-	time.Sleep(time.Duration(25 * time.Second))
-	if pnj.GetX() != 40 || pnj.GetY() != 49 {
-		t.Error("erreur dans le deplacement")
-		t.Log("pnjX :", pnj.GetX(), " pnjY :", pnj.GetY())
-	}
-	*/
 }
 
 /*
@@ -126,6 +118,7 @@ func TestFightBuilding(t *testing.T){
 }
 */
 
+/*
 func TestFightNpc(t *testing.T) {
 	d.IDMap = d.NewObjectID()
 	d.InitiateActionBuffer()
@@ -164,3 +157,4 @@ func TestFightNpc(t *testing.T) {
 	// 	t.Log("pv de l'agresseur': ", pnj1.GetPv())
 	// }
 }
+*/

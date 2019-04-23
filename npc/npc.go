@@ -39,7 +39,7 @@ type Npc struct {
 	active		 	 *safeNumberBool // True if active, false if inactive
 	PlayerUUID 		 string
 	moveAction 		 map[int](chan bool)
-    wgAction 		 sync.WaitGroup
+    wgAction 		 *sync.WaitGroup
 }
 
 type safeNumberBool struct {
@@ -63,7 +63,7 @@ func New(x *safeNumberFloat, y *safeNumberFloat, pv *safeNumberInt, vitesse int,
 	active.val = false
 	moveA := make(map[int](chan bool))
 	var wgA sync.WaitGroup
-	pnj := Npc{x, y, x, y, pv, vitesse, vue, portee, offensive, size, damage, tauxRecolte, selectable, typ, flag, *channel, false, active, "", moveA, wgA }
+	pnj := Npc{x, y, x, y, pv, vitesse, vue, portee, offensive, size, damage, tauxRecolte, selectable, typ, flag, *channel, false, active, "", moveA, &wgA }
 	return pnj
 }
 
@@ -322,6 +322,7 @@ func (pnj *Npc) deplacement(path []carte.Case, wg *sync.WaitGroup) {
 				pnj.SetActive(false)
 				break
 			default:
+				log.Printf("Pos(%v, %v)", pnj.GetX(),pnj.GetY())
 				time.Sleep(time.Duration(vdep))
 				pnj.SetX(path[i].GetPathX())
 				pnj.SetY(path[i].GetPathY())
