@@ -367,11 +367,11 @@ func RecoltePossible(c carte.Carte, x int, y int) bool {
 	return false
 }
 
-//StaticFightNpc : The npc starts fighting the npc until death or movements (laso triggers the fight back)
+//StaticFightNpc : The npc starts fighting the npc until death or movements (also triggers the fight back)
 func (pnj *Npc) StaticFightNpc(target *Npc) {
 	pnj.SetActive(true)
 	moveA := make(chan bool, 2)
-	time.Sleep(time.Duration(time.Millisecond * 10))
+	pnj.wgAction.Wait()
 	pnj.actualizeMoveAction(&moveA)
 	initialPosX, initialPosY := pnj.GetX(), pnj.GetY()
 	initialPosTargetX, initialPosTargetY := target.GetX(), target.GetY()
@@ -489,6 +489,7 @@ func (pnj *Npc) FightBuilding(c carte.Carte, target *batiment.Batiment, posFight
 	posFightPnjY int) {
 	moveA := make(chan bool, 2)
 	time.Sleep(time.Duration(time.Millisecond * 10))
+	pnj.wgAction.Wait()
 	pnj.actualizeMoveAction(&moveA)
 	uptimeTicker := time.NewTicker(time.Duration(1 * time.Second))
 	for {
@@ -761,6 +762,7 @@ func (pnj *Npc) MoveHarvestTarget(c carte.Carte, ress *ressource.Ressource) {
 func (pnj *Npc) Harvest(c carte.Carte, ress *ressource.Ressource, posRecolteVillX int,
 	posRecolteVillY int) {
 	moveA := make(chan bool, 2)
+	pnj.wgAction.Wait()
 	pnj.actualizeMoveAction(&moveA)
 	pnj.SetActive(true)
 	uptimeTicker := time.NewTicker(time.Duration(1 * time.Second))

@@ -68,24 +68,24 @@ func TestAutoFight(t *testing.T) {
 
     time.Sleep(time.Duration(time.Millisecond * 4150))
 	log.Println("After fight")
-    error := false
+    error := 0.
     log.Println("Player 1")
     for _,pnj := range (*player1).GetEntities() {
         if (pnj == nil){
             break
         }
 		if(pnj.GetType() == 0){
-	        if(pnj.GetPv() >= 0){
+	        if(pnj.GetPv() > 0){
 	            log.Printf("type %v  a : %v pv et est à la position (%v, %v) ",
 	            pnj.GetType(),  pnj.GetPv(), pnj.GetX(), pnj.GetY() )
-	            error = true
+	            error++
 	        }
 		}
 		if (pnj.GetType() == 2){
-			if(pnj.GetPv() >= 0){
+			if(pnj.GetPv() > 0){
 	            log.Printf("type %v  a : %v pv et est à la position (%v, %v) ",
 	            pnj.GetType(),  pnj.GetPv(), pnj.GetX(), pnj.GetY() )
-	            error = true
+	            error++
 	        }
 		}
     }
@@ -95,21 +95,21 @@ func TestAutoFight(t *testing.T) {
             break
         }
 		if(pnj.GetType() == 0){
-	        if(pnj.GetPv() >= 0){
+	        if(pnj.GetPv() > 0){
 	            log.Printf("type %v  a : %v pv et est à la position (%v, %v) ",
 	            pnj.GetType(),  pnj.GetPv(), pnj.GetX(), pnj.GetY() )
-	            error = true
+	            error += 0.5
 	        }
 		}
 		if (pnj.GetType() == 2){
-			if(pnj.GetPv() >= 0){
+			if(pnj.GetPv() > 0){
 	            log.Printf("type %v  a : %v pv et est à la position (%v, %v) ",
 	            pnj.GetType(),  pnj.GetPv(), pnj.GetX(), pnj.GetY() )
-	            error = true
+	             error += 0.5
 	        }
 		}
     }
-    if error == true{
+    if error >= 1{
         t.Error("les npc n'ont pas perdu de pv")
     }
 	// On lance le faux client pour tester les fonctions de liaison
