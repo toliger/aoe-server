@@ -4,20 +4,20 @@ package server
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 	"net"
 	"reflect"
-	"errors"
 
-	"git.unistra.fr/AOEINT/server/utils"
 	"git.unistra.fr/AOEINT/server/constants"
 	"git.unistra.fr/AOEINT/server/data"
 	"git.unistra.fr/AOEINT/server/game"
+	"git.unistra.fr/AOEINT/server/utils"
 
-	"git.unistra.fr/AOEINT/server/ressource"
-	"git.unistra.fr/AOEINT/server/npc"
 	"git.unistra.fr/AOEINT/server/batiment"
+	"git.unistra.fr/AOEINT/server/npc"
+	"git.unistra.fr/AOEINT/server/ressource"
 
 	pb "git.unistra.fr/AOEINT/server/grpc"
 	"google.golang.org/grpc"
@@ -95,19 +95,19 @@ func (s *Arguments) RightClick(ctx context.Context, in *pb.RightClickRequest) (*
 	utils.Debug("Reception d'un RightClickRequest et envoie d'un RightClickReply")
 
 	// For Testing Mode
-	if (len(in.EntitySelectionUUID) == 0) {
+	if len(in.EntitySelectionUUID) == 0 {
 		msg := "Erreur, aucune entité envoié à RightClick"
 		log.Println(msg)
 		return &pb.RightClickReply{}, errors.New(msg)
 	}
 
-	if (in.Target == "") { // MoveTo request
+	if in.Target == "" { // MoveTo request
 		// Loop on each entity
 		for i := 0; i < len(in.EntitySelectionUUID); i++ {
 
 			// Get the entity
-			entity := data.IDMap.GetObjectFromID(in.EntitySelectionUUID[i])
-			if (entity == nil) {
+			entity := data.IDMap.GetObjectFromID(in.EntitySelectionUUID[i]).(*npc.Npc)
+			if entity == nil {
 				msg := "Erreur, une entity n'est pas trouvé dans RightClick"
 				log.Println(msg)
 				return &pb.RightClickReply{}, errors.New(msg)
@@ -141,32 +141,32 @@ func (s *Arguments) RightClick(ctx context.Context, in *pb.RightClickRequest) (*
 
 			// Get the entities
 			entity := data.IDMap.GetObjectFromID(in.EntitySelectionUUID[i])
-			if (entity == nil) {
+			if entity == nil {
 				msg := "Erreur, une entity n'est pas trouvé dans RightClick"
 				log.Println(msg)
 				return &pb.RightClickReply{}, errors.New(msg)
 			}
 
 			target := data.IDMap.GetObjectFromID(in.Target)
-			if (target == nil) {
+			if target == nil {
 				msg := "Erreur, target n'est pas trouvé dans RightClick"
 				log.Println(msg)
 				return &pb.RightClickReply{}, errors.New(msg)
 			}
 
 			switch reflect.TypeOf(target) {
-				case reflect.TypeOf(npc.Npc{}) :
-					go entity.(*npc.Npc).MoveFight(s.g.Carte, target.(*npc.Npc))
+			case reflect.TypeOf(npc.Npc{}):
+				go entity.(*npc.Npc).MoveFight(s.g.Carte, target.(*npc.Npc))
 
-				case reflect.TypeOf(batiment.Batiment{}) :
+			case reflect.TypeOf(batiment.Batiment{}):
 
-				case reflect.TypeOf(ressource.Ressource{}) :
-					go entity.(*npc.Npc).MoveHarvestTarget(s.g.Carte, target.(*ressource.Ressource))
+			case reflect.TypeOf(ressource.Ressource{}):
+				go entity.(*npc.Npc).MoveHarvestTarget(s.g.Carte, target.(*ressource.Ressource))
 
-				default :
-					msg := "Erreur, target est invalide dans RightClick"
-					log.Println(msg)
-					return &pb.RightClickReply{}, errors.New(msg)
+			default:
+				msg := "Erreur, target est invalide dans RightClick"
+				log.Println(msg)
+				return &pb.RightClickReply{}, errors.New(msg)
 			}
 		}
 
@@ -236,11 +236,11 @@ func (s *Arguments) AskCreation(ctx context.Context, in *pb.AskCreationRequest) 
 
 		// Define class asked
 		var class string
-		if (in.TypeUnit == 0) {
+		if in.TypeUnit == 0 {
 			class = "villager"
-		} else if (in.TypeUnit == 1) {
+		} else if in.TypeUnit == 1 {
 			class = "harvester"
-		} else if (in.TypeUnit == 2) {
+		} else if in.TypeUnit == 2 {
 			class = "soldier"
 		} else {
 			log.Print("TypeUnit invalide dans AskCreation")
@@ -256,11 +256,11 @@ func (s *Arguments) AskCreation(ctx context.Context, in *pb.AskCreationRequest) 
 
 		// Define class asked and create it to the right player
 		var class string
-		if (in.TypeUnit == 0) {
+		if in.TypeUnit == 0 {
 			class = "auberge"
-		} else if (in.TypeUnit == 1) {
+		} else if in.TypeUnit == 1 {
 			class = "caserne"
-		} else if (in.TypeUnit == 2) {
+		} else if in.TypeUnit == 2 {
 			class = "etabli"
 		} else {
 			log.Print("TypeUnit invalide dans AskCreation")
@@ -275,7 +275,6 @@ func (s *Arguments) AskCreation(ctx context.Context, in *pb.AskCreationRequest) 
 			return &pb.AskCreationReply{Validation: false}, nil
 		}
 		player.AddBuilding(&b)
-
 
 	default:
 		log.Print("Format de requête invalide dans AskCreation")
