@@ -307,7 +307,6 @@ func (pnj *Npc) actualizeMoveAction(moveA *chan bool){
 func (pnj *Npc) deplacement(path []carte.Case, wg *sync.WaitGroup) {
 	if path != nil {
 		moveA := make(chan bool, 2)
-		time.Sleep(time.Duration(time.Millisecond * 10))
 		pnj.wgAction.Wait()
 		pnj.actualizeMoveAction(&moveA)
 		pnj.SetActive(true)
@@ -322,7 +321,6 @@ func (pnj *Npc) deplacement(path []carte.Case, wg *sync.WaitGroup) {
 				pnj.SetActive(false)
 				break
 			default:
-				log.Printf("Pos(%v, %v)", pnj.GetX(),pnj.GetY())
 				time.Sleep(time.Duration(vdep))
 				pnj.SetX(path[i].GetPathX())
 				pnj.SetY(path[i].GetPathY())
@@ -489,7 +487,6 @@ func (pnj *Npc) MoveFightBuilding(c carte.Carte, target *batiment.Batiment) {
 func (pnj *Npc) FightBuilding(c carte.Carte, target *batiment.Batiment, posFightPnjX int,
 	posFightPnjY int) {
 	moveA := make(chan bool, 2)
-	time.Sleep(time.Duration(time.Millisecond * 10))
 	pnj.wgAction.Wait()
 	pnj.actualizeMoveAction(&moveA)
 	uptimeTicker := time.NewTicker(time.Duration(1 * time.Second))
@@ -607,7 +604,6 @@ func (pnj *Npc) MoveFight(c carte.Carte, target *Npc) {
 func (pnj *Npc) Fight(c carte.Carte, target *Npc, posFightPnjX int,
 	posFightPnjY int) {
 	moveA := make(chan bool, 2)
-	time.Sleep(time.Duration(time.Millisecond * 10))
 	pnj.wgAction.Wait()
 	pnj.actualizeMoveAction(&moveA)
 	uptimeTicker := time.NewTicker(time.Duration(1 * time.Second))
