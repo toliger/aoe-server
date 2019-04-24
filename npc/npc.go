@@ -175,10 +175,15 @@ func (i *safeNumberFloat) sub(val float64) {
 	i.val -= val
 }
 
-func (i *safeNumberInt) sub(val int) {
+func (i *safeNumberInt) sub(val int, id string) {
 	i.m.Lock()
 	defer i.m.Unlock()
 	i.val -= val
+	pnj := (data.IDMap.GetObjectFromID(id).(*Npc))
+	if pnj == nil{
+		return
+	}
+	pnj.Transmit(id, constants.ActionAlterationNpc)
 }
 
 //GetPv : return the HP
@@ -193,8 +198,7 @@ func (pnj *Npc) SetPv(val int) {
 
 //SubPv : decrement the npc's HP value
 func (pnj *Npc) SubPv(val int) {
-	pnj.pv.sub(val)
-	//pnj.Transmit(data.IDMap.GetIDFromObject(pnj), constants.ActionAlterationNpc)
+	pnj.pv.sub(val, data.IDMap.GetIDFromObject(pnj))
 }
 
 //GetX : return the position X

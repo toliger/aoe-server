@@ -45,10 +45,15 @@ func (i *safeNumber) set(val int) {
 }
 
 
-func (i *safeNumber) sub(val int) {
+func (i *safeNumber) sub(val int, id string) {
 	i.m.Lock()
 	defer i.m.Unlock()
 	i.val -= val
+    ress :=(data.IDMap.GetObjectFromID(id)).(*Ressource)
+    if ress == nil{
+        return
+    }
+    ress.Transmit(id)
 }
 
 
@@ -109,7 +114,7 @@ func (ress Ressource)GetType() int{
 
 //Damage inflige x degats a la ressource
 func (ress *Ressource)Damage(x int){
-	ress.Pv.sub(x)
+	ress.Pv.sub(x, data.IDMap.GetIDFromObject(ress))
 }
 
 
@@ -129,7 +134,6 @@ func (ress Ressource)GetY() int{
 func (ress Ressource)GetPv() int{
 	return ress.Pv.get()
 }
-
 
 //IsHarvestable : is the ress harvestable?
 func (ress Ressource)IsHarvestable() bool{
