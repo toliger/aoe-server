@@ -66,7 +66,7 @@ func TestAutoFight(t *testing.T) {
         pnj.GetType(),  pnj.GetPv(), pnj.GetX(), pnj.GetY())
     }
 
-    time.Sleep(time.Duration(time.Millisecond * 4150))
+    time.Sleep(time.Duration(time.Millisecond * 4550))
 	log.Println("After fight")
     error := 0.
     log.Println("Player 1")

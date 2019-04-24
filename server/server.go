@@ -105,7 +105,7 @@ func (s *Arguments) RightClick(ctx context.Context, in *pb.RightClickRequest) (*
 			path := entity.MoveTo(s.g.Carte, int(in.Point.X), int(in.Point.Y), nil)
 
 			// Filling ActionBuffer with the right data
-			entityData := entity.Stringify()
+			entityData := entity.Stringify(constants.ActionNewNpc)
 			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "pv", entityData["pv"])
 			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "x", entityData["x"])
 			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "y", entityData["y"])

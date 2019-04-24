@@ -93,23 +93,38 @@ func Create(class string, x float64, y float64, flag int, channel *chan []int) (
 }
 
 //Stringify : create a map[string]string of the main arguments of a NPC
-func (pnj Npc) Stringify() map[string]string {
+func (pnj Npc) Stringify(typ int) map[string]string {
 	res := make(map[string]string)
-	res["pv"] = strconv.Itoa(pnj.GetPv())
-	res["x"] = fmt.Sprintf("%f", pnj.Get64X())
-	res["y"] = fmt.Sprintf("%f", pnj.Get64Y())
-	res["vitesse"] = strconv.Itoa(pnj.vitesse)
-	res["type"] = strconv.Itoa(pnj.typ)
-	res["damage"] = strconv.Itoa(pnj.damage)
-	res["vue"] = strconv.Itoa(pnj.vue)
-	res["portee"] = strconv.Itoa(pnj.portee)
-	res["PlayerUUID"] = pnj.PlayerUUID
+	switch typ{
+	case constants.ActionNewNpc:
+		res["pv"] = strconv.Itoa(pnj.GetPv())
+		res["x"] = fmt.Sprintf("%f", pnj.Get64X())
+		res["y"] = fmt.Sprintf("%f", pnj.Get64Y())
+		res["vitesse"] = strconv.Itoa(pnj.vitesse)
+		res["type"] = strconv.Itoa(pnj.typ)
+		res["damage"] = strconv.Itoa(pnj.damage)
+		res["vue"] = strconv.Itoa(pnj.vue)
+		res["portee"] = strconv.Itoa(pnj.portee)
+		res["PlayerUUID"] = pnj.PlayerUUID
+	case constants.ActionDelNpc:
+		res["PlayerUUID"] = pnj.PlayerUUID
+	case constants.ActionAlterationNpc:
+		res["pv"] = strconv.Itoa(pnj.GetPv())
+		res["x"] = fmt.Sprintf("%f", pnj.Get64X())
+		res["y"] = fmt.Sprintf("%f", pnj.Get64Y())
+		res["destX"] = fmt.Sprintf("%f", pnj.Get64DestX())
+		res["destY"] = fmt.Sprintf("%f", pnj.Get64DestY())
+		res["vitesse"] = strconv.Itoa(pnj.vitesse)
+		res["vue"] = strconv.Itoa(pnj.vue)
+		res["portee"] = strconv.Itoa(pnj.portee)
+		res["PlayerUUID"] = pnj.PlayerUUID
+	}
 	return res
 }
 
 //Transmit : add the npc to the communcation's buffer
-func (pnj Npc) Transmit(id string) {
-	arr := pnj.Stringify()
+func (pnj Npc) Transmit(id string, typ int) {
+	arr := pnj.Stringify(typ)
 	for k, e := range arr {
 		data.AddToAllAction(constants.ActionNewNpc, id, k, e)
 	}
@@ -176,6 +191,7 @@ func (pnj *Npc) SetPv(val int) {
 //SubPv : decrement the npc's HP value
 func (pnj *Npc) SubPv(val int) {
 	pnj.pv.sub(val)
+	//pnj.Transmit(data.IDMap.GetIDFromObject(pnj), constants.ActionAlterationNpc)
 }
 
 //GetX : return the position X
@@ -291,8 +307,8 @@ func (pnj Npc) SetActive(val bool) {
 func (pnj *Npc) actualizeMoveAction(moveA *chan bool) {
 	pnj.wgAction.Add(1)
 	// Cancel the old movement
-	index := len(pnj.moveAction) - 1
-	if index == -1 {
+	index := len(pnj.moveAction) -1
+	if (index == -1){
 		pnj.moveAction[index+1] = *moveA
 		pnj.wgAction.Done()
 		return
