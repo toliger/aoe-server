@@ -94,19 +94,31 @@ func (s *Arguments) RightClick(ctx context.Context, in *pb.RightClickRequest) (*
 	// For Debug Mode
 	utils.Debug("Reception d'un RightClickRequest et envoie d'un RightClickReply")
 
+	// For Testing Mode
+	if (len(in.EntitySelectionUUID) == 0) {
+		msg := "Erreur, aucune entité envoié à RightClick"
+		log.Println(msg)
+		return &pb.RightClickReply{}, errors.New(msg)
+	}
+
 	if (in.Target == "") { // MoveTo request
 		// Loop on each entity
 		for i := 0; i < len(in.EntitySelectionUUID); i++ {
 
 			// Get the entity
-			entity := data.IDMap.GetObjectFromID(in.EntitySelectionUUID[i]).(*npc.Npc)
+			entity := data.IDMap.GetObjectFromID(in.EntitySelectionUUID[i])
+			if (entity == nil) {
+				msg := "Erreur, une entity n'est pas trouvé dans RightClick"
+				log.Println(msg)
+				return &pb.RightClickReply{}, errors.New(msg)
+			}
 
 			// Get the path of the entity
 			tmp := make(chan bool, 2)
-			path := entity.MoveTo(s.g.Carte, int(in.Point.X), int(in.Point.Y), nil, &tmp)
+			path := entity.(*npc.Npc).MoveTo(s.g.Carte, int(in.Point.X), int(in.Point.Y), nil, &tmp)
 
 			// Filling ActionBuffer with the right data
-			entityData := entity.Stringify()
+			entityData := entity.(*npc.Npc).Stringify()
 			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "pv", entityData["pv"])
 			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "x", entityData["x"])
 			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "y", entityData["y"])
@@ -130,14 +142,14 @@ func (s *Arguments) RightClick(ctx context.Context, in *pb.RightClickRequest) (*
 
 			// Get the entities
 			entity := data.IDMap.GetObjectFromID(in.EntitySelectionUUID[i])
-			if (entity == -1) {
+			if (entity == nil) {
 				msg := "Erreur, une entity n'est pas trouvé dans RightClick"
 				log.Println(msg)
 				return &pb.RightClickReply{}, errors.New(msg)
 			}
 			
 			target := data.IDMap.GetObjectFromID(in.Target)
-			if (target == -1) {
+			if (target == nil) {
 				msg := "Erreur, target n'est pas trouvé dans RightClick"
 				log.Println(msg)
 				return &pb.RightClickReply{}, errors.New(msg)
@@ -175,8 +187,9 @@ func (s *Arguments) AskUpdate(ctx context.Context, in *pb.AskUpdateRequest) (*pb
 	// Extract data from token to get player's UUID
 	playerUUID := data.ExtractFromToken(in.Token)
 	if playerUUID == nil {
-		log.Print("Token invalide dans AskUpdate")
-		return &pb.AskUpdateReply{Array: nil}, nil
+		msg := "Token invalide dans AskUpdate"
+		log.Print(msg)
+		return &pb.AskUpdateReply{Array: nil}, errors.New(msg)
 	}
 
 	toSend := make([]*pb.UpdateAsked, 0)
