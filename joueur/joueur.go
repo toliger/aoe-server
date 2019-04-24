@@ -198,7 +198,7 @@ func (j *Joueur) AddNpc(entity *npc.Npc) {
 func (j *Joueur) AddAndCreateNpc(class string, x int, y int) {
 	entity, id := npc.Create(class, float64(x), float64(y), j.faction, &j.ressourceChannel)
 	j.AddNpc(entity)
-	entity.Transmit(id)
+	entity.Transmit(id, constants.ActionNewNpc)
 }
 
 
