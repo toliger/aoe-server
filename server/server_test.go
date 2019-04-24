@@ -1,7 +1,7 @@
 package server
 
 import (
-	
+
 	"fmt"
 	"log"
 	"time"
@@ -20,7 +20,7 @@ const (
 )
 
 func TestSayHello(t *testing.T) {
-	
+
 	s := Arguments{}
 	ctx ,cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
@@ -36,7 +36,7 @@ func TestSayHello(t *testing.T) {
 }
 
 func TestRightClick(t *testing.T) {
-	
+
 	s := Arguments{}
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
@@ -52,7 +52,7 @@ func TestRightClick(t *testing.T) {
 }
 
 func TestAskUpdate(t *testing.T) {
-	
+
 	s := Arguments{}
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
