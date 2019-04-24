@@ -16,7 +16,6 @@ import (
 	"git.unistra.fr/AOEINT/server/utils"
 )
 
-
 //Npc :
 type Npc struct {
 	x                *safeNumberFloat
@@ -35,11 +34,11 @@ type Npc struct {
 	typ              int  // 0:villager, 1:harvester, 2:soldier
 	TeamFlag         int
 	ressourceChannel chan []int
-	hasOrder         bool //Si un déplacement a dejà été demandé par le joueur (disable auto movement)
-	active		 	 *safeNumberBool // True if active, false if inactive
-	PlayerUUID 		 string
-	moveAction 		 map[int](chan bool)
-    wgAction 		 *sync.WaitGroup
+	hasOrder         bool            //Si un déplacement a dejà été demandé par le joueur (disable auto movement)
+	active           *safeNumberBool // True if active, false if inactive
+	PlayerUUID       string
+	moveAction       map[int](chan bool)
+	wgAction         *sync.WaitGroup
 }
 
 type safeNumberBool struct {
@@ -63,7 +62,7 @@ func New(x *safeNumberFloat, y *safeNumberFloat, pv *safeNumberInt, vitesse int,
 	active.val = false
 	moveA := make(map[int](chan bool))
 	var wgA sync.WaitGroup
-	pnj := Npc{x, y, x, y, pv, vitesse, vue, portee, offensive, size, damage, tauxRecolte, selectable, typ, flag, *channel, false, active, "", moveA, &wgA }
+	pnj := Npc{x, y, x, y, pv, vitesse, vue, portee, offensive, size, damage, tauxRecolte, selectable, typ, flag, *channel, false, active, "", moveA, &wgA}
 	return pnj
 }
 
@@ -149,7 +148,6 @@ func (i *safeNumberBool) get() bool {
 	return i.val
 }
 
-
 func (i *safeNumberInt) set(val int) {
 	i.m.Lock()
 	defer i.m.Unlock()
@@ -167,7 +165,6 @@ func (i *safeNumberBool) set(val bool) {
 	defer i.m.Unlock()
 	i.val = val
 }
-
 
 func (i *safeNumberFloat) sub(val float64) {
 	i.m.Lock()
@@ -311,7 +308,7 @@ func (pnj Npc) SetActive(val bool) {
 	pnj.active.set(val)
 }
 
-func (pnj *Npc) actualizeMoveAction(moveA *chan bool){
+func (pnj *Npc) actualizeMoveAction(moveA *chan bool) {
 	pnj.wgAction.Add(1)
 	// Cancel the old movement
 	index := len(pnj.moveAction) -1
@@ -326,7 +323,6 @@ func (pnj *Npc) actualizeMoveAction(moveA *chan bool){
 	pnj.moveAction[index] = *moveA
 	pnj.wgAction.Done()
 }
-
 
 func (pnj *Npc) deplacement(path []carte.Case, wg *sync.WaitGroup) {
 	if path != nil {
@@ -343,8 +339,7 @@ func (pnj *Npc) deplacement(path []carte.Case, wg *sync.WaitGroup) {
 					wg.Done()
 				}
 				pnj.SetActive(false)
-				log.Println("moveA effectué")
-				break
+				return
 			default:
 				time.Sleep(time.Duration(vdep))
 				pnj.SetX(path[i].GetPathX())
@@ -366,8 +361,6 @@ func (pnj *Npc) MoveTo(c carte.Carte, destx int, desty int, wg *sync.WaitGroup) 
 		path = c.GetPathFromTo(pnj.GetX(), pnj.GetY(), destx, desty)
 		go pnj.deplacement(path, wg)
 	}
-	pnj.SetDestX(destx)
-	pnj.SetDestY(desty)
 	return path
 }
 
@@ -422,7 +415,7 @@ func (pnj *Npc) StaticFightNpc(target *Npc) {
 				pnj.SetActive(false)
 				return
 			}
-			log.Printf("(%v, %v) : attack (%v, %v) %v pv", pnj.GetX(),pnj.GetY(), target.GetX(),target.GetY(), target.GetPv())
+			log.Printf("(%v, %v) : attack (%v, %v) %v pv", pnj.GetX(), pnj.GetY(), target.GetX(), target.GetY(), target.GetPv())
 			target.SubPv(pnj.damage)
 			// if (!target.IsActive() && !done){
 			// 	target.StaticFightBackNpc(pnj)
@@ -431,7 +424,6 @@ func (pnj *Npc) StaticFightNpc(target *Npc) {
 		}
 	}
 }
-
 
 //StaticFightBackNpc : The target fights back
 // func (pnj *Npc) StaticFightBackNpc(target *Npc) {
@@ -463,7 +455,6 @@ func (pnj *Npc) StaticFightNpc(target *Npc) {
 // 		}
 // 	}
 // }
-
 
 //MoveFightBuilding : attack a given building
 func (pnj *Npc) MoveFightBuilding(c carte.Carte, target *batiment.Batiment) {

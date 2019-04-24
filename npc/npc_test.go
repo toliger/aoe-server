@@ -34,6 +34,29 @@ func TestDeplacement(t *testing.T){
 }
 */
 
+func TestConcurency(t *testing.T) {
+	d.IDMap = d.NewObjectID()
+	d.InitiateActionBuffer()
+	c := carte.New(128)
+	ch := make(chan []int, 200)
+	pnj, _ := Create("villager", 0, 0, 0, &ch)
+	pnj.MoveTo(c, 10, 10, nil)
+	time.Sleep(time.Duration(5 * time.Second))
+	if pnj.GetX() != 10 && pnj.GetY() != 10 {
+		t.Error("position incorrecte")
+	}
+	pnj.MoveTo(c, 0, 0, nil)
+	time.Sleep(time.Duration(100 * time.Millisecond))
+	pnj.MoveTo(c, 10, 10, nil)
+	time.Sleep(time.Duration(1 * time.Second))
+	x := pnj.GetX()
+	y := pnj.GetY()
+	if x != 10 && y != 10 {
+		t.Log("x:", x, " :", y)
+		t.Error("mauvaise position après double MoveTo")
+	}
+}
+
 func TestRecolteContraintes(t *testing.T) {
 	d.IDMap = d.NewObjectID()
 	d.InitiateActionBuffer()
@@ -78,7 +101,7 @@ func TestRecolte(t *testing.T) {
 	go (pnj).MoveHarvestTarget(c, &ress2)
 	time.Sleep(time.Duration(5 * time.Second))
 	if ress2.GetPv() != 100 {
-		t.Error("la ressource n'est pas sencé avoir perdu de pv car hors de vue")
+		t.Error("la ressource n'est pas cencé avoir perdu de pv car hors de vue")
 	}
 	go (pnj).MoveHarvestTarget(c, &ress)
 	time.Sleep(time.Duration(2 * time.Second))
