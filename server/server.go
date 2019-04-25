@@ -106,7 +106,7 @@ func (s *Arguments) RightClick(ctx context.Context, in *pb.RightClickRequest) (*
 		for i := 0; i < len(in.EntitySelectionUUID); i++ {
 
 			// Get the entity
-			entity := data.IDMap.GetObjectFromID(in.EntitySelectionUUID[i]).(*npc.Npc)
+			entity := data.IDMap.GetObjectFromID(in.EntitySelectionUUID[i])
 			if entity == nil {
 				msg := "Erreur, une entity n'est pas trouvé dans RightClick"
 				log.Println(msg)
@@ -114,10 +114,10 @@ func (s *Arguments) RightClick(ctx context.Context, in *pb.RightClickRequest) (*
 			}
 
 			// Get the path of the entity
-			path := entity.MoveTo(s.g.Carte, int(in.Point.X), int(in.Point.Y), nil)
+			path := entity.(*npc.Npc).MoveTo(s.g.Carte, int(in.Point.X), int(in.Point.Y), nil)
 
 			// Filling ActionBuffer with the right data
-			entityData := entity.Stringify(constants.ActionNewNpc)
+			entityData := entity.(*npc.Npc).Stringify(constants.ActionNewNpc)
 			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "pv", entityData["pv"])
 			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "x", entityData["x"])
 			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "y", entityData["y"])
