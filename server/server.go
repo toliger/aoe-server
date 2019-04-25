@@ -94,8 +94,6 @@ func (s *Arguments) RightClick(ctx context.Context, in *pb.RightClickRequest) (*
 	// For Debug Mode
 	utils.Debug("Reception d'un RightClickRequest et envoie d'un RightClickReply")
 
-	fmt.Println(in)
-
 	// For Testing Mode
 	if len(in.EntitySelectionUUID) == 0 {
 		msg := "Erreur, aucune entité envoié à RightClick"
@@ -106,8 +104,6 @@ func (s *Arguments) RightClick(ctx context.Context, in *pb.RightClickRequest) (*
 	if in.Target == "" { // MoveTo request
 		// Loop on each entity
 		for i := 0; i < len(in.EntitySelectionUUID); i++ {
-
-			fmt.Println("MoveRequest")
 
 			// Get the entity
 			entity := data.IDMap.GetObjectFromID(in.EntitySelectionUUID[i]).(*npc.Npc)
@@ -143,8 +139,6 @@ func (s *Arguments) RightClick(ctx context.Context, in *pb.RightClickRequest) (*
 		// Loop on each entity
 		for i := 0; i < len(in.EntitySelectionUUID); i++ {
 
-			fmt.Println("Attack request")
-
 			// Get the entities
 			entity := data.IDMap.GetObjectFromID(in.EntitySelectionUUID[i])
 			if entity == nil {
@@ -160,15 +154,13 @@ func (s *Arguments) RightClick(ctx context.Context, in *pb.RightClickRequest) (*
 				return &pb.RightClickReply{}, errors.New(msg)
 			}
 
-			fmt.Println(entity, target)
-
 			switch reflect.TypeOf(target) {
-			case reflect.TypeOf(npc.Npc{}):
+			case reflect.TypeOf(&npc.Npc{}):
 				go entity.(*npc.Npc).MoveFight(s.g.Carte, target.(*npc.Npc))
 
-			case reflect.TypeOf(batiment.Batiment{}):
+			case reflect.TypeOf(&batiment.Batiment{}):
 
-			case reflect.TypeOf(ressource.Ressource{}):
+			case reflect.TypeOf(&ressource.Ressource{}):
 				go entity.(*npc.Npc).MoveHarvestTarget(s.g.Carte, target.(*ressource.Ressource))
 
 			default:
