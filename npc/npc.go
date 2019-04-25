@@ -39,6 +39,7 @@ type Npc struct {
 	PlayerUUID       string
 	moveAction       map[int](chan bool)
 	wgAction         *sync.WaitGroup
+	wgTransmit       *sync.WaitGroup
 }
 
 type safeNumberBool struct {
@@ -62,7 +63,8 @@ func New(x *safeNumberFloat, y *safeNumberFloat, pv *safeNumberInt, vitesse int,
 	active.val = false
 	moveA := make(map[int](chan bool))
 	var wgA sync.WaitGroup
-	pnj := Npc{x, y, x, y, pv, vitesse, vue, portee, offensive, size, damage, tauxRecolte, selectable, typ, flag, *channel, false, active, "", moveA, &wgA}
+	var wgT sync.WaitGroup
+	pnj := Npc{x, y, x, y, pv, vitesse, vue, portee, offensive, size, damage, tauxRecolte, selectable, typ, flag, *channel, false, active, "", moveA, &wgA, &wgT}
 	return pnj
 }
 
@@ -178,7 +180,6 @@ func (i *safeNumberInt) sub(val int,pnj *Npc) {
 		i.m.Lock()
 		i.val -= val
 		i.m.Unlock()
-		pnj.Transmit(id, constants.ActionAlterationNpc)
 	}
 }
 
@@ -386,7 +387,7 @@ func RecoltePossible(c carte.Carte, x int, y int) bool {
 }
 
 //StaticFightNpc : The npc starts fighting the npc until death or movements (also triggers the fight back)
-func (pnj *Npc) StaticFightNpc(target *Npc) {
+func (pnj *Npc) StaticFightNpc(target *Npc, wgObjectAcess *sync.WaitGroup) {
 	pnj.SetActive(true)
 	moveA := make(chan bool, 2)
 	pnj.wgAction.Wait()
@@ -416,8 +417,14 @@ func (pnj *Npc) StaticFightNpc(target *Npc) {
 				pnj.SetActive(false)
 				return
 			}
+			target.wgTransmit.Wait()
 			log.Printf("(%v, %v) : attack (%v, %v) %v pv", pnj.GetX(), pnj.GetY(), target.GetX(), target.GetY(), target.GetPv())
 			target.SubPv(pnj.damage)
+			target.wgTransmit.Add(1)
+			wgObjectAcess.Add(1)
+			target.Transmit(data.IDMap.GetIDFromObject(target), constants.ActionAlterationNpc)
+			wgObjectAcess.Done()
+			target.wgTransmit.Done()
 			// if (!target.IsActive() && !done){
 			// 	target.StaticFightBackNpc(pnj)
 			// 	done = true

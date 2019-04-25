@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"time"
+	"sync"
 
 	"git.unistra.fr/AOEINT/server/batiment"
 	Carte "git.unistra.fr/AOEINT/server/carte"
@@ -35,10 +36,7 @@ type Data struct {
 func ExtractData() Data {
 	datafileName := "data/GameData.json"
 	if constants.UseSmallMap {
-		datafileName = "data/SmallTestMap.json"
-	}
-	if(constants.Testing){
-		datafileName="../"+datafileName
+		datafileName = "../data/SmallTestMap.json"
 	}
 	jsonFile, err := os.Open(datafileName)
 	if err != nil {
@@ -108,39 +106,41 @@ func (g *Game) DeleteNpc(pnj *npc.Npc) bool {
 
 //LaunchAutomaticFight : launch the AutomaticFight for all inactive npc
 func (g *Game) LaunchAutomaticFight() {
+	var wgObjectAcess sync.WaitGroup
 	uptimeTicker := time.NewTicker(time.Duration(100 * time.Millisecond))
 	for {
 		select {
 		case <-uptimeTicker.C:
-			for _, player := range g.Joueurs {
-				if (*player).GetEntities() == nil {
+			for _,player := range g.Joueurs{
+				if ((*player).GetEntities() == nil){
 					break
 				}
-				for i := 0; i < len((*player).GetEntities()); i++ {
+				for i := 0; i < len((*player).GetEntities()); i++{
 					// delete the dead npcs
-					for _, playerTemp := range g.Joueurs {
-						for _, pnjTemp := range (*playerTemp).GetEntities() {
-							if pnjTemp == nil {
+					for _,playerTemp := range g.Joueurs{
+						for _,pnjTemp := range (*playerTemp).GetEntities(){
+							if (pnjTemp == nil){
 								break
 							}
-							if pnjTemp.GetPv() == 0 {
+							if (pnjTemp.GetPv() == 0){
+								wgObjectAcess.Wait()
 								g.DeleteNpc(pnjTemp)
 							}
 						}
 					}
-					if (*player).GetPointerNpc(i) == nil {
+					if ((*player).GetPointerNpc(i) == nil){
 						break
 					}
-					if (*player).GetNpc(i).IsActive() == false {
-						for _, p := range g.Joueurs {
+					if ((*player).GetNpc(i).IsActive() == false){
+						for _,p := range g.Joueurs{
 							// log.Print("player :", (*player).GetUID())
 							// log.Print("other player :", p.GetUID())
 							//Seacch for ennemies npc
-							if player.GetUID() != p.GetUID() {
+							if (player.GetUID() != p.GetUID()){
 								pnjToFight := p.IsThereNpcInRange(player.GetPointerNpc(i))
 								//log.Print("staticFight npc du type :", pnjToFight.GetType())
-								if pnjToFight != nil {
-									go (*player).GetPointerNpc(i).StaticFightNpc(pnjToFight)
+								if(pnjToFight != nil){
+									go (*player).GetPointerNpc(i).StaticFightNpc(pnjToFight, &wgObjectAcess)
 								}
 							}
 						}
@@ -150,6 +150,7 @@ func (g *Game) LaunchAutomaticFight() {
 		}
 	}
 }
+
 
 //EndOfGame : Interromps la boucle principale du jeu
 func (g *Game) EndOfGame() {
@@ -189,7 +190,7 @@ func (g *Game) GenerateMap(data Data) {
 			}
 		}
 	}
-	//ajout des npc de base
+ 	//ajout des npc de base
 	for i := 0; i < len((*g).Joueurs); i++ {
 		for j := 0; j < 5; j++ {
 			if i < 2 {
@@ -200,7 +201,7 @@ func (g *Game) GenerateMap(data Data) {
 		}
 	}
 	//ajout de npc pour tester le combat
-	(*g).Joueurs[0].AddAndCreateNpc("villager", 0, 0)
+	 (*g).Joueurs[0].AddAndCreateNpc("villager", 0, 0)
 	// (*g).Joueurs[0].AddAndCreateNpc("villager", 0, 0)
 	//
 	// (*g).Joueurs[1].AddAndCreateNpc("villager", 0, 1)
