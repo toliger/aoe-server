@@ -2,6 +2,8 @@ package data
 
 import (
 	"encoding/json"
+	"io/ioutil"
+	"net/http"
 
 	"strconv"
 	"strings"
@@ -114,7 +116,16 @@ func (o *ObjectID) DeleteObject(obj interface{}) bool {
 
 //GetObjectFromID Renvoie un pointeur sur l'obj correspondant à l'id fourni
 func (o *ObjectID) GetObjectFromID(id string) interface{} {
-	return (*o).IDArray[id]
+	obj, test := (*o).IDArray[id]
+	if !test {
+		return nil
+	}
+	return obj
+}
+
+//ConvertToInter renvoie un interface de l'objet
+func ConvertToInter(obj interface{}) interface{} {
+	return obj
 }
 
 //GetIDFromObject Renvoie l'id d'un objet à partir de son pointeur
@@ -155,4 +166,32 @@ func ExtractFromToken(tokenString string) *TokenValue {
 		return nil
 	}
 	return &extract
+}
+
+//Curl method POST/GET, query body ex: mutation{login(email: "gege@hotmail.fr",  password: "un")  }
+func Curl(queryBody string) (string, error) {
+	body := strings.NewReader(`{ "query": "` + queryBody + `" }`)
+	req, err := http.NewRequest("POST", constants.APIHOST+":"+constants.APIPORT, body)
+	if err != nil {
+		return "", err
+	}
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return "", err
+	}
+	var errClose error
+	defer func() {
+		errClose = resp.Body.Close()
+	}()
+	if resp.StatusCode != http.StatusOK {
+		return "", err
+	}
+	bodyBytes, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
+	bodyString := string(bodyBytes)
+	return bodyString, errClose
 }

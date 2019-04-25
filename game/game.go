@@ -19,7 +19,7 @@ import (
 
 //Game : Structure contenant les donnees principales d'une partie
 type Game struct {
-	Joueurs     []joueur.Joueur
+	Joueurs     []*joueur.Joueur
 	Carte       Carte.Carte
 	GameRunning bool
 }
@@ -62,7 +62,7 @@ func ExtractData() Data {
 func (g *Game) GetPlayerFromUID(uid string) *joueur.Joueur {
 	for i := 0; i < len(g.Joueurs); i++ {
 		if g.Joueurs[i].UID == uid {
-			return &(g.Joueurs[i])
+			return (g.Joueurs[i])
 		}
 	}
 	return nil
@@ -101,6 +101,51 @@ func (g *Game) DeleteNpc(pnj *npc.Npc) bool {
 	}
 	data.AddToAllAction(constants.ActionDelNpc, id, "useless", "useless")
 	return true
+}
+
+//LaunchAutomaticFight : launch the AutomaticFight for all inactive npc
+func (g *Game) LaunchAutomaticFight() {
+	uptimeTicker := time.NewTicker(time.Duration(100 * time.Millisecond))
+	for {
+		select {
+		case <-uptimeTicker.C:
+			for _, player := range g.Joueurs {
+				if (*player).GetEntities() == nil {
+					break
+				}
+				for i := 0; i < len((*player).GetEntities()); i++ {
+					// delete the dead npcs
+					for _, playerTemp := range g.Joueurs {
+						for _, pnjTemp := range (*playerTemp).GetEntities() {
+							if pnjTemp == nil {
+								break
+							}
+							if pnjTemp.GetPv() == 0 {
+								g.DeleteNpc(pnjTemp)
+							}
+						}
+					}
+					if (*player).GetPointerNpc(i) == nil {
+						break
+					}
+					if (*player).GetNpc(i).IsActive() == false {
+						for _, p := range g.Joueurs {
+							// log.Print("player :", (*player).GetUID())
+							// log.Print("other player :", p.GetUID())
+							//Seacch for ennemies npc
+							if player.GetUID() != p.GetUID() {
+								pnjToFight := p.IsThereNpcInRange(player.GetPointerNpc(i))
+								//log.Print("staticFight npc du type :", pnjToFight.GetType())
+								if pnjToFight != nil {
+									go (*player).GetPointerNpc(i).StaticFightNpc(pnjToFight)
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 }
 
 //EndOfGame : Interromps la boucle principale du jeu
@@ -145,12 +190,24 @@ func (g *Game) GenerateMap(data Data) {
 	for i := 0; i < len((*g).Joueurs); i++ {
 		for j := 0; j < 5; j++ {
 			if i < 2 {
-				(*g).Joueurs[i].AddAndCreateNpc("villager", 0, 0)
+				(*g).Joueurs[i].AddAndCreateNpc("villager", i, j)
 			} else {
 				(*g).Joueurs[i].AddAndCreateNpc("villager", g.Carte.GetSize()-1, g.Carte.GetSize()-1)
 			}
 		}
 	}
+	//ajout de npc pour tester le combat
+	(*g).Joueurs[0].AddAndCreateNpc("villager", 0, 0)
+	// (*g).Joueurs[0].AddAndCreateNpc("villager", 0, 0)
+	//
+	// (*g).Joueurs[1].AddAndCreateNpc("villager", 0, 1)
+	(*g).Joueurs[0].AddAndCreateNpc("villager", 15, 15)
+	(*g).Joueurs[1].AddAndCreateNpc("villager", 15, 16)
+	(*g).Joueurs[0].AddAndCreateNpc("villager", 30, 31)
+	(*g).Joueurs[1].AddAndCreateNpc("villager", 31, 30)
+	(*g).Joueurs[0].AddAndCreateNpc("soldier", 20, 20)
+	(*g).Joueurs[1].AddAndCreateNpc("soldier", 20, 21)
+
 	//Ajout des ressources
 	for i := 0; i < len(data.Ressources); i++ {
 		(&data.Ressources[i]).InitiatePV()
@@ -165,9 +222,11 @@ func (g *Game) GenerateMap(data Data) {
 Modification: Changement pour des valeurs statiques (temporaire)
 */
 func (g *Game) GetPlayerData() {
-	(*g).Joueurs = make([]joueur.Joueur, 2)
-	(*g).Joueurs[0] = joueur.Create(0, "Bob", "b33d954f-c63e-4b48-88eb-8b5e86d94246")
-	(*g).Joueurs[1] = joueur.Create(1, "Alice", "1982N19N2")
+	(*g).Joueurs = make([]*joueur.Joueur, 2)
+	j0 := joueur.Create(0, "Bob", "b33d954f-c63e-4b48-88eb-8b5e86d94246")
+	j1 := joueur.Create(1, "Alice", "1982N19N2")
+	(*g).Joueurs[0] = &j0
+	(*g).Joueurs[1] = &j1
 	constants.PlayerUID1 = (*g).Joueurs[0].UID
 	constants.PlayerUID2 = (*g).Joueurs[1].UID
 	if len((*g).Joueurs) > 2 {

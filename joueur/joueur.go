@@ -38,6 +38,11 @@ func Create(faction int, nom string, uid string) Joueur {
 	return res
 }
 
+//GetUID :
+func (j Joueur) GetUID() string {
+	return j.UID
+}
+
 //GetFaction : return the faction
 func (j Joueur) GetFaction() int {
 	return j.faction
@@ -79,9 +84,9 @@ func (j *Joueur) ressourceUpdate() {
 			j.AddWood(res[0])
 			j.AddStone(res[1])
 			j.AddFood(res[2])
-			data.AddToAllAction(constants.ActionPlayerRessource, j.UID, "stone", strconv.Itoa(j.GetStone()))
-			data.AddToAllAction(constants.ActionPlayerRessource, j.UID, "food", strconv.Itoa(j.GetFood()))
-			data.AddToAllAction(constants.ActionPlayerRessource, j.UID, "wood", strconv.Itoa(j.GetWood()))
+			data.AddNewAction(j.UID, constants.ActionPlayerRessource, j.UID, "wood", strconv.Itoa(j.GetWood()))
+			data.AddNewAction(j.UID, constants.ActionPlayerRessource, j.UID, "food", strconv.Itoa(j.GetFood()))
+			data.AddNewAction(j.UID, constants.ActionPlayerRessource, j.UID, "stone", strconv.Itoa(j.GetStone()))
 		} else {
 			break
 		}
@@ -106,6 +111,11 @@ func (j Joueur) GetFood() int {
 	return j.food
 }
 
+//GetEntities :
+func (j Joueur) GetEntities() []*npc.Npc {
+	return (j.entities)
+}
+
 //GetNpc :
 func (j Joueur) GetNpc(i int) npc.Npc {
 	return *(j.entities[i])
@@ -119,6 +129,9 @@ func (j Joueur) GetPointerNpc(i int) *npc.Npc {
 //DeleteNpcFromList retire un pnj de la liste du joueur
 func (j *Joueur) DeleteNpcFromList(x float64, y float64, typ int, pv int) bool {
 	for i := range j.entities {
+		if j.entities[i] == nil{
+			break
+		}
 		if j.entities[i].Get64X() == x && j.entities[i].Get64Y() == y && j.entities[i].GetType() == typ && j.entities[i].GetPv() == pv {
 			j.entities[i] = nil
 			return true
@@ -184,17 +197,27 @@ func (j *Joueur) AddNpc(entity *npc.Npc) {
 //AddAndCreateNpc : create and add a new NPC to the player
 func (j *Joueur) AddAndCreateNpc(class string, x int, y int) {
 	entity, id := npc.Create(class, float64(x), float64(y), j.faction, &j.ressourceChannel)
-	test := false
-	for i := 0; i < len(j.entities); i++ {
-		if j.entities[i] == nil {
-			j.entities[i] = &entity
-			test = true
-			break
+	j.AddNpc(entity)
+	entity.Transmit(id, constants.ActionNewNpc)
+}
+
+
+//IsThereNpcInRange : returns the first npc of the player in range of the given npc if there is one else nil
+func (j *Joueur)IsThereNpcInRange(pnj *npc.Npc) (*npc.Npc){
+	if (*j).entities == nil{
+		return nil
+	}
+	for i := 0; i < len((*j).entities); i++ {
+		for x := pnj.GetX() - pnj.GetPortee(); x <= pnj.GetX()+pnj.GetPortee(); x++ {
+			for y := pnj.GetY() - pnj.GetPortee(); y <= pnj.GetY()+pnj.GetPortee(); y++ {
+				if (*j).entities[i] == nil{
+					break
+				}
+				if ((*j).entities[i].GetX() == x) && ((*j).entities[i].GetY() == y){
+					return (*j).entities[i]
+				}
+			}
 		}
 	}
-	if !test {
-		(*j).entities = append(j.entities, &entity)
-	}
-	entity.PlayerUUID = j.UID
-	entity.Transmit(id)
+	return nil
 }
