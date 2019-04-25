@@ -45,15 +45,14 @@ func (i *safeNumber) set(val int) {
 }
 
 
-func (i *safeNumber) sub(val int, id string) {
-	i.m.Lock()
-	defer i.m.Unlock()
-	i.val -= val
-    ress :=(data.IDMap.GetObjectFromID(id)).(*Ressource)
-    if ress == nil{
-        return
-    }
-    ress.Transmit(id)
+func (i *safeNumber) sub(val int, ress *Ressource) {
+	id := data.IDMap.GetIDFromObject(ress)
+	if data.IDMap.GetIDFromObject(ress) != "-1" {
+		i.m.Lock()
+		i.val -= val
+		i.m.Unlock()
+		ress.Transmit(id)
+	}
 }
 
 
@@ -114,7 +113,9 @@ func (ress Ressource)GetType() int{
 
 //Damage inflige x degats a la ressource
 func (ress *Ressource)Damage(x int){
-	ress.Pv.sub(x, data.IDMap.GetIDFromObject(ress))
+	if ress!=nil{
+		ress.Pv.sub(x, ress)
+	}
 }
 
 

@@ -259,3 +259,6 @@ var APIHOST = utils.Getenv("APIHOST", "localhost")
 
 //APIPORT default API port
 var APIPORT = utils.Getenv("APIPORT", "4000")
+
+//Testing used to enable functionalities for testing
+var Testing = false

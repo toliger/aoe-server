@@ -5,7 +5,7 @@ import (
     "testing"
     "time"
     "log"
-    //cst "git.unistra.fr/AOEINT/server/constants"
+    cst "git.unistra.fr/AOEINT/server/constants"
 )
 /*
 func TestDestruction(t *testing.T) {
@@ -44,6 +44,7 @@ func TestDestruction(t *testing.T) {
 */
 
 func TestAutoFight(t *testing.T) {
+	cst.Testing=true
 	d.ExtractFromToken("aubvfauipva.eyJncm91cCI6InBsYXllciIsIm5hbWUiOiJQaWVycmUgQyIsInV1aWQiOiJiMzNkOTU0Zi1jNjNlLTRiNDgtODhlYi04YjVlODZkOTQyNDYiLCJpYXQiOjE1MTYyMzkwMjJ9.oaougf")
 	var g Game
 	d.IDMap = d.NewObjectID()

@@ -37,6 +37,9 @@ func ExtractData() Data {
 	if constants.UseSmallMap {
 		datafileName = "data/SmallTestMap.json"
 	}
+	if(constants.Testing){
+		datafileName="../"+datafileName
+	}
 	jsonFile, err := os.Open(datafileName)
 	if err != nil {
 		log.Fatal(err)

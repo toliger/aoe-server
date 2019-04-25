@@ -9,7 +9,8 @@ import (
 func TestCreation(t *testing.T){
     d.IDMap=d.NewObjectID()
 	d.InitiateActionBuffer()
-	tree := Create("tree",10,10)
+    tree := Create("tree",10,10)
+    d.IDMap.AddObject(&tree)
     (&tree).InitiatePV();
     (&tree).Damage(5);
     if ((&tree).GetPv() != (constants.RessourcePv - 5) ){
