@@ -790,7 +790,7 @@ func (pnj *Npc) Harvest(c carte.Carte, ress *ressource.Ressource, posRecolteVill
 	tpsEcoule := 0
 	for {
 		// La ressource est épuisée ou le villageois est mort
-		if tpsEcoule == ress.GetPv() || pnj.GetPv() == 0 {
+		if tpsEcoule == (ress.GetPv()/pnj.tauxRecolte +1) || pnj.GetPv() == 0 {
 			pnj.SetActive(false)
 			break
 		}
