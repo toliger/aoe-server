@@ -51,7 +51,7 @@ func (i *safeNumber) sub(val int, ress *Ressource) {
 		i.m.Lock()
 		i.val -= val
 		i.m.Unlock()
-		ress.Transmit(id)
+		ress.Transmit(id,constants.ActionHarmRessource)
 	}
 }
 
@@ -97,10 +97,10 @@ func (ress Ressource)stringify(id string)map[string]string{
 
 
 //Transmit :
-func (ress Ressource) Transmit(id string){
+func (ress Ressource) Transmit(id string,typ int){
 	arr:=ress.stringify(id)
 	for k,e := range arr{
-		data.AddToAllAction(constants.ActionNewRessource,id,k,e)
+		data.AddToAllAction(typ,id,k,e)
 	}
 }
 

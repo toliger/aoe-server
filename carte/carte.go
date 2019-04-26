@@ -6,6 +6,7 @@ import (
   "git.unistra.fr/AOEINT/server/batiment"
   "git.unistra.fr/AOEINT/server/ressource"
   "git.unistra.fr/AOEINT/server/data"
+  "git.unistra.fr/AOEINT/server/constants"
 )
 
 
@@ -59,7 +60,7 @@ func (c Carte)AddNewRessource(res *ressource.Ressource) bool{
 
 	(c.GetTile(x,y)).AddRessource(res)
 	id:=(&data.IDMap).AddObject(res)
-	(*res).Transmit(id)
+	(*res).Transmit(id,constants.ActionNewRessource)
 
 	return true
 }

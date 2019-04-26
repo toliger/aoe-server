@@ -8,7 +8,6 @@ import (
 	"strconv"
 	"strings"
 	"log"
-	"reflect"
 	"git.unistra.fr/AOEINT/server/constants"
 	"git.unistra.fr/AOEINT/server/utils"
 	jwt "github.com/dgrijalva/jwt-go"
@@ -39,7 +38,7 @@ func InitiateActionBuffer() {
 
 //AddNewAction Ajoute une Action(type int, clee string, description string) au buffer
 func AddNewAction(PlayerUID string, typ int, uuid string, key string, description string) {
-
+	log.Println("new action of type ",typ)
 	elem, ok := ActionBuffer[PlayerUID][typ].Description[uuid]
 	if !ok {
 		elem = make(map[string]string)
@@ -96,7 +95,7 @@ func (o *ObjectID) AddObject(obj interface{}) string {
 	key := strconv.Itoa((*o).IDOffset)
 	(*o).IDArray[key] = obj
 	(*o).IDOffset++
-	log.Println("added object of type ",reflect.TypeOf(obj)," and id ",key)
+	//log.Println("added object of type ",reflect.TypeOf(obj)," and id ",key)
 	return key
 }
 
