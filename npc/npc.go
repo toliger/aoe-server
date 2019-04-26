@@ -64,7 +64,11 @@ func New(x *safeNumberFloat, y *safeNumberFloat, pv *safeNumberInt, vitesse int,
 	moveA := make(map[int](chan bool))
 	var wgA sync.WaitGroup
 	var wgT sync.WaitGroup
-	pnj := Npc{x, y, x, y, pv, vitesse, vue, portee, offensive, size, damage, tauxRecolte, selectable, typ, flag, *channel, false, active, "", moveA, &wgA, &wgT}
+	sfXD := &safeNumberFloat{}
+	sfXD.val = x.get()
+	sfYD := &safeNumberFloat{}
+	sfYD.val = y.get()
+	pnj := Npc{x, y, sfXD, sfYD, pv, vitesse, vue, portee, offensive, size, damage, tauxRecolte, selectable, typ, flag, *channel, false, active, "", moveA, &wgA, &wgT}
 	return pnj
 }
 
@@ -242,42 +246,42 @@ func (pnj *Npc) Set64Y(val float64) {
 
 //GetDestX : return the position X
 func (pnj Npc) GetDestX() int {
-	return int(math.Floor(pnj.x.get()))
+	return int(math.Floor(pnj.dextX.get()))
 }
 
 //Get64DestX : return float64 position X
 func (pnj Npc) Get64DestX() float64 {
-	return pnj.x.get()
+	return pnj.dextX.get()
 }
 
 //SetDestX : set the npc's X value
 func (pnj *Npc) SetDestX(val int) {
-	pnj.x.set(float64(val))
+	pnj.dextX.set(float64(val))
 }
 
 //Set64DestX : set the npc's Y value
 func (pnj *Npc) Set64DestX(val float64) {
-	pnj.x.set(val)
+	pnj.dextX.set(val)
 }
 
 //GetDestY : return the position Y
 func (pnj Npc) GetDestY() int {
-	return int(math.Floor(pnj.y.get()))
+	return int(math.Floor(pnj.destY.get()))
 }
 
 //Get64DestY : return the position Y
 func (pnj Npc) Get64DestY() float64 {
-	return pnj.y.get()
+	return pnj.destY.get()
 }
 
 //SetDestY : set the npc's Y value
 func (pnj *Npc) SetDestY(val int) {
-	pnj.y.set(float64(val))
+	pnj.destY.set(float64(val))
 }
 
 //Set64DestY : set the npc's Y value
 func (pnj *Npc) Set64DestY(val float64) {
-	pnj.y.set(val)
+	pnj.destY.set(val)
 }
 
 //GetVue : return villager's vision
@@ -770,17 +774,17 @@ func (pnj *Npc) MoveHarvestTarget(c carte.Carte, ress *ressource.Ressource) {
 		return
 	}
 
-	x:=ress.GetX()
-	y:=ress.GetY()
+	xR:=ress.GetX()
+	yR:=ress.GetY()
 	var left,right,down,up path
-	l:=c.GetPathFromTo(pnj.GetX(),pnj.GetY(),x-1,y)
-	r:=c.GetPathFromTo(pnj.GetX(),pnj.GetY(),x+1,y)
-	d:=c.GetPathFromTo(pnj.GetX(),pnj.GetY(),x,y+1)
-	u:=c.GetPathFromTo(pnj.GetX(),pnj.GetY(),x,y-1)
-	left=path{x-1,y,ternary(l==nil,-1,len(l))}
-	right=path{x+1,y,ternary(r==nil,-1,len(r))}
-	down=path{x,y+1,ternary(d==nil,-1,len(d))}
-	up=path{x,y-1,ternary(u==nil,-1,len(u))}
+	l:=c.GetPathFromTo(pnj.GetX(),pnj.GetY(),xR-1,yR)
+	r:=c.GetPathFromTo(pnj.GetX(),pnj.GetY(),xR+1,yR)
+	d:=c.GetPathFromTo(pnj.GetX(),pnj.GetY(),xR,yR+1)
+	u:=c.GetPathFromTo(pnj.GetX(),pnj.GetY(),xR,yR-1)
+	left=path{xR-1,yR,ternary(l==nil,-1,len(l))}
+	right=path{xR+1,yR,ternary(r==nil,-1,len(r))}
+	down=path{xR,yR+1,ternary(d==nil,-1,len(d))}
+	up=path{xR,yR-1,ternary(u==nil,-1,len(u))}
 	access:=min(left,min(right,min(up,down)))
 	if access.length==-1 {
 		return
@@ -807,9 +811,12 @@ func (pnj *Npc) MoveHarvestTarget(c carte.Carte, ress *ressource.Ressource) {
 	// on attends que le villageois ait fini son déplacement
 	var wg sync.WaitGroup
 	wg.Add(1)
-	pnj.SetDestX(posRecolteVillX)
-	pnj.SetDestY(posRecolteVillY)
+	pnj.wgTransmit.Wait()
+	pnj.wgTransmit.Add(1)
+	pnj.dextX.set(float64(posRecolteVillX))
+	pnj.destY.set(float64(posRecolteVillY))
 	pnj.Transmit(data.IDMap.GetIDFromObject(pnj),constants.ActionAlterationNpc)
+	pnj.wgTransmit.Done()
 	go pnj.MoveTo(c, posRecolteVillX, posRecolteVillY, &wg)
 	wg.Wait()
 
