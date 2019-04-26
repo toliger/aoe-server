@@ -128,7 +128,7 @@ func (pnj Npc) Stringify(typ int) map[string]string {
 func (pnj Npc) Transmit(id string, typ int) {
 	arr := pnj.Stringify(typ)
 	for k, e := range arr {
-		data.AddToAllAction(constants.ActionNewNpc, id, k, e)
+		data.AddToAllAction(typ, id, k, e)
 	}
 }
 
@@ -731,11 +731,31 @@ func (pnj *Npc)MoveHarvest(c carte.Carte){
 }
 */
 
+type path struct{
+	x int
+	y int
+	length int
+}
+
+func min(a path,b path) path{
+	if a.length<b.length && a.length != -1 {
+		return a
+	}else if b.length==-1 && a.length!=-1{
+		return a
+	}
+	return b
+}
+
+func ternary(cond bool, a int, b int) int{
+	if cond {
+		return a
+	}
+	return b
+}
 /*MoveHarvestTarget : (move to the nreast ressource in the villagers's vision).
 Triggered when a villager is inactive, cancelled when the player moves the npc
 */
 func (pnj *Npc) MoveHarvestTarget(c carte.Carte, ress *ressource.Ressource) {
-	var i, j int
 	//Verify the parameters
 	if pnj.GetType() == 2 {
 		log.Print("Un soldat ne peut pas recolter de ressources")
@@ -750,7 +770,24 @@ func (pnj *Npc) MoveHarvestTarget(c carte.Carte, ress *ressource.Ressource) {
 		return
 	}
 
-	var posRecolteVillX, posRecolteVillY int
+	x:=ress.GetX()
+	y:=ress.GetY()
+	var left,right,down,up path
+	l:=c.GetPathFromTo(pnj.GetX(),pnj.GetY(),x-1,y)
+	r:=c.GetPathFromTo(pnj.GetX(),pnj.GetY(),x+1,y)
+	d:=c.GetPathFromTo(pnj.GetX(),pnj.GetY(),x,y+1)
+	u:=c.GetPathFromTo(pnj.GetX(),pnj.GetY(),x,y-1)
+	left=path{x-1,y,ternary(l==nil,-1,len(l))}
+	right=path{x+1,y,ternary(r==nil,-1,len(r))}
+	down=path{x,y+1,ternary(d==nil,-1,len(d))}
+	up=path{x,y-1,ternary(u==nil,-1,len(u))}
+	access:=min(left,min(right,min(up,down)))
+	if access.length==-1 {
+		return
+	}
+	posRecolteVillX:=access.x
+	posRecolteVillY:=access.y
+	/*var posRecolteVillX, posRecolteVillY int
 	distance := 2000
 
 	for i = ress.GetX() - pnj.portee; i <= ress.GetX()+pnj.portee; i++ {
@@ -766,10 +803,13 @@ func (pnj *Npc) MoveHarvestTarget(c carte.Carte, ress *ressource.Ressource) {
 	// pas d'accès possible pour recolter la ressource
 	if distance == 2000 {
 		return
-	}
-	// on attends que le villageois ait finit son déplacement
+	}*/
+	// on attends que le villageois ait fini son déplacement
 	var wg sync.WaitGroup
 	wg.Add(1)
+	pnj.SetDestX(posRecolteVillX)
+	pnj.SetDestY(posRecolteVillY)
+	pnj.Transmit(data.IDMap.GetIDFromObject(pnj),constants.ActionAlterationNpc)
 	go pnj.MoveTo(c, posRecolteVillX, posRecolteVillY, &wg)
 	wg.Wait()
 

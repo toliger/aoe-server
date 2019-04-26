@@ -57,8 +57,11 @@ func (t *Tuile)Empty(){
 	(*t).bat=nil
 	if (*t).res !=nil {
 		id:=data.IDMap.GetIDFromObject((*t).res)
-		data.AddToAllAction(constants.ActionDelRessource,id,"x",strconv.Itoa(t.res.GetX()))
-		data.AddToAllAction(constants.ActionDelRessource,id,"y",strconv.Itoa(t.res.GetY()))
+		if id!="-1" {
+			data.IDMap.DeleteObjectFromID(id)
+			data.AddToAllAction(constants.ActionDelRessource,id,"x",strconv.Itoa(t.res.GetX()))
+			data.AddToAllAction(constants.ActionDelRessource,id,"y",strconv.Itoa(t.res.GetY()))
+		}
 	}
 	(*t).res=nil
 }
