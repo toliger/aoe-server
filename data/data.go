@@ -38,7 +38,7 @@ func InitiateActionBuffer() {
 
 //AddNewAction Ajoute une Action(type int, clee string, description string) au buffer
 func AddNewAction(PlayerUID string, typ int, uuid string, key string, description string) {
-	log.Println("new action of type ",typ,": ",key,"=",description)
+	log.Println("new action of type ",typ,": ",key,"=",description, "PlayerID=",PlayerUID)
 	elem, ok := ActionBuffer[PlayerUID][typ].Description[uuid]
 	if !ok {
 		elem = make(map[string]string)
