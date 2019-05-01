@@ -99,7 +99,7 @@ func TestRecolte(t *testing.T) {
 	go (pnj).MoveHarvestTarget(c, &ress)
 	time.Sleep(time.Duration(5 * time.Second))
 	go (pnj).MoveTo(c, 10, 10, nil)
-	time.Sleep(time.Duration(3 * time.Second))
+	time.Sleep(time.Duration(5 * time.Second))
 	if pnj.GetX() != 10 || pnj.GetY() != 10 {
 		t.Error("le pnj n'est pas au bon endroit")
 		t.Log("pnjX :", pnj.GetX(), " pnjY :", pnj.GetY())
