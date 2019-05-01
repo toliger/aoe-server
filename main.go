@@ -11,7 +11,8 @@ func main() {
 	var g game.Game
 	d.IDMap = d.NewObjectID()
 	d.InitiateActionBuffer()
-	g.GameRunning = true
+	cExit := make(chan(bool))
+	g.GameRunning = cExit
 	(&g).GetPlayerData()
 	d.InitiateActionBuffer()
 	data := game.ExtractData()

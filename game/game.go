@@ -21,7 +21,7 @@ import (
 type Game struct {
 	Joueurs     []*joueur.Joueur
 	Carte       Carte.Carte
-	GameRunning bool
+	GameRunning chan(bool)
 }
 
 //Data :Structure permettant de stocker les informations recuperees sur le fichier json
@@ -159,14 +159,20 @@ func (g *Game) LaunchAutomaticFight() {
 
 //EndOfGame : Interromps la boucle principale du jeu
 func (g *Game) EndOfGame() {
-	(*g).GameRunning = false
+	(*g).GameRunning <- false
+
 }
 
 //GameLoop : fonction contenant la boucle principale du jeu
 func (g *Game) GameLoop() {
-	for (*g).GameRunning {
-		time.Sleep(time.Duration(1000000000))
+	var test bool
+	for{
+		test =<-g.GameRunning
+		if test==false{
+			break
+		}
 	}
+	time.Sleep(time.Duration(time.Second * constants.TimeBeforeExit))
 }
 
 //GenerateMap : Permet de generer la Carte a partir d'une structure data

@@ -6,6 +6,7 @@ import (
   "git.unistra.fr/AOEINT/server/utils"
   "strconv"
   "log"
+  "sync"
 )
 
 //Batiment : Structure contenant tous les éléments nécessaires pour la gestion d'un batiment
@@ -17,13 +18,15 @@ type Batiment struct {
 	Longueur  int
 	Largeur   int
 	PlayerUID string
-    batimentChannel *chan int
+	batimentChannel *chan int
+	m *sync.Mutex
 }
 
 //New : Constructeur de l'objet Batiment
 func New(x int,y int, typ int, long int, larg int, pv int) Batiment{
-    buffer:=make(chan int,cst.BatimentBufferSize)
-	return (Batiment{x,y,pv,typ,long,larg,"",&buffer })
+	var m sync.Mutex
+	buffer:=make(chan int,cst.BatimentBufferSize)
+	return (Batiment{x,y,pv,typ,long,larg,"",&buffer, &m})
 }
 
 //Create : Crée une Instance de batiment
@@ -43,12 +46,20 @@ func Create(class string, x int, y int) Batiment {
 	return bat
 }
 
+//InitMutex initializes the mutex used to protects the building's HPs
+func (bat *Batiment) InitMutex(){
+	if bat.m ==nil{
+		var mut sync.Mutex
+		bat.m=&mut
+	}
+}
+
 func (bat Batiment) stringify(typ int, id string) map[string]string {
 	res := make(map[string]string)
     if (typ == cst.ActionNewBuilding){
         res["x"] = strconv.Itoa(bat.X)
         res["y"] = strconv.Itoa(bat.Y)
-        res["pv"] = strconv.Itoa(bat.Pv)
+        res["pv"] = strconv.Itoa(bat.GetPv())
         res["type"] = strconv.Itoa(bat.Typ)
         res["PlayerUUID"] = bat.PlayerUID
         res["id"] = id
@@ -59,7 +70,7 @@ func (bat Batiment) stringify(typ int, id string) map[string]string {
         return res
     }
     if (typ == cst.ActionHarmBuilding){
-        res["pv"] = strconv.Itoa(bat.Pv)
+        res["pv"] = strconv.Itoa(bat.GetPv())
         res["id"] = id
         return res
     }
@@ -104,19 +115,26 @@ func(bat *Batiment)GetChannel() *(chan int){
 
 //GetPv : Retourne les pv d'un bâtiment
 func (bat Batiment) GetPv() int {
-	return bat.Pv
+	bat.m.Lock()
+	val:= bat.Pv
+	bat.m.Unlock()
+	return val
 }
 
 
 //SetPv : change des pv d'un bâtiment
 func (bat *Batiment)SetPv(val int){
-    bat.Pv = val
+	bat.m.Lock()
+	bat.Pv=val
+	bat.m.Unlock()
 }
 
 
 //SubPv : decrement les pv d'un bâtiment de val
 func (bat *Batiment)SubPv(val int){
-    bat.Pv -= val
+	bat.m.Lock()
+	bat.Pv-=val
+	bat.m.Unlock()
 }
 
 

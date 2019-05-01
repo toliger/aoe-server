@@ -70,7 +70,7 @@ func (c Carte)AddNewRessource(res *ressource.Ressource) bool{
 func (c Carte)AddNewBuilding(bat *batiment.Batiment) bool{
 	x:=(*bat).GetX()
 	y:=(*bat).GetY()
-
+	bat.InitMutex()
 	for i:=0;i<(*bat).GetLongueur();i++{
 		for j:=0;j<(*bat).GetLargeur();j++{
 			if(!c.IsEmpty(x+i,y+j)){

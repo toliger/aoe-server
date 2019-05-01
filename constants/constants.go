@@ -103,6 +103,8 @@ const StartingFood = 50
 //MAXOBJECTS nb objets du buffer objets
 const MAXOBJECTS = 200
 
+//TimeBeforeExit Time before closing the server after the end of a game
+const TimeBeforeExit = 15
 //===== Batiments =====
 
 //LongueurAuberge longueur auberge
