@@ -181,10 +181,9 @@ func shortestPathAux(weightMatrix [][]int,c Carte, x int, y int, currX *int, cur
 
 //Selectionne le chemin le plus court a partir de la matrice des poids
 func shortestPath(weightMatrix [][]int,destx int, desty int,c Carte,path []Case) []Case{
-	if(weightMatrix[destx][desty]==UNVISITED){
+	if(weightMatrix[destx][desty]==UNVISITED || weightMatrix[destx][desty]==OBSTACLE){
 		return (nil)
 	}
-
 	path=make([]Case,weightMatrix[destx][desty]+1)
 	path[len(path)-1]=(Case{destx,desty,*(c.GetTile(destx,desty))})
 	currX:=destx
