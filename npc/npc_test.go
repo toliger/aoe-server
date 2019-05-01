@@ -99,7 +99,7 @@ func TestRecolte(t *testing.T) {
 	c.AddNewRessource(&ress)
 	c.AddNewRessource(&ress2)
 	go (pnj).MoveHarvestTarget(c, &ress)
-	time.Sleep(time.Duration(2 * time.Second))
+	time.Sleep(time.Duration(3 * time.Second))
 	go (pnj).MoveTo(c, 10, 10, nil)
 	time.Sleep(time.Duration(1 * time.Second))
 	go (pnj).MoveTo(c, 16, 18, nil)
