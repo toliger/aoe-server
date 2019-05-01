@@ -57,7 +57,7 @@ func TestAutoFight(t *testing.T) {
 	go (&g).LaunchAutomaticFight()
     player1 := g.GetPlayerFromUID("b33d954f-c63e-4b48-88eb-8b5e86d94246")
     player2 := g.GetPlayerFromUID("1982N19N2")
-
+	player1.EntityListMutex.RLock()
     for _,pnj := range player1.GetEntities() {
         if (pnj == nil){
             break
@@ -65,12 +65,14 @@ func TestAutoFight(t *testing.T) {
         log.Println("Player 1")
         log.Printf("type %v  a : %v pv et est à la position (%v, %v) ",
         pnj.GetType(),  pnj.GetPv(), pnj.GetX(), pnj.GetY())
-    }
+	}
+	player1.EntityListMutex.RUnlock()
 
     time.Sleep(time.Duration(time.Millisecond * 4550))
 	log.Println("After fight")
     error := 0.
-    log.Println("Player 1")
+	log.Println("Player 1")
+	player1.EntityListMutex.RLock()
     for _,pnj := range (*player1).GetEntities() {
         if (pnj == nil){
             break
@@ -89,8 +91,10 @@ func TestAutoFight(t *testing.T) {
 	            error++
 	        }
 		}
-    }
-    log.Println("Player 2")
+	}
+	player1.EntityListMutex.RUnlock()
+	log.Println("Player 2")
+	player2.EntityListMutex.RLock()
     for _,pnj := range (*player2).GetEntities() {
         if (pnj == nil){
             break
@@ -109,7 +113,8 @@ func TestAutoFight(t *testing.T) {
 	             error += 0.5
 	        }
 		}
-    }
+	}
+	player2.EntityListMutex.RUnlock()
     if error >= 1{
         t.Error("les npc n'ont pas perdu de pv")
     }

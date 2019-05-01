@@ -8,6 +8,7 @@ import (
 	"git.unistra.fr/AOEINT/server/data"
 	"git.unistra.fr/AOEINT/server/npc"
 	"git.unistra.fr/AOEINT/server/utils"
+	"sync"
 )
 
 //Joueur :
@@ -23,6 +24,7 @@ type Joueur struct {
 	wood             int
 	food             int
 	ressourceChannel chan []int
+	EntityListMutex *sync.RWMutex
 }
 
 //GetChannel retourne le channel de ressource du joueur
@@ -33,7 +35,8 @@ func (j *Joueur) GetChannel() *(chan []int) {
 //Create : generate a player
 func Create(faction int, nom string, uid string) Joueur {
 	buffer := make(chan []int, constants.RessourceBufferSize)
-	res := Joueur{faction, nom, uid, 0, make([](*batiment.Batiment), constants.MaxBuildings), 0, make([](*npc.Npc), constants.MaxEntities), constants.StartingStone, constants.StartingWood, constants.StartingFood, buffer}
+	var m sync.RWMutex
+	res := Joueur{faction, nom, uid, 0, make([](*batiment.Batiment), constants.MaxBuildings), 0, make([](*npc.Npc), constants.MaxEntities), constants.StartingStone, constants.StartingWood, constants.StartingFood, buffer, &m}
 	go (&res).ressourceUpdate()
 	return res
 }
@@ -128,16 +131,25 @@ func (j Joueur) GetPointerNpc(i int) *npc.Npc {
 
 //DeleteNpcFromList retire un pnj de la liste du joueur
 func (j *Joueur) DeleteNpcFromList(x float64, y float64, typ int, pv int) bool {
+	j.EntityListMutex.RLock()
+	index := -1
 	for i := range j.entities {
 		if j.entities[i] == nil{
 			break
 		}
 		if j.entities[i].Get64X() == x && j.entities[i].Get64Y() == y && j.entities[i].GetType() == typ && j.entities[i].GetPv() == pv {
-			j.entities[i] = nil
-			return true
+			index=i
+			break
 		}
 	}
-	return false
+	j.EntityListMutex.RUnlock()
+	if(index == -1){
+		return false
+	}
+	j.EntityListMutex.Lock()
+	j.entities[index] = nil
+	j.EntityListMutex.Unlock()
+	return true
 }
 
 //GetBatiment :

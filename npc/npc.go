@@ -39,7 +39,6 @@ type Npc struct {
 	PlayerUUID       string
 	moveAction       map[int](chan bool)
 	wgAction         *sync.WaitGroup
-	wgTransmit       *sync.WaitGroup
 }
 
 type safeNumberBool struct {
@@ -63,12 +62,11 @@ func New(x *safeNumberFloat, y *safeNumberFloat, pv *safeNumberInt, vitesse int,
 	active.val = false
 	moveA := make(map[int](chan bool))
 	var wgA sync.WaitGroup
-	var wgT sync.WaitGroup
 	sfXD := &safeNumberFloat{}
 	sfXD.val = x.get()
 	sfYD := &safeNumberFloat{}
 	sfYD.val = y.get()
-	pnj := Npc{x, y, sfXD, sfYD, pv, vitesse, vue, portee, offensive, size, damage, tauxRecolte, selectable, typ, flag, *channel, false, active, "", moveA, &wgA, &wgT}
+	pnj := Npc{x, y, sfXD, sfYD, pv, vitesse, vue, portee, offensive, size, damage, tauxRecolte, selectable, typ, flag, *channel, false, active, "", moveA, &wgA}
 	return pnj
 }
 
@@ -132,7 +130,7 @@ func (pnj Npc) Stringify(typ int) map[string]string {
 func (pnj Npc) Transmit(id string, typ int) {
 	arr := pnj.Stringify(typ)
 	for k, e := range arr {
-		data.AddToAllAction(typ, id, k, e)
+		data.AjoutConcurrent(typ, id, k, e)
 	}
 }
 
@@ -421,14 +419,8 @@ func (pnj *Npc) StaticFightNpc(target *Npc, wgObjectAcess *sync.WaitGroup) {
 				pnj.SetActive(false)
 				return
 			}
-			target.wgTransmit.Wait()
-			log.Printf("(%v, %v) : attack (%v, %v) %v pv", pnj.GetX(), pnj.GetY(), target.GetX(), target.GetY(), target.GetPv())
 			target.SubPv(pnj.damage)
-			target.wgTransmit.Add(1)
-			wgObjectAcess.Add(1)
 			target.Transmit(data.IDMap.GetIDFromObject(target), constants.ActionAlterationNpc)
-			wgObjectAcess.Done()
-			target.wgTransmit.Done()
 			// if (!target.IsActive() && !done){
 			// 	target.StaticFightBackNpc(pnj)
 			// 	done = true
@@ -811,12 +803,9 @@ func (pnj *Npc) MoveHarvestTarget(c carte.Carte, ress *ressource.Ressource) {
 	// on attends que le villageois ait fini son déplacement
 	var wg sync.WaitGroup
 	wg.Add(1)
-	pnj.wgTransmit.Wait()
-	pnj.wgTransmit.Add(1)
 	pnj.dextX.set(float64(posRecolteVillX))
 	pnj.destY.set(float64(posRecolteVillY))
 	pnj.Transmit(data.IDMap.GetIDFromObject(pnj),constants.ActionAlterationNpc)
-	pnj.wgTransmit.Done()
 	go pnj.MoveTo(c, posRecolteVillX, posRecolteVillY, &wg)
 	wg.Wait()
 

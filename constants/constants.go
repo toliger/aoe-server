@@ -72,6 +72,8 @@ const (
 //MaxActions constante maxActions
 const MaxActions = 10
 
+//ActionChannelSize Nombre d'actions simultanées stockées dans le channel
+const ActionChannelSize = 10
 //===== caracteristiques d'une partie =====
 
 //MaxEntities nb entites max par joueur

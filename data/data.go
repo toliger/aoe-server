@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
-
+	"sync"
 	"strconv"
 	"strings"
 	"git.unistra.fr/AOEINT/server/constants"
@@ -21,10 +21,13 @@ type Action struct {
 //	Exemple: [type:int].Description["UUID"]["Key"]="value"
 // Modification: ["PlayerUID"]->[type:int].Description["UUID"]["Key"]="value"
 var ActionBuffer map[string]([]Action)
-
 //InitiateActionBuffer Initialisation du buffer d'actions
 func InitiateActionBuffer() {
 	ActionBuffer = make(map[string]([]Action), 4)
+	if(actionChannel ==nil){
+		actionChannel= make(chan request,constants.ActionChannelSize)
+		go bufferLoop()
+	}
 	ActionBuffer[constants.PlayerUID1] = make([]Action, constants.MaxActions)
 	ActionBuffer[constants.PlayerUID2] = make([]Action, constants.MaxActions)
 	if constants.PlayerUID3 != "DEFAULT" {
@@ -32,6 +35,28 @@ func InitiateActionBuffer() {
 	}
 	if constants.PlayerUID4 != "DEFAULT" {
 		ActionBuffer[constants.PlayerUID4] = make([]Action, constants.MaxActions)
+	}
+}
+
+type request struct{
+	typ int
+	uuid string
+	key string
+	description string
+}
+
+var actionChannel chan(request)
+
+//AjoutConcurrent Permet d'effectuer un AddToAllAction de manière 
+func AjoutConcurrent(typ int, uuid string, key string, description string){
+	req := request{typ,uuid,key,description}
+	actionChannel <- req
+}
+
+func bufferLoop(){
+	for {
+		req:= <- actionChannel
+		AddToAllAction(req.typ,req.uuid,req.key,req.description)
 	}
 }
 
@@ -71,6 +96,7 @@ func CleanPlayerActionBuffer(uuid string) {
 type ObjectID struct {
 	IDOffset int
 	IDArray  map[string]interface{}
+	m *sync.RWMutex
 }
 
 //IDIsType renvoie un booleen indiquant si un id correspond a un objet du type fourni
@@ -80,7 +106,8 @@ func IDIsType(id string, T interface{}) bool {
 
 //NewObjectID Cree une instance ObjectId
 func NewObjectID() ObjectID {
-	res := (ObjectID{0, nil})
+	var m sync.RWMutex
+	res := (ObjectID{0, nil,&m})
 	res.IDArray = make(map[string]interface{}, constants.MAXOBJECTS)
 	return res
 }
@@ -90,31 +117,46 @@ var IDMap ObjectID
 
 //AddObject Fonction  permettant d'ajouter un objet générique à ObjectId. Retourne l'id de l'objet
 func (o *ObjectID) AddObject(obj interface{}) string {
+	o.m.Lock()
 	key := strconv.Itoa((*o).IDOffset)
 	(*o).IDArray[key] = obj
 	(*o).IDOffset++
+	o.m.Unlock()
 	return key
 }
 
 //DeleteObjectFromID Fonction permettant de retirer un objet à partir de son id
 func (o *ObjectID) DeleteObjectFromID(id string) {
+	o.m.Lock()
 	delete((*o).IDArray, id)
+	o.m.Unlock()
 }
 
 //DeleteObject Retire un objet de la liste à partir de son propre pointeur
 func (o *ObjectID) DeleteObject(obj interface{}) bool {
+	id :="-1"
+	o.m.RLock()
 	for i, e := range (*o).IDArray {
 		if e == obj {
-			delete((*o).IDArray, i)
-			return true
+			id=i
+			break
 		}
 	}
-	return false
+	o.m.RUnlock()
+	if(id=="-1"){
+		return false
+	}
+	o.m.Lock()
+	delete((*o).IDArray, id)
+	o.m.Unlock()
+	return true
 }
 
 //GetObjectFromID Renvoie un pointeur sur l'obj correspondant à l'id fourni
 func (o *ObjectID) GetObjectFromID(id string) interface{} {
+	o.m.RLock()
 	obj, test := (*o).IDArray[id]
+	o.m.RUnlock()
 	if !test {
 		return nil
 	}
@@ -128,12 +170,16 @@ func ConvertToInter(obj interface{}) interface{} {
 
 //GetIDFromObject Renvoie l'id d'un objet à partir de son pointeur
 func (o *ObjectID) GetIDFromObject(obj interface{}) string {
+	o.m.RLock()
+	id := "-1"
 	for i, e := range (*o).IDArray {
 		if e == obj {
-			return i
+			id=i
+			break
 		}
 	}
-	return "-1"
+	o.m.RUnlock()
+	return id
 }
 
 //TokenValue structure contenant les parametres recuperes dans le segment data du token
