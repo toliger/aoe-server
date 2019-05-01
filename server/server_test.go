@@ -7,7 +7,7 @@ import (
 	"time"
 	"context"
 	"testing"
-
+	"git.unistra.fr/AOEINT/server/data"
 	pb "git.unistra.fr/AOEINT/server/grpc"
 	"google.golang.org/grpc"
 )
@@ -143,7 +143,8 @@ func TestAskCreation(t *testing.T) {
 }
 
 func TestMain(m *testing.M) {
-
+	data.InitiateActionBuffer()
+	data.IDMap= data.NewObjectID()
 	TestSayHello(&testing.T{})
 
 	TestRightClick(&testing.T{})
