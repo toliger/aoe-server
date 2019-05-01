@@ -97,16 +97,13 @@ func TestRecolte(t *testing.T) {
 	ress := ressource.Create("tree", 2, 2)
 	c.AddNewRessource(&ress)
 	go (pnj).MoveHarvestTarget(c, &ress)
-	/*time.Sleep(time.Duration(3 * time.Second))
-	go (pnj).MoveTo(c, 10, 10, nil)
-	time.Sleep(time.Duration(1 * time.Second))
-	go (pnj).MoveTo(c, 16, 18, nil)
 	time.Sleep(time.Duration(5 * time.Second))
-	if pnj.GetX() != 16 || pnj.GetY() != 18 {
+	go (pnj).MoveTo(c, 10, 10, nil)
+	time.Sleep(time.Duration(3 * time.Second))
+	if pnj.GetX() != 10 || pnj.GetY() != 10 {
 		t.Error("le pnj n'est pas au bon endroit")
 		t.Log("pnjX :", pnj.GetX(), " pnjY :", pnj.GetY())
-	}*/
-	time.Sleep(time.Duration(5 * time.Second))
+	}
 	if ress.GetPv() == 100 {
 		t.Error("la ressource n'a pas perdu de Pv")
 		t.Log("pv: ", ress.GetPv())
