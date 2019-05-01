@@ -7,7 +7,6 @@ import (
 
 	"strconv"
 	"strings"
-	"log"
 	"git.unistra.fr/AOEINT/server/constants"
 	"git.unistra.fr/AOEINT/server/utils"
 	jwt "github.com/dgrijalva/jwt-go"
