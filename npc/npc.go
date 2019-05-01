@@ -389,7 +389,7 @@ func RecoltePossible(c carte.Carte, x int, y int) bool {
 }
 
 //StaticFightNpc : The npc starts fighting the npc until death or movements (also triggers the fight back)
-func (pnj *Npc) StaticFightNpc(target *Npc, wgObjectAcess *sync.WaitGroup) {
+func (pnj *Npc) StaticFightNpc(target *Npc) {
 	pnj.SetActive(true)
 	moveA := make(chan bool, 2)
 	pnj.wgAction.Wait()
@@ -428,6 +428,42 @@ func (pnj *Npc) StaticFightNpc(target *Npc, wgObjectAcess *sync.WaitGroup) {
 		}
 	}
 }
+
+
+//StaticFightBuilding : The npc starts fighting the building until death
+func (pnj *Npc) StaticFightBuilding(target *batiment.Batiment) {
+	pnj.SetActive(true)
+	moveA := make(chan bool, 2)
+	pnj.wgAction.Wait()
+	pnj.actualizeMoveAction(&moveA)
+	initialPosX, initialPosY := pnj.GetX(), pnj.GetY()
+	uptimeTicker := time.NewTicker(time.Duration(1 * time.Second))
+	for {
+		//The attacker is dead or moved
+		if pnj.GetPv() <= 0 || pnj.GetX() != initialPosX || pnj.GetY() != initialPosY {
+			return
+		}
+		//The target is dead
+		if target.GetPv() <= 0 {
+			pnj.SetActive(false)
+			return
+		}
+		select {
+		case <-moveA:
+			pnj.SetActive(false)
+			return
+		case <-uptimeTicker.C:
+			if target.GetPv() <= 0 {
+				pnj.SetActive(false)
+				return
+			}
+			//log.Printf("(%v, %v) : attack (%v, %v) %v pv", pnj.GetX(), pnj.GetY(), target.GetX(), target.GetY(), target.GetPv())
+			target.SubPv(pnj.damage)
+			target.Transmit(constants.ActionHarmBuilding, data.IDMap.GetIDFromObject(target))
+		}
+	}
+}
+
 
 //StaticFightBackNpc : The target fights back
 // func (pnj *Npc) StaticFightBackNpc(target *Npc) {
@@ -759,10 +795,6 @@ func (pnj *Npc) MoveHarvestTarget(c carte.Carte, ress *ressource.Ressource) {
 	}
 	if ress.GetType() == 2 && pnj.GetType() != 0 {
 		log.Print("Seul un harvester peut recolter de la pierre")
-		return
-	}
-	if pnj.GetVue() < (Abs(ress.GetX()-pnj.GetX()) + Abs(ress.GetY()-pnj.GetY())) {
-		log.Print("La ressource n'est pas dans la vue du npc")
 		return
 	}
 

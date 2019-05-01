@@ -233,3 +233,24 @@ func (j *Joueur)IsThereNpcInRange(pnj *npc.Npc) (*npc.Npc){
 	}
 	return nil
 }
+
+
+//IsThereBuildingInRange : returns the first building of the player in range of the given npc if there is one else nil
+func (j *Joueur)IsThereBuildingInRange(pnj *npc.Npc) (*batiment.Batiment){
+	if (*j).batiments == nil{
+		return nil
+	}
+	for i := 0; i < len((*j).batiments); i++ {
+		for x := pnj.GetX() - pnj.GetPortee(); x <= pnj.GetX()+pnj.GetPortee(); x++ {
+			for y := pnj.GetY() - pnj.GetPortee(); y <= pnj.GetY()+pnj.GetPortee(); y++ {
+				if (*j).batiments[i] == nil{
+					break
+				}
+				if ((*j).batiments[i].GetX() == x) && ((*j).batiments[i].GetY() == y){
+					return (*j).batiments[i]
+				}
+			}
+		}
+	}
+	return nil
+}

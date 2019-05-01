@@ -86,7 +86,7 @@ func (c Carte)AddNewBuilding(bat *batiment.Batiment) bool{
 	}
 
 	id:=(&data.IDMap).AddObject(bat)
-	(*bat).Transmit(id)
+    (*bat).Transmit(constants.ActionNewBuilding, id)
 
 	return true
 }

@@ -6,7 +6,6 @@ import (
 	"log"
 	"os"
 	"time"
-	"sync"
 
 	"git.unistra.fr/AOEINT/server/batiment"
 	Carte "git.unistra.fr/AOEINT/server/carte"
@@ -109,7 +108,6 @@ func (g *Game) DeleteNpc(pnj *npc.Npc) bool {
 
 //LaunchAutomaticFight : launch the AutomaticFight for all inactive npc
 func (g *Game) LaunchAutomaticFight() {
-	var wgObjectAcess sync.WaitGroup
 	uptimeTicker := time.NewTicker(time.Duration(100 * time.Millisecond))
 	for {
 		select {
@@ -126,7 +124,6 @@ func (g *Game) LaunchAutomaticFight() {
 								break
 							}
 							if (pnjTemp.GetPv() == 0){
-								wgObjectAcess.Wait()
 								g.DeleteNpc(pnjTemp)
 							}
 						}
@@ -138,12 +135,17 @@ func (g *Game) LaunchAutomaticFight() {
 						for _,p := range g.Joueurs{
 							// log.Print("player :", (*player).GetUID())
 							// log.Print("other player :", p.GetUID())
-							//Seacch for ennemies npc
+							//Search for ennemies npc
 							if (player.GetUID() != p.GetUID()){
 								pnjToFight := p.IsThereNpcInRange(player.GetPointerNpc(i))
 								//log.Print("staticFight npc du type :", pnjToFight.GetType())
-								if(pnjToFight != nil){
-									go (*player).GetPointerNpc(i).StaticFightNpc(pnjToFight, &wgObjectAcess)
+								if (pnjToFight != nil){
+									go (*player).GetPointerNpc(i).StaticFightNpc(pnjToFight)
+								}else{
+									buildingToFight := p.IsThereBuildingInRange(player.GetPointerNpc(i))
+									if (buildingToFight != nil){
+										go (*player).GetPointerNpc(i).StaticFightBuilding(buildingToFight)
+									}
 								}
 							}
 						}

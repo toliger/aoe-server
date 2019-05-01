@@ -43,22 +43,34 @@ func Create(class string, x int, y int) Batiment {
 	return bat
 }
 
-func (bat Batiment) stringify(id string) map[string]string {
+func (bat Batiment) stringify(typ int, id string) map[string]string {
 	res := make(map[string]string)
-	res["x"] = strconv.Itoa(bat.X)
-	res["y"] = strconv.Itoa(bat.Y)
-	res["pv"] = strconv.Itoa(bat.Pv)
-	res["type"] = strconv.Itoa(bat.Typ)
-	res["PlayerUUID"] = bat.PlayerUID
-	res["id"] = id
-	return res
+    if (typ == cst.ActionNewBuilding){
+        res["x"] = strconv.Itoa(bat.X)
+        res["y"] = strconv.Itoa(bat.Y)
+        res["pv"] = strconv.Itoa(bat.Pv)
+        res["type"] = strconv.Itoa(bat.Typ)
+        res["PlayerUUID"] = bat.PlayerUID
+        res["id"] = id
+        return res
+    }
+    if (typ == cst.ActionDestroyBuilding){
+    	res["id"] = id
+        return res
+    }
+    if (typ == cst.ActionHarmBuilding){
+        res["pv"] = strconv.Itoa(bat.Pv)
+        res["id"] = id
+        return res
+    }
+    return res
 }
 
 //Transmit : Adds the corresponding action to ActionBuffer
-func (bat Batiment) Transmit(id string) {
-	arr := bat.stringify(id)
+func (bat Batiment) Transmit(typ int, id string) {
+	arr := bat.stringify(typ, id)
 	for k, e := range arr {
-		data.AddToAllAction(cst.ActionNewBuilding, id, k, e)
+        data.AjoutConcurrent(typ, id, k, e)
 	}
 }
 

@@ -98,11 +98,6 @@ func TestRecolte(t *testing.T) {
 	ress2 := ressource.Create("tree", 32, 18)
 	c.AddNewRessource(&ress)
 	c.AddNewRessource(&ress2)
-	go (pnj).MoveHarvestTarget(c, &ress2)
-	time.Sleep(time.Duration(5 * time.Second))
-	if ress2.GetPv() != 100 {
-		t.Error("la ressource n'est pas cencé avoir perdu de pv car hors de vue")
-	}
 	go (pnj).MoveHarvestTarget(c, &ress)
 	time.Sleep(time.Duration(2 * time.Second))
 	go (pnj).MoveTo(c, 10, 10, nil)
