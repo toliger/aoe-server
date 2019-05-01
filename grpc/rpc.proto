@@ -52,9 +52,10 @@ service Interactions {
         *** Un identifiant de ressource
 */
 message RightClickRequest {
-    Coordinates Point = 1;
-    repeated string EntitySelectionUUID = 2;
-    string Target = 3;
+    string Token = 1;
+    Coordinates Point = 2;
+    repeated string EntitySelectionUUID = 3;
+    string Target = 4;
 }
 /*
 * Reponse du Serveur : Un message vide
