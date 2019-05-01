@@ -156,11 +156,34 @@ func (g *Game) LaunchAutomaticFight() {
 	}
 }
 
+//BrokenBuildingsCollector deletes all buildings with less than 1 HP. Ends the game if a base is destroyed
+func (g *Game)BrokenBuildingsCollector(){
+	uptimeTicker := time.NewTicker(time.Duration(100 * time.Millisecond))
+	for {
+		select {
+			case <-uptimeTicker.C:
+				for _,player := range g.Joueurs{
+					list:=player.GetBuildings()
+					if(list==nil){
+						break
+					}
+					for key,bat := range list{
+						if bat.GetPv()<=0{
+							g.DeleteBuilding(bat)
+							if key==0{ //Auberge
+								g.EndOfGame()
+							}
+						}
+					}
+				}
+		}
+	}
+}
 
 //EndOfGame : Interromps la boucle principale du jeu
 func (g *Game) EndOfGame() {
 	(*g).GameRunning <- false
-
+	data.AddToAllAction(constants.ActionEndOfGame,"useless","useless","useless")
 }
 
 //GameLoop : fonction contenant la boucle principale du jeu

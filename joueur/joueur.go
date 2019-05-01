@@ -119,6 +119,11 @@ func (j Joueur) GetEntities() []*npc.Npc {
 	return (j.entities)
 }
 
+//GetBuildings renvoie la liste des batiments du jouer
+func (j Joueur) GetBuildings() []*batiment.Batiment{
+	return j.batiments
+}
+
 //GetNpc :
 func (j Joueur) GetNpc(i int) npc.Npc {
 	return *(j.entities[i])
