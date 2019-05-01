@@ -56,16 +56,42 @@ func TestRightClick(t *testing.T) {
 		t.Errorf("Erreur du test, message d'erreur vide")
 	}
 
-	fmt.Println("\n2. RightClick EntitySelectionUUID remplie (mais mal)")
+	fmt.Println("\n2. AskUpdate Token remplie (mal v1)")
+	_, err = s.AskUpdate(ctx, &pb.AskUpdateRequest{
+		Token: "eyJhbGciOiJIUzI1NiIs",
+	});
+	if err == nil {
+		t.Errorf("Erreur du test, message d'erreur vide")
+	}
+
+	fmt.Println("\n2. AskUpdate Token remplie (mal v2)")
+	_, err = s.AskUpdate(ctx, &pb.AskUpdateRequest{
+		Token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM",
+	});
+	if err == nil {
+		t.Errorf("Erreur du test, message d'erreur vide")
+	}
+
+	fmt.Println("\n2. AskUpdate Token remplie (mal v3)")
+	_, err = s.AskUpdate(ctx, &pb.AskUpdateRequest{
+		Token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxw",
+	});
+	if err == nil {
+		t.Errorf("Erreur du test, message d'erreur vide")
+	}
+
+	fmt.Println("\n3. RightClick EntitySelectionUUID remplie (mais mal)")
 	_, err = s.RightClick(ctx, &pb.RightClickRequest{
+		Token: token,
 		EntitySelectionUUID: []string{"5", "6"},
 	})
 	if err == nil {
 		t.Errorf("Erreur du test, message d'erreur vide")
 	}
 
-	fmt.Println("\n3. RightClick EntitySelectionUUID et Target remplie")
+	fmt.Println("\n4. RightClick EntitySelectionUUID et Target remplie")
 	_, err = s.RightClick(ctx, &pb.RightClickRequest{
+		Token: token,
 		EntitySelectionUUID: []string{"5", "6"},
 		Target: "152",
 	})
@@ -73,8 +99,9 @@ func TestRightClick(t *testing.T) {
 		t.Errorf("Erreur du test, message d'erreur vide")
 	}
 
-	fmt.Println("\n4. RightClick tout remplie")
+	fmt.Println("\n5. RightClick tout remplie")
 	_, err = s.RightClick(ctx, &pb.RightClickRequest{
+		Token: token,
 		Point: &pb.Coordinates{X: 5.2, Y: 7.3},
 		EntitySelectionUUID: []string{"5", "6"},
 		Target: "152",

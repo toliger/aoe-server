@@ -101,6 +101,14 @@ func (s *Arguments) RightClick(ctx context.Context, in *pb.RightClickRequest) (*
 		return &pb.RightClickReply{}, errors.New(msg)
 	}
 
+	// Extract data from token to get player's UUID
+	playerUUID := data.ExtractFromToken(in.Token)
+	if playerUUID == nil {
+		msg := "Token invalide dans AskUpdate"
+		log.Print(msg)
+		return &pb.RightClickReply{}, errors.New(msg)
+	}
+	
 	if in.Target == "" { // MoveTo request
 		// Loop on each entity
 		for i := 0; i < len(in.EntitySelectionUUID); i++ {
@@ -111,6 +119,13 @@ func (s *Arguments) RightClick(ctx context.Context, in *pb.RightClickRequest) (*
 				msg := "Erreur, une entity n'est pas trouvé dans RightClick"
 				log.Println(msg)
 				return &pb.RightClickReply{}, errors.New(msg)
+			}
+
+			// Verify if the asker can move the NPC
+			if entity.(*npc.Npc).PlayerUUID != playerUUID.UUID {
+				msg := "Erreur, une entity n'est pas au joueur"
+				log.Println(msg)
+				continue
 			}
 
 			// Get the path of the entity
@@ -145,6 +160,13 @@ func (s *Arguments) RightClick(ctx context.Context, in *pb.RightClickRequest) (*
 				msg := "Erreur, une entity n'est pas trouvé dans RightClick"
 				log.Println(msg)
 				return &pb.RightClickReply{}, errors.New(msg)
+			}
+
+			// Verify if the asker can move the NPC
+			if entity.(*npc.Npc).PlayerUUID != playerUUID.UUID {
+				msg := "Erreur, une entity n'est pas au joueur"
+				log.Println(msg)
+				continue
 			}
 
 			target := data.IDMap.GetObjectFromID(in.Target)
