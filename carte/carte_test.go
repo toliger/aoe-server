@@ -9,8 +9,6 @@ import "math/rand"
 
 //Verifie si la carte creee est de la bonne taille et vide
 func TestCreation(t *testing.T) {
-	d.IDMap = d.NewObjectID()
-	d.InitiateActionBuffer()
 	c := New(10)
 	var typ int
 	var bat *batiment.Batiment
@@ -30,8 +28,6 @@ func TestCreation(t *testing.T) {
 
 //Verifie le placement de batiments et de ressources
 func TestPlacement(t *testing.T) {
-	d.IDMap = d.NewObjectID()
-	d.InitiateActionBuffer()
 	res := ressource.Create("tree", 1, 1)
 	bat := batiment.Create("auberge", 2, 2)
 	c := New(10)
@@ -50,8 +46,6 @@ func TestPlacement(t *testing.T) {
 }
 
 func TestChemin(t *testing.T) {
-	d.IDMap = d.NewObjectID()
-	d.InitiateActionBuffer()
 	s1 := rand.NewSource(time.Now().UnixNano())
 	r1 := rand.New(s1)
 	c := New(50)
@@ -72,4 +66,12 @@ func TestChemin(t *testing.T) {
 			py = path[i].y
 		}
 	}
+}
+
+func TestMain(m *testing.M) {
+	d.InitiateActionBuffer()
+	d.IDMap= d.NewObjectID()
+	TestCreation(&testing.T{})
+	TestPlacement(&testing.T{})
+	TestChemin(&testing.T{})
 }

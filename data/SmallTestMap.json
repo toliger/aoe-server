@@ -5,29 +5,29 @@
 			"Y": 0,
 			"Pv": 100,
 			"Typ": 0,
-			"Longueur": 2,
-			"Largeur": 2
+			"Longueur": 1,
+			"Largeur": 1
 		}, {
 			"X": 0,
 			"Y": 5,
 			"Pv": 100,
 			"Typ": 0,
-			"Longueur": 2,
-			"Largeur": 2
+			"Longueur": 1,
+			"Largeur": 1
 		}, {
 			"X": 55,
 			"Y": 62,
 			"Pv": 100,
 			"Typ": 0,
-			"Longueur": 2,
-			"Largeur": 2
+			"Longueur": 1,
+			"Largeur": 1
 		}, {
 			"X": 62,
 			"Y": 55,
 			"Pv": 100,
 			"Typ": 0,
-			"Longueur": 2,
-			"Largeur": 2
+			"Longueur": 1,
+			"Largeur": 1
 		}
 	],
 	"Ressources": [{

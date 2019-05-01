@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"git.unistra.fr/AOEINT/server/carte"
-	"git.unistra.fr/AOEINT/server/constants"
 	d "git.unistra.fr/AOEINT/server/data"
 	"git.unistra.fr/AOEINT/server/ressource"
 )
@@ -35,6 +34,60 @@ func TestDeplacement(t *testing.T){
 }
 */
 
+func TestConcurency(t *testing.T) {
+	d.IDMap = d.NewObjectID()
+	d.InitiateActionBuffer()
+	c := carte.New(128)
+	ch := make(chan []int, 200)
+	pnj, _ := Create("villager", 0, 0, 0, &ch)
+	pnj.MoveTo(c, 10, 10, nil)
+	time.Sleep(time.Duration(5 * time.Second))
+	if pnj.GetX() != 10 && pnj.GetY() != 10 {
+		t.Error("position incorrecte")
+	}
+	pnj.MoveTo(c, 0, 0, nil)
+	time.Sleep(time.Duration(100 * time.Millisecond))
+	pnj.MoveTo(c, 10, 10, nil)
+	time.Sleep(time.Duration(1 * time.Second))
+	x := pnj.GetX()
+	y := pnj.GetY()
+	if x != 10 && y != 10 {
+		t.Log("x:", x, " :", y)
+		t.Error("mauvaise position après double MoveTo")
+	}
+}
+
+func TestRecolteContraintes(t *testing.T) {
+	d.IDMap = d.NewObjectID()
+	d.InitiateActionBuffer()
+	bip := make(chan []int, 100)
+	pnj, _ := Create("harvester", 0, 0, 0, &bip)
+	c := carte.New(50)
+	ress := ressource.Create("tree", 2, 2)
+	obstacle1 := ressource.Create("tree", 1, 1)
+	obstacle2 := ressource.Create("tree", 1, 2)
+	obstacle3 := ressource.Create("tree", 2, 1)
+	obstacle4 := ressource.Create("tree", 2, 3)
+	obstacle5 := ressource.Create("tree", 3, 2)
+	obstacle6 := ressource.Create("tree", 3, 3)
+	obstacle7 := ressource.Create("tree", 3, 1)
+	obstacle8 := ressource.Create("tree", 1, 3)
+	c.AddNewRessource(&obstacle1)
+	c.AddNewRessource(&obstacle2)
+	c.AddNewRessource(&obstacle3)
+	c.AddNewRessource(&obstacle4)
+	c.AddNewRessource(&obstacle5)
+	c.AddNewRessource(&obstacle6)
+	c.AddNewRessource(&obstacle7)
+	c.AddNewRessource(&obstacle8)
+	c.AddNewRessource(&ress)
+	go (pnj).MoveHarvestTarget(c, &ress)
+	time.Sleep(time.Duration(5 * time.Second))
+	if pnj.GetX() != 0 || pnj.GetY() != 0 {
+		t.Error("le pnj n'est pas sencé s'etre deplacé car bloqué par des obstacles")
+	}
+}
+
 func TestRecolte(t *testing.T) {
 	d.IDMap = d.NewObjectID()
 	d.InitiateActionBuffer()
@@ -43,23 +96,18 @@ func TestRecolte(t *testing.T) {
 	c := carte.New(50)
 	ress := ressource.Create("tree", 2, 2)
 	c.AddNewRessource(&ress)
-	ch := make(chan bool, 2)
-	ch2 := make(chan bool, 2)
-	ch3 := make(chan bool, 2)
-	go (&pnj).MoveHarvestTarget(c, &ress, &ch)
-	time.Sleep(time.Duration(2 * time.Second))
-	go (&pnj).MoveTo(c, 10, 10, nil, &ch2)
-	time.Sleep(time.Duration(1 * time.Second))
-	go (&pnj).MoveTo(c, 16, 18, nil, &ch3)
+	go (pnj).MoveHarvestTarget(c, &ress)
 	time.Sleep(time.Duration(5 * time.Second))
-	if pnj.GetX() != 16 || pnj.GetY() != 18 {
+	go (pnj).MoveTo(c, 10, 10, nil)
+	time.Sleep(time.Duration(5 * time.Second))
+	if pnj.GetX() != 10 || pnj.GetY() != 10 {
 		t.Error("le pnj n'est pas au bon endroit")
 		t.Log("pnjX :", pnj.GetX(), " pnjY :", pnj.GetY())
 	}
 	if ress.GetPv() == 100 {
 		t.Error("la ressource n'a pas perdu de Pv")
+		t.Log("pv: ", ress.GetPv())
 	}
-	t.Log("pv: ", ress.GetPv())
 }
 
 /*
@@ -84,6 +132,7 @@ func TestFightBuilding(t *testing.T){
 }
 */
 
+/*
 func TestFightNpc(t *testing.T) {
 	d.IDMap = d.NewObjectID()
 	d.InitiateActionBuffer()
@@ -94,14 +143,24 @@ func TestFightNpc(t *testing.T) {
 	c := carte.New(50)
 	ress := ressource.Create("tree", 16, 18)
 	c.AddNewRessource(&ress)
-	ch := make(chan bool, 2)
-	ch2 := make(chan bool, 2)
-	ch3 := make(chan bool, 2)
-	go (&pnj1).MoveFight(c, &pnj2, &ch)
+	//ch4 := make(chan bool, 2)
+	go (pnj1).MoveFight(c, pnj2)
 	time.Sleep(time.Duration(4 * time.Second))
-	go (&pnj1).MoveHarvestTarget(c, &ress, &ch2)
+	// go (&pnj2).MoveTo(c, 17,15, nil)
+	// time.Sleep(time.Duration(4 * time.Second))
+
+	// if pnj1.GetX() != 17 || pnj1.GetY() != 15{
+	// 	t.Error("mauvais deplacement apres un fight")
+	// 	t.Log("pnjX :", pnj1.GetX(), " pnjY :", pnj1.GetY())
+	// }
+	if pnj2.GetPv() == constants.SoldierPv {
+		t.Error("la cible n'a pas perdu de Pv")
+		t.Log("pv de la cible: ", pnj2.GetPv())
+	}
+
+	go (pnj1).MoveHarvestTarget(c, &ress)
 	time.Sleep(time.Duration(6 * time.Second))
-	go (&pnj1).MoveFight(c, &pnj2, &ch3)
+	go (pnj1).MoveFight(c, pnj2)
 	time.Sleep(time.Duration(4 * time.Second))
 	if pnj2.GetPv() == constants.SoldierPv {
 		t.Error("la cible n'a pas perdu de Pv")
@@ -112,3 +171,4 @@ func TestFightNpc(t *testing.T) {
 	// 	t.Log("pv de l'agresseur': ", pnj1.GetPv())
 	// }
 }
+*/

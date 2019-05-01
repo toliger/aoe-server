@@ -1,8 +1,12 @@
 package tuile
 
-import batiment "git.unistra.fr/AOEINT/server/batiment"
-import ressource "git.unistra.fr/AOEINT/server/ressource"
-
+import (
+	"git.unistra.fr/AOEINT/server/batiment"
+	"git.unistra.fr/AOEINT/server/ressource"
+	"git.unistra.fr/AOEINT/server/data"
+	"git.unistra.fr/AOEINT/server/constants"
+	"strconv"
+)
 //Tuile : Structure d'une tuile(case de la carte)
 type Tuile struct{//Batiment, ressource ou vide
 	typ int //0 vide 1 batiment 2 ressource
@@ -51,5 +55,13 @@ func (t *Tuile)AddRessource(res *ressource.Ressource){
 func (t *Tuile)Empty(){
 	(*t).typ=0
 	(*t).bat=nil
+	if (*t).res !=nil {
+		id:=data.IDMap.GetIDFromObject((*t).res)
+		if id!="-1" {
+			data.IDMap.DeleteObjectFromID(id)
+			data.AddToAllAction(constants.ActionDelRessource,id,"x",strconv.Itoa(t.res.GetX()))
+			data.AddToAllAction(constants.ActionDelRessource,id,"y",strconv.Itoa(t.res.GetY()))
+		}
+	}
 	(*t).res=nil
 }

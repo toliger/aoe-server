@@ -6,6 +6,7 @@ import (
   "git.unistra.fr/AOEINT/server/batiment"
   "git.unistra.fr/AOEINT/server/ressource"
   "git.unistra.fr/AOEINT/server/data"
+  "git.unistra.fr/AOEINT/server/constants"
 )
 
 
@@ -59,7 +60,7 @@ func (c Carte)AddNewRessource(res *ressource.Ressource) bool{
 
 	(c.GetTile(x,y)).AddRessource(res)
 	id:=(&data.IDMap).AddObject(res)
-	(*res).Transmit(id)
+	(*res).Transmit(id,constants.ActionNewRessource)
 
 	return true
 }
@@ -85,7 +86,7 @@ func (c Carte)AddNewBuilding(bat *batiment.Batiment) bool{
 	}
 
 	id:=(&data.IDMap).AddObject(bat)
-	(*bat).Transmit(id)
+    (*bat).Transmit(constants.ActionNewBuilding, id)
 
 	return true
 }
@@ -180,10 +181,9 @@ func shortestPathAux(weightMatrix [][]int,c Carte, x int, y int, currX *int, cur
 
 //Selectionne le chemin le plus court a partir de la matrice des poids
 func shortestPath(weightMatrix [][]int,destx int, desty int,c Carte,path []Case) []Case{
-	if(weightMatrix[destx][desty]==UNVISITED){
+	if(weightMatrix[destx][desty]==UNVISITED || weightMatrix[destx][desty]==OBSTACLE){
 		return (nil)
 	}
-
 	path=make([]Case,weightMatrix[destx][desty]+1)
 	path[len(path)-1]=(Case{destx,desty,*(c.GetTile(destx,desty))})
 	currX:=destx
