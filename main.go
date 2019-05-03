@@ -17,6 +17,7 @@ func main() {
 	d.InitiateActionBuffer()
 	data := game.ExtractData()
 	(&g).GenerateMap(data)
+	go (&g).LaunchAutomaticFight()
 
 	// On lance le faux client pour tester les fonctions de liaison
 	go (&g).GameLoop()
