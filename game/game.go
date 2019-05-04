@@ -96,12 +96,12 @@ func (g *Game) DeleteNpc(pnj *npc.Npc) bool {
 	if id == "-1" {
 		return false
 	}
-	//On retire le pnj de la liste des pnj du jeu
-	data.IDMap.DeleteObjectFromID(id)
 	//On retire le pnj de la liste des pnj du joueur
-	if !g.GetPlayerFromUID(pnj.PlayerUUID).DeleteNpcFromList(pnj.Get64X(), pnj.Get64Y(), pnj.GetType(), pnj.GetPv()) {
+	if !g.GetPlayerFromUID(pnj.PlayerUUID).DeleteNpcFromList(pnj.Get64X(), pnj.Get64Y(), pnj.GetType(), pnj.GetPv(),id) {
 		return false
 	}
+	//On retire le pnj de la liste des pnj du jeu
+	data.IDMap.DeleteObjectFromID(id)
 	data.AddToAllAction(constants.ActionDelNpc, id, "useless", "useless")
 	return true
 }
@@ -262,10 +262,10 @@ Modification: Changement pour des valeurs statiques (temporaire)
 */
 func (g *Game) GetPlayerData() {
 	(*g).Joueurs = make([]*joueur.Joueur, 2)
-	// id1:= data.ExtractFromToken(constants.Player1JWT).UUID
-	// id2:= data.ExtractFromToken(constants.Player2JWT).UUID
-	j0 := joueur.Create(0, "Bob", "b33d954f-c63e-4b48-88eb-8b5e86d94246")
-	j1 := joueur.Create(1, "Alice", "1982N19N2")
+	id1:= data.ExtractFromToken(constants.Player1JWT).UID
+	id2:= data.ExtractFromToken(constants.Player2JWT).UID
+	j0 := joueur.Create(0, "Bob", id1)
+	j1 := joueur.Create(1, "Alice", id2)
 	(*g).Joueurs[0] = &j0
 	(*g).Joueurs[1] = &j1
 	constants.PlayerUID1 = (*g).Joueurs[0].UID

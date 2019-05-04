@@ -122,7 +122,7 @@ func (s *Arguments) RightClick(ctx context.Context, in *pb.RightClickRequest) (*
 			}
 
 			// Verify if the asker can move the NPC
-			if entity.(*npc.Npc).PlayerUUID != playerUUID.UUID {
+			if entity.(*npc.Npc).PlayerUUID != playerUUID.UID {
 				msg := "Erreur, une entity n'est pas au joueur"
 				log.Println(msg)
 				continue
@@ -163,7 +163,7 @@ func (s *Arguments) RightClick(ctx context.Context, in *pb.RightClickRequest) (*
 			}
 
 			// Verify if the asker can move the NPC
-			if entity.(*npc.Npc).PlayerUUID != playerUUID.UUID {
+			if entity.(*npc.Npc).PlayerUUID != playerUUID.UID {
 				msg := "Erreur, une entity n'est pas au joueur"
 				log.Println(msg)
 				continue
@@ -215,12 +215,12 @@ func (s *Arguments) AskUpdate(ctx context.Context, in *pb.AskUpdateRequest) (*pb
 	toSend := make([]*pb.UpdateAsked, 0)
 
 	// Verify if the playerUUID exist in the map
-	if _, isFilled := data.ActionBuffer[playerUUID.UUID]; isFilled {
-		for actionType := range data.ActionBuffer[playerUUID.UUID] {
-			for entityUUID := range data.ActionBuffer[playerUUID.UUID][actionType].Description {
+	if _, isFilled := data.ActionBuffer[playerUUID.UID]; isFilled {
+		for actionType := range data.ActionBuffer[playerUUID.UID] {
+			for entityUUID := range data.ActionBuffer[playerUUID.UID][actionType].Description {
 				upAsk := pb.UpdateAsked{Type: int32(actionType), EntityUUID: entityUUID}
 
-				for key, value := range data.ActionBuffer[playerUUID.UUID][actionType].Description[entityUUID] {
+				for key, value := range data.ActionBuffer[playerUUID.UID][actionType].Description[entityUUID] {
 					upAsk.Arg = append(upAsk.Arg, &pb.Param{Key: key, Value: value})
 				}
 
@@ -233,7 +233,7 @@ func (s *Arguments) AskUpdate(ctx context.Context, in *pb.AskUpdateRequest) (*pb
 	}
 
 	// Deletin the historic of updates waiting for the client
-	data.CleanPlayerActionBuffer(playerUUID.UUID)
+	data.CleanPlayerActionBuffer(playerUUID.UID)
 
 	return &pb.AskUpdateReply{Array: toSend}, nil
 }
@@ -270,7 +270,7 @@ func (s *Arguments) AskCreation(ctx context.Context, in *pb.AskCreationRequest) 
 		}
 
 		// Create NPC into the right player and update ActionBuffer
-		player := s.g.GetPlayerFromUID(playerUUID.UUID)
+		player := s.g.GetPlayerFromUID(playerUUID.UID)
 		player.AddAndCreateNpc(class, int(in.Case.X), int(in.Case.Y))
 		fmt.Println(int(in.Case.X), int(in.Case.Y))
 
@@ -290,7 +290,7 @@ func (s *Arguments) AskCreation(ctx context.Context, in *pb.AskCreationRequest) 
 		}
 
 		// Create NPC into the right player and update ActionBuffer
-		player := s.g.GetPlayerFromUID(playerUUID.UUID)
+		player := s.g.GetPlayerFromUID(playerUUID.UID)
 		b := batiment.Create(class, int(in.Case.X), int(in.Case.Y))
 		if s.g.Carte.AddNewBuilding(&b) != true {
 			log.Print("Erreur, peut pas créer un batiment dans AskCreation")

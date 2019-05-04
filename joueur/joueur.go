@@ -145,7 +145,7 @@ func (j Joueur) GetPointerNpcByPos(x int, y int) *npc.Npc {
 }
 
 //DeleteNpcFromList retire un pnj de la liste du joueur
-func (j *Joueur) DeleteNpcFromList(x float64, y float64, typ int, pv int) bool {
+func (j *Joueur) DeleteNpcFromList(x float64, y float64, typ int, pv int, id string) bool {
 	j.EntityListMutex.RLock()
 	index := -1
 	for i := range j.entities {
@@ -153,8 +153,10 @@ func (j *Joueur) DeleteNpcFromList(x float64, y float64, typ int, pv int) bool {
 			break
 		}
 		if j.entities[i].Get64X() == x && j.entities[i].Get64Y() == y && j.entities[i].GetType() == typ && j.entities[i].GetPv() == pv {
-			index=i
-			break
+			if(data.IDMap.GetIDFromObject(j.entities[i]) == id){
+				index=i
+				break
+			}
 		}
 	}
 	j.EntityListMutex.RUnlock()
@@ -162,6 +164,7 @@ func (j *Joueur) DeleteNpcFromList(x float64, y float64, typ int, pv int) bool {
 		return false
 	}
 	j.EntityListMutex.Lock()
+	j.entities[index].SetPv(0)
 	j.entities[index] = nil
 	j.EntityListMutex.Unlock()
 	return true

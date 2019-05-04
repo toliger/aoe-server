@@ -199,6 +199,9 @@ func (pnj *Npc) SetPv(val int) {
 func (pnj *Npc) SubPv(val int) {
 	if pnj != nil {
 		pnj.pv.sub(val,pnj)
+		if pnj.GetPv() <0 {
+			pnj.SetPv(0)
+		}
 	}
 }
 
