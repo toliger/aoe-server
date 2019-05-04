@@ -186,8 +186,9 @@ func (o *ObjectID) GetIDFromObject(obj interface{}) string {
 type TokenValue struct {
 	Group string
 	Name  string
-	UUID  string
+	UID  string
 	Iat   int
+	Exp	int
 }
 
 //ExtractFromToken retourne une map[string]string des donnees du segment d'un token

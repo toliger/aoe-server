@@ -45,10 +45,8 @@ func TestDestruction(t *testing.T) {
 
 func TestAutoFight(t *testing.T) {
 	cst.Testing=true
-	d.ExtractFromToken("aubvfauipva.eyJncm91cCI6InBsYXllciIsIm5hbWUiOiJQaWVycmUgQyIsInV1aWQiOiJiMzNkOTU0Zi1jNjNlLTRiNDgtODhlYi04YjVlODZkOTQyNDYiLCJpYXQiOjE1MTYyMzkwMjJ9.oaougf")
 	var g Game
 	d.IDMap = d.NewObjectID()
-	d.InitiateActionBuffer()
 	cExit:=make(chan(bool))
 	g.GameRunning = cExit
 	(&g).GetPlayerData()
@@ -56,8 +54,8 @@ func TestAutoFight(t *testing.T) {
 	data := ExtractData()
 	(&g).GenerateMap(data)
 	go (&g).LaunchAutomaticFight()
-    player1 := g.GetPlayerFromUID("b33d954f-c63e-4b48-88eb-8b5e86d94246")
-    player2 := g.GetPlayerFromUID("1982N19N2")
+    player1 := g.GetPlayerFromUID(d.ExtractFromToken(cst.Player1JWT).UID)
+    player2 := g.GetPlayerFromUID(d.ExtractFromToken(cst.Player2JWT).UID)
 	player1.EntityListMutex.RLock()
     for _,pnj := range player1.GetEntities() {
         if (pnj == nil){
