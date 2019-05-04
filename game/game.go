@@ -96,12 +96,12 @@ func (g *Game) DeleteNpc(pnj *npc.Npc) bool {
 	if id == "-1" {
 		return false
 	}
-	//On retire le pnj de la liste des pnj du jeu
-	data.IDMap.DeleteObjectFromID(id)
 	//On retire le pnj de la liste des pnj du joueur
-	if !g.GetPlayerFromUID(pnj.PlayerUUID).DeleteNpcFromList(pnj.Get64X(), pnj.Get64Y(), pnj.GetType(), pnj.GetPv()) {
+	if !g.GetPlayerFromUID(pnj.PlayerUUID).DeleteNpcFromList(pnj.Get64X(), pnj.Get64Y(), pnj.GetType(), pnj.GetPv(),id) {
 		return false
 	}
+	//On retire le pnj de la liste des pnj du jeu
+	data.IDMap.DeleteObjectFromID(id)
 	data.AddToAllAction(constants.ActionDelNpc, id, "useless", "useless")
 	return true
 }
