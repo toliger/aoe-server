@@ -5,7 +5,6 @@ import (
   "git.unistra.fr/AOEINT/server/data"
   "git.unistra.fr/AOEINT/server/utils"
   "strconv"
-  "log"
   "sync"
 )
 
@@ -93,9 +92,10 @@ func (bat *Batiment) batimentUpdate(){
     var res int
 	for{
         res= <- *(bat.batimentChannel)
-        //log.Print(res)
         bat.SubPv(res)
-        log.Print((*bat).GetPv())
+        if(bat.GetPv()<=0){
+			break
+		}
 	}
 	utils.Debug("batiment:channel inactif")
 }
@@ -134,6 +134,9 @@ func (bat *Batiment)SetPv(val int){
 func (bat *Batiment)SubPv(val int){
 	bat.m.Lock()
 	bat.Pv-=val
+	if bat.Pv <0 {
+		bat.Pv = 0
+	}
 	bat.m.Unlock()
 }
 

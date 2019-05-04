@@ -18,7 +18,7 @@ func main() {
 	data := game.ExtractData()
 	(&g).GenerateMap(data)
 	go (&g).LaunchAutomaticFight()
-
+	go (&g).BrokenBuildingsCollector()
 	// On lance le faux client pour tester les fonctions de liaison
 	go (&g).GameLoop()
 
