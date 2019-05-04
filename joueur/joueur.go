@@ -134,6 +134,16 @@ func (j Joueur) GetPointerNpc(i int) *npc.Npc {
 	return j.entities[i]
 }
 
+//GetPointerNpcByPos :
+func (j Joueur) GetPointerNpcByPos(x int, y int) *npc.Npc {
+	for _,pnj := range j.entities {
+		if pnj.GetX() == x && pnj.GetY() == y {
+			return pnj
+		}
+	}
+	return nil
+}
+
 //DeleteNpcFromList retire un pnj de la liste du joueur
 func (j *Joueur) DeleteNpcFromList(x float64, y float64, typ int, pv int) bool {
 	j.EntityListMutex.RLock()

@@ -364,6 +364,8 @@ func (pnj *Npc) MoveTo(c carte.Carte, destx int, desty int, wg *sync.WaitGroup) 
 	if c.GetTile(destx, desty).GetType() == 0 {
 		path = c.GetPathFromTo(pnj.GetX(), pnj.GetY(), destx, desty)
 		go pnj.deplacement(path, wg)
+		pnj.SetDestX(destx)
+		pnj.SetDestY(desty)
 	}
 	return path
 }
@@ -420,6 +422,7 @@ func (pnj *Npc) StaticFightNpc(target *Npc) {
 				return
 			}
 			target.SubPv(pnj.damage)
+			//log.Printf("Fight aggressor (%v, %v), target (%v, %v)", pnj.GetX(),pnj.GetY(), target.GetX(),target.GetY())
 			target.Transmit(data.IDMap.GetIDFromObject(target), constants.ActionAlterationNpc)
 			// if (!target.IsActive() && !done){
 			// 	target.StaticFightBackNpc(pnj)

@@ -109,40 +109,43 @@ func (g *Game) DeleteNpc(pnj *npc.Npc) bool {
 //LaunchAutomaticFight : launch the AutomaticFight for all inactive npc
 func (g *Game) LaunchAutomaticFight() {
 	uptimeTicker := time.NewTicker(time.Duration(100 * time.Millisecond))
+	deleteTicker := time.NewTicker(time.Duration(10 * time.Millisecond))
 	for {
 		select {
+		case <- deleteTicker.C:
+			// delete the dead npcs
+			for _,player := range g.Joueurs{
+				for _,pnj := range player.GetEntities(){
+					if (pnj == nil){
+						break
+					}
+					if (pnj.GetPv() <= 0){
+						g.DeleteNpc(pnj)
+						//log.Printf("delete pnj pos (%v, %v)", pnj.GetX(),pnj.GetY())
+					}
+				}
+			}
 		case <-uptimeTicker.C:
 			for _,player := range g.Joueurs{
 				if ((*player).GetEntities() == nil){
 					break
 				}
-				for i := 0; i < len((*player).GetEntities()); i++{
-					// delete the dead npcs
-					for _,playerTemp := range g.Joueurs{
-						for _,pnjTemp := range (*playerTemp).GetEntities(){
-							if (pnjTemp == nil){
-								break
-							}
-							if (pnjTemp.GetPv() == 0){
-								g.DeleteNpc(pnjTemp)
-							}
-						}
-					}
-					if ((*player).GetPointerNpc(i) == nil){
+				for _,pnj := range player.GetEntities(){
+					if pnj == nil{
 						break
 					}
-					if ((*player).GetNpc(i).IsActive() == false){
+					if pnj.IsActive() == false{
 						for _,p := range g.Joueurs{
 							//Search for ennemies npc
 							if (player.GetUID() != p.GetUID()){
-								pnjToFight := p.IsThereNpcInRange(player.GetPointerNpc(i))
-								//log.Print("staticFight npc du type :", pnjToFight.GetType())
+								pnjToFight := p.IsThereNpcInRange(pnj)
 								if (pnjToFight != nil){
-									go (*player).GetPointerNpc(i).StaticFightNpc(pnjToFight)
+									//log.Printf("staticFight aggressor (%v, %v), target (%v, %v)", pnj.GetX(),pnj.GetY(), pnjToFight.GetX(),pnjToFight.GetY())
+									go pnj.StaticFightNpc(pnjToFight)
 								}else{
-									buildingToFight := p.IsThereBuildingInRange(player.GetPointerNpc(i))
+									buildingToFight := p.IsThereBuildingInRange(pnj)
 									if (buildingToFight != nil){
-										go (*player).GetPointerNpc(i).StaticFightBuilding(buildingToFight)
+										go pnj.StaticFightBuilding(buildingToFight)
 									}
 								}
 							}
@@ -225,24 +228,24 @@ func (g *Game) GenerateMap(data Data) {
  	//ajout des npc de base
 	for i := 0; i < len((*g).Joueurs); i++ {
 		for j := 0; j < 5; j++ {
-			if i < 2 {
+			if i % 2 == 0 {
 				(*g).Joueurs[i].AddAndCreateNpc("villager", i, j)
 			} else {
-				(*g).Joueurs[i].AddAndCreateNpc("villager", g.Carte.GetSize()-1, g.Carte.GetSize()-1)
+				(*g).Joueurs[i].AddAndCreateNpc("villager", g.Carte.GetSize()/5-i, g.Carte.GetSize()/5-j)
 			}
 		}
 	}
 	//ajout de npc pour tester le combat
-	 (*g).Joueurs[0].AddAndCreateNpc("villager", 0, 0)
+ 	// (*g).Joueurs[0].AddAndCreateNpc("villager", 0, 0)
 	// (*g).Joueurs[0].AddAndCreateNpc("villager", 0, 0)
 	//
 	// (*g).Joueurs[1].AddAndCreateNpc("villager", 0, 1)
-	(*g).Joueurs[0].AddAndCreateNpc("villager", 15, 15)
-	(*g).Joueurs[1].AddAndCreateNpc("villager", 15, 16)
-	(*g).Joueurs[0].AddAndCreateNpc("villager", 30, 31)
-	(*g).Joueurs[1].AddAndCreateNpc("villager", 31, 30)
-	(*g).Joueurs[0].AddAndCreateNpc("soldier", 20, 20)
-	(*g).Joueurs[1].AddAndCreateNpc("soldier", 20, 21)
+	// (*g).Joueurs[0].AddAndCreateNpc("villager", 15, 15)
+	// (*g).Joueurs[1].AddAndCreateNpc("villager", 15, 16)
+	// (*g).Joueurs[0].AddAndCreateNpc("villager", 30, 31)
+	// (*g).Joueurs[1].AddAndCreateNpc("villager", 31, 30)
+	(*g).Joueurs[0].AddAndCreateNpc("soldier", 5, 5)
+	(*g).Joueurs[1].AddAndCreateNpc("soldier", g.Carte.GetSize()/5 - 5, g.Carte.GetSize()/5 - 5)
 
 	//Ajout des ressources
 	for i := 0; i < len(data.Ressources); i++ {
