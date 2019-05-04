@@ -4,12 +4,12 @@ import (
 	d "git.unistra.fr/AOEINT/server/data"
     "testing"
     "time"
-    "log"
+	"log"
     cst "git.unistra.fr/AOEINT/server/constants"
 )
 
 func TestDestruction(t *testing.T) {
-	cst.Testing=true
+	log.Println("running TestDestruction")
 	var g Game
 	d.IDMap = d.NewObjectID()
 	cExit:=make(chan(bool))
@@ -52,7 +52,7 @@ func TestDestruction(t *testing.T) {
 
 
 func TestAutoFight(t *testing.T) {
-	cst.Testing=true
+	log.Println("running TestAutoFight")
 	var g Game
 	d.IDMap = d.NewObjectID()
 	cExit:=make(chan(bool))
@@ -69,16 +69,16 @@ func TestAutoFight(t *testing.T) {
         if (pnj == nil){
             break
         }
-        log.Println("Player 1")
-        log.Printf("type %v  a : %v pv et est à la position (%v, %v) ",
+        t.Log("Player 1")
+        t.Logf("type %v  a : %v pv et est à la position (%v, %v) ",
         pnj.GetType(),  pnj.GetPv(), pnj.GetX(), pnj.GetY())
 	}
 	player1.EntityListMutex.RUnlock()
 
     time.Sleep(time.Duration(time.Millisecond * 4550))
-	log.Println("After fight")
+	t.Log("After fight")
     error := 0.
-	log.Println("Player 1")
+	t.Log("Player 1")
 	player1.EntityListMutex.RLock()
     for _,pnj := range (*player1).GetEntities() {
         if (pnj == nil){
@@ -86,21 +86,21 @@ func TestAutoFight(t *testing.T) {
         }
 		if(pnj.GetType() == 0){
 	        if(pnj.GetPv() > 0){
-	            log.Printf("type %v  a : %v pv et est à la position (%v, %v) ",
+	            t.Logf("type %v  a : %v pv et est à la position (%v, %v) ",
 	            pnj.GetType(),  pnj.GetPv(), pnj.GetX(), pnj.GetY() )
 	            error++
 	        }
 		}
 		if (pnj.GetType() == 2){
 			if(pnj.GetPv() > 0){
-	            log.Printf("type %v  a : %v pv et est à la position (%v, %v) ",
+	            t.Logf("type %v  a : %v pv et est à la position (%v, %v) ",
 	            pnj.GetType(),  pnj.GetPv(), pnj.GetX(), pnj.GetY() )
 	            error++
 	        }
 		}
 	}
 	player1.EntityListMutex.RUnlock()
-	log.Println("Player 2")
+	t.Log("Player 2")
 	player2.EntityListMutex.RLock()
     for _,pnj := range (*player2).GetEntities() {
         if (pnj == nil){
@@ -108,14 +108,14 @@ func TestAutoFight(t *testing.T) {
         }
 		if(pnj.GetType() == 0){
 	        if(pnj.GetPv() > 0){
-	            log.Printf("type %v  a : %v pv et est à la position (%v, %v) ",
+	            t.Logf("type %v  a : %v pv et est à la position (%v, %v) ",
 	            pnj.GetType(),  pnj.GetPv(), pnj.GetX(), pnj.GetY() )
 	            error += 0.5
 	        }
 		}
 		if (pnj.GetType() == 2){
 			if(pnj.GetPv() > 0){
-	            log.Printf("type %v  a : %v pv et est à la position (%v, %v) ",
+				t.Logf("type %v  a : %v pv et est à la position (%v, %v) ",
 	            pnj.GetType(),  pnj.GetPv(), pnj.GetX(), pnj.GetY() )
 	             error += 0.5
 	        }
@@ -124,12 +124,14 @@ func TestAutoFight(t *testing.T) {
 	player2.EntityListMutex.RUnlock()
     if error >= 1{
         t.Error("les npc n'ont pas perdu de pv")
-    }
+	}
 	// On lance le faux client pour tester les fonctions de liaison
 	//go (&g).GameLoop()
 }
 
 func TestMain(m *testing.M) {
-	TestAutoFight(&testing.T{})
+	cst.Testing=true
 	TestDestruction(&testing.T{})
+	time.Sleep(time.Duration(2*time.Second))
+	TestAutoFight(&testing.T{})
 }
