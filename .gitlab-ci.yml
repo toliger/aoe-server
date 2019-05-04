@@ -15,7 +15,7 @@ unit_tests:
 race_detector:
   stage: test
   script:
-    - go test -p 1 -race -short ./...
+    - go test -P 1 -race -short ./...
 
 lint_code:
   stage: test
