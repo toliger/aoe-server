@@ -7,21 +7,20 @@ import (
     "log"
     cst "git.unistra.fr/AOEINT/server/constants"
 )
-/*
+
 func TestDestruction(t *testing.T) {
+	cst.Testing=true
 	var g Game
 	d.IDMap = d.NewObjectID()
+	cExit:=make(chan(bool))
+	g.GameRunning = cExit
+	(&g).GetPlayerData()
 	d.InitiateActionBuffer()
-	(&g).Joueurs = make([]*joueur.Joueur, 2)
-	j0 := joueur.Create(0, "Bob", "b33d954f-c63e-4b48-88eb-8b5e86d94246")
-	j1 := joueur.Create(1, "Alice", "1982N19N2")
-	(&g).Joueurs[0] = &j0
-	(&g).Joueurs[1] = &j1
-	npc, id := npc.Create("villager", 0, 0, j0.GetFaction(), j0.GetChannel())
-	(&g).Joueurs[0].AddNpc(npc)
-	test := d.IDMap.GetIDFromObject(npc)
-	if test != id {
-		t.Error("id:", id, " got:", test)
+	g.Joueurs[0].AddAndCreateNpc("villager",0,0)
+	npc:=g.Joueurs[0].GetPointerNpc(0)
+	id := d.IDMap.GetIDFromObject(npc)
+	if id =="-1" {
+		t.Error("wrong id")
 	}
 	if !g.DeleteNpc(npc) {
 		t.Error("Echec de la suppression")
@@ -41,7 +40,7 @@ func TestDestruction(t *testing.T) {
 		t.Error("Npc toujours existant")
 	}
 }
-*/
+
 
 func TestAutoFight(t *testing.T) {
 	cst.Testing=true
