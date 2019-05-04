@@ -24,10 +24,6 @@ var ActionBuffer map[string]([]Action)
 //InitiateActionBuffer Initialisation du buffer d'actions
 func InitiateActionBuffer() {
 	ActionBuffer = make(map[string]([]Action), 4)
-	if(actionChannel ==nil){
-		actionChannel= make(chan request,constants.ActionChannelSize)
-		go bufferLoop()
-	}
 	ActionBuffer[constants.PlayerUID1] = make([]Action, constants.MaxActions)
 	ActionBuffer[constants.PlayerUID2] = make([]Action, constants.MaxActions)
 	if constants.PlayerUID3 != "DEFAULT" {
@@ -35,6 +31,10 @@ func InitiateActionBuffer() {
 	}
 	if constants.PlayerUID4 != "DEFAULT" {
 		ActionBuffer[constants.PlayerUID4] = make([]Action, constants.MaxActions)
+	}
+	if(actionChannel ==nil){
+		actionChannel= make(chan request,constants.ActionChannelSize)
+		go bufferLoop()
 	}
 }
 
@@ -56,6 +56,9 @@ func AjoutConcurrent(typ int, uuid string, key string, description string){
 func bufferLoop(){
 	for {
 		req:= <- actionChannel
+		if(req.typ == -1){
+			break
+		}
 		AddToAllAction(req.typ,req.uuid,req.key,req.description)
 	}
 }

@@ -15,7 +15,6 @@ func TestDestruction(t *testing.T) {
 	cExit:=make(chan(bool))
 	g.GameRunning = cExit
 	(&g).GetPlayerData()
-	d.InitiateActionBuffer()
 	g.Joueurs[0].AddAndCreateNpc("villager",0,0)
 	g.Joueurs[0].AddAndCreateNpc("villager",0,0)
 	npc:=g.Joueurs[0].GetPointerNpc(0)
@@ -58,7 +57,6 @@ func TestAutoFight(t *testing.T) {
 	cExit:=make(chan(bool))
 	g.GameRunning = cExit
 	(&g).GetPlayerData()
-	d.InitiateActionBuffer()
 	data := ExtractData()
 	(&g).GenerateMap(data)
 	go (&g).LaunchAutomaticFight()
@@ -131,7 +129,9 @@ func TestAutoFight(t *testing.T) {
 
 func TestMain(m *testing.M) {
 	cst.Testing=true
+	var g Game
+	(&g).GetPlayerData()
+	d.InitiateActionBuffer()
 	TestDestruction(&testing.T{})
-	time.Sleep(time.Duration(2*time.Second))
 	TestAutoFight(&testing.T{})
 }
