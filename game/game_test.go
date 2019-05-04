@@ -17,16 +17,25 @@ func TestDestruction(t *testing.T) {
 	(&g).GetPlayerData()
 	d.InitiateActionBuffer()
 	g.Joueurs[0].AddAndCreateNpc("villager",0,0)
+	g.Joueurs[0].AddAndCreateNpc("villager",0,0)
 	npc:=g.Joueurs[0].GetPointerNpc(0)
+	npc2:=g.Joueurs[0].GetPointerNpc(1)
 	id := d.IDMap.GetIDFromObject(npc)
+	id2 := d.IDMap.GetIDFromObject(npc2)
 	if id =="-1" {
-		t.Error("wrong id")
+		t.Error("wrong id for npc1")
+	}
+	if id2 == "-1"{
+		t.Error("wrong id for npc2")
 	}
 	if !g.DeleteNpc(npc) {
 		t.Error("Echec de la suppression")
 	}
-	if g.Joueurs[0].GetPointerNpc(0) != nil || d.IDMap.GetObjectFromID("0") != nil {
+	if g.Joueurs[0].GetPointerNpc(0) != nil || d.IDMap.GetObjectFromID(id) != nil {
 		t.Error("Npc toujours existant")
+	}
+	if g.Joueurs[0].GetPointerNpc(1) == nil || d.IDMap.GetObjectFromID(id2) == nil {
+		t.Error("npc2 supprimé")
 	}
 	//Maintenant avec AddAndCreateNpc
 	(&g).Joueurs[1].AddAndCreateNpc("villager", 0, 0)
