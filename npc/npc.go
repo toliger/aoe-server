@@ -424,8 +424,12 @@ func (pnj *Npc) StaticFightNpc(target *Npc) {
 				pnj.SetActive(false)
 				return
 			}
+			if pnj.GetPv() <= 0 || pnj.GetX() != initialPosX || pnj.GetY() != initialPosY {
+				return
+			}
+			log.Printf("before Fight aggressor (%v, %v), target (%v, %v), target: %v aggressor:%v", pnj.GetX(),pnj.GetY(), target.GetX(),target.GetY(),target.GetPv(),pnj.GetPv())
 			target.SubPv(pnj.damage)
-			//log.Printf("Fight aggressor (%v, %v), target (%v, %v)", pnj.GetX(),pnj.GetY(), target.GetX(),target.GetY())
+			log.Printf("after Fight aggressor (%v, %v), target (%v, %v), target: %v aggressor:%v", pnj.GetX(),pnj.GetY(), target.GetX(),target.GetY(),target.GetPv(),pnj.GetPv())
 			target.Transmit(data.IDMap.GetIDFromObject(target), constants.ActionAlterationNpc)
 			// if (!target.IsActive() && !done){
 			// 	target.StaticFightBackNpc(pnj)
