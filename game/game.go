@@ -78,12 +78,12 @@ func (g *Game) DeleteBuilding(bat *batiment.Batiment) bool {
 	if id == "-1" {
 		return false
 	}
-	//On retire le batiment de la liste des batiments du jeu
-	data.IDMap.DeleteObjectFromID(id)
 	//On retire le batiment de la liste du joueur
 	if !g.GetPlayerFromUID(bat.PlayerUID).DeleteBatimentFromList(bat.X, bat.Y, bat.Typ) {
 		return false
 	}
+	//On retire le batiment de la liste des batiments du jeu
+	data.IDMap.DeleteObjectFromID(id)
 	data.AddToAllAction(constants.ActionDestroyBuilding, id, "useless", "useless")
 	bat = nil
 	return true
@@ -145,6 +145,7 @@ func (g *Game) LaunchAutomaticFight() {
 								}else{
 									buildingToFight := p.IsThereBuildingInRange(pnj)
 									if (buildingToFight != nil){
+										log.Println("lancement attaque batiment")
 										go pnj.StaticFightBuilding(buildingToFight)
 									}
 								}
@@ -206,7 +207,7 @@ func (g *Game) GenerateMap(data Data) {
 	(*g).Carte = Carte.New(data.Size)
 	//On attribue les auberges
 	if len((*g).Joueurs) == 2 { //Si Seulement 2 Joueurs fournis, fait en sorte de leur donner des bases adverses
-
+		(*g).Joueurs[0].AddBuilding(&data.Buildings[0])
 		if (*g).Carte.AddNewBuilding(&(data.Buildings[0])) == false {
 			log.Fatal("Erreur lors du placement d'une auberge")
 			os.Exit(1)

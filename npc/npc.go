@@ -467,7 +467,7 @@ func (pnj *Npc) StaticFightBuilding(target *batiment.Batiment) {
 				pnj.SetActive(false)
 				return
 			}
-			//log.Printf("(%v, %v) : attack (%v, %v) %v pv", pnj.GetX(), pnj.GetY(), target.GetX(), target.GetY(), target.GetPv())
+			log.Printf("(%v, %v) : attack (%v, %v) %v pv", pnj.GetX(), pnj.GetY(), target.GetX(), target.GetY(), target.GetPv())
 			target.SubPv(pnj.damage)
 			target.Transmit(constants.ActionHarmBuilding, data.IDMap.GetIDFromObject(target))
 		}
