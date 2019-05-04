@@ -128,3 +128,8 @@ func TestAutoFight(t *testing.T) {
 	// On lance le faux client pour tester les fonctions de liaison
 	//go (&g).GameLoop()
 }
+
+func TestMain(m *testing.M) {
+	TestAutoFight(&testing.T{})
+	TestDestruction(&testing.T{})
+}
