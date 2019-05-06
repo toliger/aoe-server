@@ -12,15 +12,19 @@ func main() {
 	d.IDMap = d.NewObjectID()
 	cExit := make(chan(bool))
 	g.GameRunning = cExit
-	(&g).GetPlayerData()
-	d.InitiateActionBuffer()
-	data := game.ExtractData()
-	(&g).GenerateMap(data)
-	go (&g).LaunchAutomaticFight()
-	go (&g).BrokenBuildingsCollector()
-	// On lance le faux client pour tester les fonctions de liaison
-	go (&g).GameLoop()
 
 	// Listen
 	server.InitListenerServer(&g)
+	go initialize(&g)
+}
+
+func initialize(g *game.Game){
+	g.GetPlayerData()
+	d.InitiateActionBuffer()
+	data := game.ExtractData()
+	g.GenerateMap(data)
+	go g.LaunchAutomaticFight()
+	go g.BrokenBuildingsCollector()
+	// On lance le faux client pour tester les fonctions de liaison
+	go g.GameLoop()
 }
