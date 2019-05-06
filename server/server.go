@@ -228,7 +228,7 @@ func (s *Arguments) AskUpdate(ctx context.Context, in *pb.AskUpdateRequest) (*pb
 			}
 		}
 	} else {
-		log.Print("PlayerUUID invalide dans AskUpdate")
+		log.Print("PlayerUUID invalide dans AskUpdate: ",playerUUID.UID)
 		return &pb.AskUpdateReply{Array: nil}, nil
 	}
 
