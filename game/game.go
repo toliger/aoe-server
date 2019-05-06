@@ -78,12 +78,12 @@ func (g *Game) DeleteBuilding(bat *batiment.Batiment) bool {
 	if id == "-1" {
 		return false
 	}
-	//On retire le batiment de la liste des batiments du jeu
-	data.IDMap.DeleteObjectFromID(id)
 	//On retire le batiment de la liste du joueur
 	if !g.GetPlayerFromUID(bat.PlayerUID).DeleteBatimentFromList(bat.X, bat.Y, bat.Typ) {
 		return false
 	}
+	//On retire le batiment de la liste des batiments du jeu
+	data.IDMap.DeleteObjectFromID(id)
 	data.AddToAllAction(constants.ActionDestroyBuilding, id, "useless", "useless")
 	bat = nil
 	return true

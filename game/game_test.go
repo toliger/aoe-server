@@ -115,7 +115,6 @@ func TestAutoFight(t *testing.T) {
 	t.Log("Player 2")
 	player2.EntityListMutex.RLock()
 	for i, pnj := range (player2).GetEntities() {
-		log.Print(i)
 		if pnj != nil {
 			log.Printf("type %v  a : %v pv et est à la position (%v, %v) ",
 				pnj.GetType(), pnj.GetPv(), pnj.GetX(), pnj.GetY())
@@ -130,7 +129,7 @@ func TestAutoFight(t *testing.T) {
 }
 
 func TestMoveTargetNpc(t *testing.T) {
-	log.Println("running TestMoveTarget")
+	log.Println("running TestMoveTargetNpc")
 	var g Game
 	d.IDMap = d.NewObjectID()
 	cExit := make(chan (bool))
@@ -193,7 +192,6 @@ func TestMoveTargetNpc(t *testing.T) {
 	t.Log("Player 2")
 	player2.EntityListMutex.RLock()
 	for i, pnj := range (player2).GetEntities() {
-		log.Print(i)
 		if pnj != nil {
 			log.Printf("type %v  a : %v pv et est à la position (%v, %v) ",
 				pnj.GetType(), pnj.GetPv(), pnj.GetX(), pnj.GetY())
@@ -208,7 +206,7 @@ func TestMoveTargetNpc(t *testing.T) {
 }
 
 func TestMoveTargetBuilding(t *testing.T) {
-	log.Println("running TestMoveTarget")
+	log.Println("running TestMoveTargetBuilding")
 	var g Game
 	d.IDMap = d.NewObjectID()
 	cExit := make(chan (bool))
@@ -218,23 +216,32 @@ func TestMoveTargetBuilding(t *testing.T) {
 	(&g).GenerateMap(data)
 	player1 := g.GetPlayerFromUID(d.ExtractFromToken(cst.Player1JWT).UID)
 	player2 := g.GetPlayerFromUID(d.ExtractFromToken(cst.Player2JWT).UID)
+	for i, building := range player2.GetBuildings() {
+		if building == nil {
+			continue
+		}
+		log.Printf("Le batiment numero %v a la position (%v, %v)", i, building.GetX(), building.GetY())
+	}
 	var wg sync.WaitGroup
 	wg.Add(1)
-	if player1.GetPointerNpc(5) == nil || player2.GetPointerBuilding(20) == nil {
-		t.Error("nil")
+	if player1.GetPointerNpc(5) == nil || player2.GetPointerBuilding(0) == nil {
+		t.Error("le batiment ou le npc n'existe pas")
 	}
 	go player1.GetPointerNpc(5).MoveTargetBuilding(g.Carte, player2.GetPointerBuilding(20), &wg)
 	// Wait for moveTarget to finish
 	wg.Wait()
-	// Wait for the fight to finish
+	// Wait for the fight to begin
 	time.Sleep(time.Duration(time.Millisecond * 5150))
 	log.Println("-------------------After fight-------------------")
+	if player2.GetPointerBuilding(20) == nil {
+		t.Error("le batiment ne devrait pas etre detruit")
+	}
 	if player2.GetPointerBuilding(20).GetPv() != cst.PVAuberge-5 {
-		t.Error("le batiment devrait etre detruit")
+		t.Error("le batiment devrait avoir perdu 5")
 		t.Log("Il reste ", player2.GetPointerBuilding(20).GetPv(), " au batiment")
 	}
 	log.Println("Player 1")
-	if player1.GetPointerNpc(5) == nil {
+	if player1.GetPointerNpc(20) == nil {
 		t.Error("le npc ne devrait pas etre mort")
 	}
 }

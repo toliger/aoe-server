@@ -345,6 +345,8 @@ func (pnj *Npc) deplacement(path []carte.Case, wg *sync.WaitGroup) {
 				if wg != nil {
 					wg.Done()
 				}
+				pnj.SetDestX(pnj.GetX())
+				pnj.SetDestY(pnj.GetY())
 				pnj.SetActive(false)
 				return
 			default:
@@ -424,8 +426,12 @@ func (pnj *Npc) StaticFightNpc(target *Npc) {
 				pnj.SetActive(false)
 				return
 			}
+			if pnj.GetPv() <= 0 || pnj.GetX() != initialPosX || pnj.GetY() != initialPosY {
+				return
+			}
+			log.Printf("before Fight aggressor (%v, %v), target (%v, %v), target: %v aggressor:%v", pnj.GetX(), pnj.GetY(), target.GetX(), target.GetY(), target.GetPv(), pnj.GetPv())
 			target.SubPv(pnj.damage)
-			//log.Printf("Fight aggressor (%v, %v), target (%v, %v)", pnj.GetX(),pnj.GetY(), target.GetX(),target.GetY())
+			log.Printf("after Fight aggressor (%v, %v), target (%v, %v), target: %v aggressor:%v", pnj.GetX(), pnj.GetY(), target.GetX(), target.GetY(), target.GetPv(), pnj.GetPv())
 			target.Transmit(data.IDMap.GetIDFromObject(target), constants.ActionAlterationNpc)
 			// if (!target.IsActive() && !done){
 			// 	target.StaticFightBackNpc(pnj)
@@ -514,9 +520,14 @@ func (pnj *Npc) MoveTargetNpc(c carte.Carte, target *Npc, wg *sync.WaitGroup) {
 	}
 
 	for i = target.GetX() - pnj.portee; i <= target.GetX()+pnj.portee; i++ {
+		if i < 0 {
+			i = 0
+		}
 		for j = target.GetY() - pnj.portee; j <= target.GetY()+pnj.portee; j++ {
-			if (Abs(i-pnj.GetX())+Abs(j-pnj.GetY())) < distance &&
-				c.IsEmpty(i, j) {
+			if j < 0 {
+				j = 0
+			}
+			if (Abs(i-pnj.GetX())+Abs(j-pnj.GetY())) < distance && c.IsEmpty(i, j) {
 				distance = Abs(i-pnj.GetX()) + Abs(j-pnj.GetY())
 				posFightPnjX = i
 				posFightPnjY = j
@@ -539,11 +550,17 @@ func (pnj *Npc) MoveTargetBuilding(c carte.Carte, target *batiment.Batiment, wg 
 
 	if target == nil || pnj.PlayerUUID == target.GetPlayerUID() {
 		wg.Done()
-		log.Print("different")
+		log.Print("meme uuid")
 		return
 	}
 	for i = target.GetX() - pnj.portee; i <= target.GetX()+pnj.portee; i++ {
+		if i < 0 {
+			i = 0
+		}
 		for j = target.GetY() - pnj.portee; j <= target.GetY()+pnj.portee; j++ {
+			if j < 0 {
+				j = 0
+			}
 			if (Abs(i-pnj.GetX())+Abs(j-pnj.GetY())) < distance && c.IsEmpty(i, j) {
 				distance = Abs(i-pnj.GetX()) + Abs(j-pnj.GetY())
 				posFightBuildingX = i
