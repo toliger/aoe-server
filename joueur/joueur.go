@@ -3,12 +3,13 @@ package joueur
 import (
 	"strconv"
 
+	"sync"
+
 	"git.unistra.fr/AOEINT/server/batiment"
 	"git.unistra.fr/AOEINT/server/constants"
 	"git.unistra.fr/AOEINT/server/data"
 	"git.unistra.fr/AOEINT/server/npc"
 	"git.unistra.fr/AOEINT/server/utils"
-	"sync"
 )
 
 //Joueur :
@@ -24,7 +25,7 @@ type Joueur struct {
 	wood             int
 	food             int
 	ressourceChannel chan []int
-	EntityListMutex *sync.RWMutex
+	EntityListMutex  *sync.RWMutex
 }
 
 //GetChannel retourne le channel de ressource du joueur
@@ -120,8 +121,13 @@ func (j Joueur) GetEntities() []*npc.Npc {
 }
 
 //GetBuildings renvoie la liste des batiments du jouer
-func (j Joueur) GetBuildings() []*batiment.Batiment{
+func (j Joueur) GetBuildings() []*batiment.Batiment {
 	return j.batiments
+}
+
+//GetPointerBuilding : renvoie un pointeur sur un batiment
+func (j Joueur) GetPointerBuilding(i int) *batiment.Batiment {
+	return j.batiments[i]
 }
 
 //GetNpc :
@@ -136,7 +142,7 @@ func (j Joueur) GetPointerNpc(i int) *npc.Npc {
 
 //GetPointerNpcByPos :
 func (j Joueur) GetPointerNpcByPos(x int, y int) *npc.Npc {
-	for _,pnj := range j.entities {
+	for _, pnj := range j.entities {
 		if pnj.GetX() == x && pnj.GetY() == y {
 			return pnj
 		}
@@ -149,18 +155,18 @@ func (j *Joueur) DeleteNpcFromList(x float64, y float64, typ int, pv int, id str
 	j.EntityListMutex.RLock()
 	index := -1
 	for i := range j.entities {
-		if j.entities[i] == nil{
-			break
+		if j.entities[i] == nil {
+			continue
 		}
 		if j.entities[i].Get64X() == x && j.entities[i].Get64Y() == y && j.entities[i].GetType() == typ && j.entities[i].GetPv() == pv {
-			if(data.IDMap.GetIDFromObject(j.entities[i]) == id){
-				index=i
+			if data.IDMap.GetIDFromObject(j.entities[i]) == id {
+				index = i
 				break
 			}
 		}
 	}
 	j.EntityListMutex.RUnlock()
-	if(index == -1){
+	if index == -1 {
 		return false
 	}
 	j.EntityListMutex.Lock()
@@ -234,19 +240,18 @@ func (j *Joueur) AddAndCreateNpc(class string, x int, y int) {
 	entity.Transmit(id, constants.ActionNewNpc)
 }
 
-
 //IsThereNpcInRange : returns the first npc of the player in range of the given npc if there is one else nil
-func (j *Joueur)IsThereNpcInRange(pnj *npc.Npc) (*npc.Npc){
-	if (*j).entities == nil{
+func (j *Joueur) IsThereNpcInRange(pnj *npc.Npc) *npc.Npc {
+	if (*j).entities == nil {
 		return nil
 	}
 	for i := 0; i < len((*j).entities); i++ {
+		if (*j).entities[i] == nil {
+			continue
+		}
 		for x := pnj.GetX() - pnj.GetPortee(); x <= pnj.GetX()+pnj.GetPortee(); x++ {
 			for y := pnj.GetY() - pnj.GetPortee(); y <= pnj.GetY()+pnj.GetPortee(); y++ {
-				if (*j).entities[i] == nil{
-					break
-				}
-				if ((*j).entities[i].GetX() == x) && ((*j).entities[i].GetY() == y){
+				if ((*j).entities[i].GetX() == x) && ((*j).entities[i].GetY() == y) {
 					return (*j).entities[i]
 				}
 			}
@@ -255,19 +260,18 @@ func (j *Joueur)IsThereNpcInRange(pnj *npc.Npc) (*npc.Npc){
 	return nil
 }
 
-
 //IsThereBuildingInRange : returns the first building of the player in range of the given npc if there is one else nil
-func (j *Joueur)IsThereBuildingInRange(pnj *npc.Npc) (*batiment.Batiment){
-	if (*j).batiments == nil{
+func (j *Joueur) IsThereBuildingInRange(pnj *npc.Npc) *batiment.Batiment {
+	if (*j).batiments == nil {
 		return nil
 	}
 	for i := 0; i < len((*j).batiments); i++ {
+		if (*j).batiments[i] == nil {
+			continue
+		}
 		for x := pnj.GetX() - pnj.GetPortee(); x <= pnj.GetX()+pnj.GetPortee(); x++ {
 			for y := pnj.GetY() - pnj.GetPortee(); y <= pnj.GetY()+pnj.GetPortee(); y++ {
-				if (*j).batiments[i] == nil{
-					continue
-				}
-				if ((*j).batiments[i].GetX() == x) && ((*j).batiments[i].GetY() == y){
+				if (*j).batiments[i].IsATile(x, y) {
 					return (*j).batiments[i]
 				}
 			}
