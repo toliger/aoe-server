@@ -1,10 +1,12 @@
 package npc
 
 import (
+	"sync"
 	"testing"
 	"time"
 
 	"git.unistra.fr/AOEINT/server/carte"
+	cst "git.unistra.fr/AOEINT/server/constants"
 	d "git.unistra.fr/AOEINT/server/data"
 	"git.unistra.fr/AOEINT/server/ressource"
 )
@@ -36,7 +38,6 @@ func TestDeplacement(t *testing.T){
 
 func TestConcurency(t *testing.T) {
 	d.IDMap = d.NewObjectID()
-	d.InitiateActionBuffer()
 	c := carte.New(128)
 	ch := make(chan []int, 200)
 	pnj, _ := Create("villager", 0, 0, 0, &ch)
@@ -59,7 +60,6 @@ func TestConcurency(t *testing.T) {
 
 func TestRecolteContraintes(t *testing.T) {
 	d.IDMap = d.NewObjectID()
-	d.InitiateActionBuffer()
 	bip := make(chan []int, 100)
 	pnj, _ := Create("harvester", 0, 0, 0, &bip)
 	c := carte.New(50)
@@ -90,7 +90,6 @@ func TestRecolteContraintes(t *testing.T) {
 
 func TestRecolte(t *testing.T) {
 	d.IDMap = d.NewObjectID()
-	d.InitiateActionBuffer()
 	bip := make(chan []int, 100)
 	pnj, _ := Create("harvester", 0, 0, 0, &bip)
 	c := carte.New(50)
@@ -108,6 +107,31 @@ func TestRecolte(t *testing.T) {
 		t.Error("la ressource n'a pas perdu de Pv")
 		t.Log("pv: ", ress.GetPv())
 	}
+}
+
+func TestMoveTarget(t *testing.T) {
+	d.IDMap = d.NewObjectID()
+	bip1 := make(chan []int, 100)
+	bip2 := make(chan []int, 100)
+	c := carte.New(50)
+	pnj, _ := Create("harvester", 0, 0, 0, &bip1)
+	target, _ := Create("harvester", 5, 5, 1, &bip2)
+	var wg sync.WaitGroup
+	wg.Add(1)
+	pnj.MoveTargetNpc(c, target, &wg)
+	wg.Wait()
+	if pnj.GetX() != 4 || pnj.GetY() != 4 {
+		t.Error("Erreur dans le deplacement de moveTarget")
+	}
+}
+
+func TestMain(m *testing.M) {
+	cst.Testing = true
+	d.InitiateActionBuffer()
+	TestRecolteContraintes(&testing.T{})
+	TestRecolte(&testing.T{})
+	TestConcurency(&testing.T{})
+	TestMoveTarget(&testing.T{})
 }
 
 /*

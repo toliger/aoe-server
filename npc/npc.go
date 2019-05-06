@@ -99,7 +99,7 @@ func Create(class string, x float64, y float64, flag int, channel *chan []int) (
 //Stringify : create a map[string]string of the main arguments of a NPC
 func (pnj Npc) Stringify(typ int) map[string]string {
 	res := make(map[string]string)
-	switch typ{
+	switch typ {
 	case constants.ActionNewNpc:
 		res["pv"] = strconv.Itoa(pnj.GetPv())
 		res["x"] = fmt.Sprintf("%f", pnj.Get64X())
@@ -176,8 +176,8 @@ func (i *safeNumberFloat) sub(val float64) {
 	i.val -= val
 }
 
-func (i *safeNumberInt) sub(val int,pnj *Npc) {
-	id:=data.IDMap.GetIDFromObject(pnj)
+func (i *safeNumberInt) sub(val int, pnj *Npc) {
+	id := data.IDMap.GetIDFromObject(pnj)
 	if id != "-1" {
 		i.m.Lock()
 		i.val -= val
@@ -198,8 +198,8 @@ func (pnj *Npc) SetPv(val int) {
 //SubPv : decrement the npc's HP value
 func (pnj *Npc) SubPv(val int) {
 	if pnj != nil {
-		pnj.pv.sub(val,pnj)
-		if pnj.GetPv() <0 {
+		pnj.pv.sub(val, pnj)
+		if pnj.GetPv() < 0 {
 			pnj.SetPv(0)
 		}
 	}
@@ -318,8 +318,8 @@ func (pnj Npc) SetActive(val bool) {
 func (pnj *Npc) actualizeMoveAction(moveA *chan bool) {
 	pnj.wgAction.Add(1)
 	// Cancel the old movement
-	index := len(pnj.moveAction) -1
-	if (index == -1){
+	index := len(pnj.moveAction) - 1
+	if index == -1 {
 		pnj.moveAction[index+1] = *moveA
 		pnj.wgAction.Done()
 		return
@@ -435,7 +435,6 @@ func (pnj *Npc) StaticFightNpc(target *Npc) {
 	}
 }
 
-
 //StaticFightBuilding : The npc starts fighting the building until death
 func (pnj *Npc) StaticFightBuilding(target *batiment.Batiment) {
 	pnj.SetActive(true)
@@ -470,7 +469,6 @@ func (pnj *Npc) StaticFightBuilding(target *batiment.Batiment) {
 	}
 }
 
-
 //StaticFightBackNpc : The target fights back
 // func (pnj *Npc) StaticFightBackNpc(target *Npc) {
 // 	pnj.SetActive(true)
@@ -501,6 +499,63 @@ func (pnj *Npc) StaticFightBuilding(target *batiment.Batiment) {
 // 		}
 // 	}
 // }
+
+//MoveTargetNpc : move to a target to be able to attack him
+func (pnj *Npc) MoveTargetNpc(c carte.Carte, target *Npc, wg *sync.WaitGroup) {
+	var posFightPnjX, posFightPnjY int
+
+	var i, j int
+
+	distance := 2000
+
+	if target == nil || pnj.PlayerUUID == target.PlayerUUID {
+		wg.Done()
+		return
+	}
+
+	for i = target.GetX() - pnj.portee; i <= target.GetX()+pnj.portee; i++ {
+		for j = target.GetY() - pnj.portee; j <= target.GetY()+pnj.portee; j++ {
+			if (Abs(i-pnj.GetX())+Abs(j-pnj.GetY())) < distance &&
+				c.IsEmpty(i, j) {
+				distance = Abs(i-pnj.GetX()) + Abs(j-pnj.GetY())
+				posFightPnjX = i
+				posFightPnjY = j
+			}
+		}
+	}
+	if distance == 2000 {
+		return
+	}
+	go pnj.MoveTo(c, posFightPnjX, posFightPnjY, wg)
+}
+
+//MoveTargetBuilding : move to a target to be able to attack it
+func (pnj *Npc) MoveTargetBuilding(c carte.Carte, target *batiment.Batiment, wg *sync.WaitGroup) {
+	var posFightBuildingX, posFightBuildingY int
+
+	var i, j int
+
+	distance := 2000
+
+	if target == nil || pnj.PlayerUUID == target.GetPlayerUID() {
+		wg.Done()
+		log.Print("different")
+		return
+	}
+	for i = target.GetX() - pnj.portee; i <= target.GetX()+pnj.portee; i++ {
+		for j = target.GetY() - pnj.portee; j <= target.GetY()+pnj.portee; j++ {
+			if (Abs(i-pnj.GetX())+Abs(j-pnj.GetY())) < distance && c.IsEmpty(i, j) {
+				distance = Abs(i-pnj.GetX()) + Abs(j-pnj.GetY())
+				posFightBuildingX = i
+				posFightBuildingY = j
+			}
+		}
+	}
+	if distance == 2000 {
+		return
+	}
+	go pnj.MoveTo(c, posFightBuildingX, posFightBuildingY, wg)
+}
 
 //MoveFightBuilding : attack a given building
 func (pnj *Npc) MoveFightBuilding(c carte.Carte, target *batiment.Batiment) {
@@ -769,27 +824,28 @@ func (pnj *Npc)MoveHarvest(c carte.Carte){
 }
 */
 
-type path struct{
-	x int
-	y int
+type path struct {
+	x      int
+	y      int
 	length int
 }
 
-func min(a path,b path) path{
-	if a.length<b.length && a.length != -1 {
+func min(a path, b path) path {
+	if a.length < b.length && a.length != -1 {
 		return a
-	}else if b.length==-1 && a.length!=-1{
+	} else if b.length == -1 && a.length != -1 {
 		return a
 	}
 	return b
 }
 
-func ternary(cond bool, a int, b int) int{
+func ternary(cond bool, a int, b int) int {
 	if cond {
 		return a
 	}
 	return b
 }
+
 /*MoveHarvestTarget : (move to the nreast ressource in the villagers's vision).
 Triggered when a villager is inactive, cancelled when the player moves the npc
 */
@@ -804,23 +860,23 @@ func (pnj *Npc) MoveHarvestTarget(c carte.Carte, ress *ressource.Ressource) {
 		return
 	}
 
-	xR:=ress.GetX()
-	yR:=ress.GetY()
-	var left,right,down,up path
-	l:=c.GetPathFromTo(pnj.GetX(),pnj.GetY(),xR-1,yR)
-	r:=c.GetPathFromTo(pnj.GetX(),pnj.GetY(),xR+1,yR)
-	d:=c.GetPathFromTo(pnj.GetX(),pnj.GetY(),xR,yR+1)
-	u:=c.GetPathFromTo(pnj.GetX(),pnj.GetY(),xR,yR-1)
-	left=path{xR-1,yR,ternary(l==nil,-1,len(l))}
-	right=path{xR+1,yR,ternary(r==nil,-1,len(r))}
-	down=path{xR,yR+1,ternary(d==nil,-1,len(d))}
-	up=path{xR,yR-1,ternary(u==nil,-1,len(u))}
-	access:=min(left,min(right,min(up,down)))
-	if access.length==-1 {
+	xR := ress.GetX()
+	yR := ress.GetY()
+	var left, right, down, up path
+	l := c.GetPathFromTo(pnj.GetX(), pnj.GetY(), xR-1, yR)
+	r := c.GetPathFromTo(pnj.GetX(), pnj.GetY(), xR+1, yR)
+	d := c.GetPathFromTo(pnj.GetX(), pnj.GetY(), xR, yR+1)
+	u := c.GetPathFromTo(pnj.GetX(), pnj.GetY(), xR, yR-1)
+	left = path{xR - 1, yR, ternary(l == nil, -1, len(l))}
+	right = path{xR + 1, yR, ternary(r == nil, -1, len(r))}
+	down = path{xR, yR + 1, ternary(d == nil, -1, len(d))}
+	up = path{xR, yR - 1, ternary(u == nil, -1, len(u))}
+	access := min(left, min(right, min(up, down)))
+	if access.length == -1 {
 		return
 	}
-	posRecolteVillX:=access.x
-	posRecolteVillY:=access.y
+	posRecolteVillX := access.x
+	posRecolteVillY := access.y
 	/*var posRecolteVillX, posRecolteVillY int
 	distance := 2000
 
@@ -843,7 +899,7 @@ func (pnj *Npc) MoveHarvestTarget(c carte.Carte, ress *ressource.Ressource) {
 	wg.Add(1)
 	pnj.dextX.set(float64(posRecolteVillX))
 	pnj.destY.set(float64(posRecolteVillY))
-	pnj.Transmit(data.IDMap.GetIDFromObject(pnj),constants.ActionAlterationNpc)
+	pnj.Transmit(data.IDMap.GetIDFromObject(pnj), constants.ActionAlterationNpc)
 	go pnj.MoveTo(c, posRecolteVillX, posRecolteVillY, &wg)
 	wg.Wait()
 
@@ -864,7 +920,7 @@ func (pnj *Npc) Harvest(c carte.Carte, ress *ressource.Ressource, posRecolteVill
 	tpsEcoule := 0
 	for {
 		// La ressource est épuisée ou le villageois est mort
-		if tpsEcoule == (ress.GetPv()/pnj.tauxRecolte +1) || pnj.GetPv() == 0 {
+		if tpsEcoule == (ress.GetPv()/pnj.tauxRecolte+1) || pnj.GetPv() == 0 {
 			pnj.SetActive(false)
 			break
 		}

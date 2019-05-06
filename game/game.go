@@ -21,7 +21,7 @@ import (
 type Game struct {
 	Joueurs     []*joueur.Joueur
 	Carte       Carte.Carte
-	GameRunning chan(bool)
+	GameRunning chan (bool)
 }
 
 //Data :Structure permettant de stocker les informations recuperees sur le fichier json
@@ -38,7 +38,7 @@ func ExtractData() Data {
 		datafileName = "data/SmallTestMap.json"
 	}
 	if constants.Testing {
-		datafileName= "../" + datafileName
+		datafileName = "../" + datafileName
 	}
 	jsonFile, err := os.Open(datafileName)
 	if err != nil {
@@ -97,7 +97,7 @@ func (g *Game) DeleteNpc(pnj *npc.Npc) bool {
 		return false
 	}
 	//On retire le pnj de la liste des pnj du joueur
-	if !g.GetPlayerFromUID(pnj.PlayerUUID).DeleteNpcFromList(pnj.Get64X(), pnj.Get64Y(), pnj.GetType(), pnj.GetPv(),id) {
+	if !g.GetPlayerFromUID(pnj.PlayerUUID).DeleteNpcFromList(pnj.Get64X(), pnj.Get64Y(), pnj.GetType(), pnj.GetPv(), id) {
 		return false
 	}
 	//On retire le pnj de la liste des pnj du jeu
@@ -112,39 +112,39 @@ func (g *Game) LaunchAutomaticFight() {
 	deleteTicker := time.NewTicker(time.Duration(10 * time.Millisecond))
 	for {
 		select {
-		case <- deleteTicker.C:
+		case <-deleteTicker.C:
 			// delete the dead npcs
-			for _,player := range g.Joueurs{
-				for _,pnj := range player.GetEntities(){
-					if (pnj == nil){
-						break
+			for _, player := range g.Joueurs {
+				for _, pnj := range player.GetEntities() {
+					if pnj == nil {
+						continue
 					}
-					if (pnj.GetPv() <= 0){
+					if pnj.GetPv() <= 0 {
 						g.DeleteNpc(pnj)
 						//log.Printf("delete pnj pos (%v, %v)", pnj.GetX(),pnj.GetY())
 					}
 				}
 			}
 		case <-uptimeTicker.C:
-			for _,player := range g.Joueurs{
-				if ((*player).GetEntities() == nil){
-					break
+			for _, player := range g.Joueurs {
+				if (*player).GetEntities() == nil {
+					continue
 				}
-				for _,pnj := range player.GetEntities(){
-					if pnj == nil{
-						break
+				for _, pnj := range player.GetEntities() {
+					if pnj == nil {
+						continue
 					}
-					if pnj.IsActive() == false{
-						for _,p := range g.Joueurs{
+					if pnj.IsActive() == false {
+						for _, p := range g.Joueurs {
 							//Search for ennemies npc
-							if (player.GetUID() != p.GetUID()){
+							if player.GetUID() != p.GetUID() {
 								pnjToFight := p.IsThereNpcInRange(pnj)
-								if (pnjToFight != nil){
+								if pnjToFight != nil {
 									//log.Printf("staticFight aggressor (%v, %v), target (%v, %v)", pnj.GetX(),pnj.GetY(), pnjToFight.GetX(),pnjToFight.GetY())
 									go pnj.StaticFightNpc(pnjToFight)
-								}else{
+								} else {
 									buildingToFight := p.IsThereBuildingInRange(pnj)
-									if (buildingToFight != nil){
+									if buildingToFight != nil {
 										go pnj.StaticFightBuilding(buildingToFight)
 									}
 								}
@@ -158,25 +158,25 @@ func (g *Game) LaunchAutomaticFight() {
 }
 
 //BrokenBuildingsCollector deletes all buildings with less than 1 HP. Ends the game if a base is destroyed
-func (g *Game)BrokenBuildingsCollector(){
+func (g *Game) BrokenBuildingsCollector() {
 	uptimeTicker := time.NewTicker(time.Duration(100 * time.Millisecond))
 	for {
 		select {
-			case <-uptimeTicker.C:
-				for _,player := range g.Joueurs{
-					list:=player.GetBuildings()
-					if(list==nil){
-						break
-					}
-					for key,bat := range list{
-						if bat.GetPv()<=0{
-							g.DeleteBuilding(bat)
-							if key==0{ //Auberge
-								g.EndOfGame()
-							}
+		case <-uptimeTicker.C:
+			for _, player := range g.Joueurs {
+				list := player.GetBuildings()
+				if list == nil {
+					continue
+				}
+				for key, bat := range list {
+					if bat.GetPv() <= 0 {
+						g.DeleteBuilding(bat)
+						if key == 0 { //Auberge
+							g.EndOfGame()
 						}
 					}
 				}
+			}
 		}
 	}
 }
@@ -184,15 +184,15 @@ func (g *Game)BrokenBuildingsCollector(){
 //EndOfGame : Interromps la boucle principale du jeu
 func (g *Game) EndOfGame() {
 	(*g).GameRunning <- false
-	data.AddToAllAction(constants.ActionEndOfGame,"useless","useless","useless")
+	data.AddToAllAction(constants.ActionEndOfGame, "useless", "useless", "useless")
 }
 
 //GameLoop : fonction contenant la boucle principale du jeu
 func (g *Game) GameLoop() {
 	var test bool
-	for{
-		test =<-g.GameRunning
-		if test==false{
+	for {
+		test = <-g.GameRunning
+		if test == false {
 			break
 		}
 	}
@@ -204,7 +204,7 @@ func (g *Game) GenerateMap(data Data) {
 	(*g).Carte = Carte.New(data.Size)
 	//On attribue les auberges
 	if len((*g).Joueurs) == 2 { //Si Seulement 2 Joueurs fournis, fait en sorte de leur donner des bases adverses
-
+		(*g).Joueurs[0].AddBuilding(&data.Buildings[0])
 		if (*g).Carte.AddNewBuilding(&(data.Buildings[0])) == false {
 			log.Fatal("Erreur lors du placement d'une auberge")
 			os.Exit(1)
@@ -225,10 +225,10 @@ func (g *Game) GenerateMap(data Data) {
 			}
 		}
 	}
- 	//ajout des npc de base
+	//ajout des npc de base
 	for i := 0; i < len((*g).Joueurs); i++ {
 		for j := 0; j < 5; j++ {
-			if i % 2 == 0 {
+			if i%2 == 0 {
 				(*g).Joueurs[i].AddAndCreateNpc("villager", i, j)
 			} else {
 				(*g).Joueurs[i].AddAndCreateNpc("villager", g.Carte.GetSize()/5-i, g.Carte.GetSize()/5-j)
@@ -236,7 +236,7 @@ func (g *Game) GenerateMap(data Data) {
 		}
 	}
 	//ajout de npc pour tester le combat
- 	// (*g).Joueurs[0].AddAndCreateNpc("villager", 0, 0)
+	// (*g).Joueurs[0].AddAndCreateNpc("villager", 0, 0)
 	// (*g).Joueurs[0].AddAndCreateNpc("villager", 0, 0)
 	//
 	// (*g).Joueurs[1].AddAndCreateNpc("villager", 0, 1)
@@ -245,7 +245,7 @@ func (g *Game) GenerateMap(data Data) {
 	// (*g).Joueurs[0].AddAndCreateNpc("villager", 30, 31)
 	// (*g).Joueurs[1].AddAndCreateNpc("villager", 31, 30)
 	(*g).Joueurs[0].AddAndCreateNpc("soldier", 5, 5)
-	(*g).Joueurs[1].AddAndCreateNpc("soldier", g.Carte.GetSize()/5 - 5, g.Carte.GetSize()/5 - 5)
+	(*g).Joueurs[1].AddAndCreateNpc("soldier", g.Carte.GetSize()/5-5, g.Carte.GetSize()/5-5)
 
 	//Ajout des ressources
 	for i := 0; i < len(data.Ressources); i++ {
@@ -262,8 +262,8 @@ Modification: Changement pour des valeurs statiques (temporaire)
 */
 func (g *Game) GetPlayerData() {
 	(*g).Joueurs = make([]*joueur.Joueur, 2)
-	id1:= data.ExtractFromToken(constants.Player1JWT).UID
-	id2:= data.ExtractFromToken(constants.Player2JWT).UID
+	id1 := data.ExtractFromToken(constants.Player1JWT).UID
+	id2 := data.ExtractFromToken(constants.Player2JWT).UID
 	j0 := joueur.Create(0, "Bob", id1)
 	j1 := joueur.Create(1, "Alice", id2)
 	(*g).Joueurs[0] = &j0
