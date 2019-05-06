@@ -6,18 +6,20 @@ import (
 	"git.unistra.fr/AOEINT/server/data"
 	"git.unistra.fr/AOEINT/server/constants"
 	"strconv"
+	"sync"
 )
 //Tuile : Structure d'une tuile(case de la carte)
 type Tuile struct{//Batiment, ressource ou vide
 	typ int //0 vide 1 batiment 2 ressource
 	bat *batiment.Batiment
 	res *ressource.Ressource
-	//entities []*npc.Npc
+	lock *sync.Mutex
 }
 
 //New : création d'une tuile
 func New() Tuile{
-	return (Tuile{0,nil,nil})
+	var m sync.Mutex
+	return (Tuile{0,nil,nil,&m})
 }
 
 //GetType : renvoie le type d'une tuile
@@ -46,6 +48,10 @@ func (t *Tuile)AddBuilding(bat *batiment.Batiment){
 
 //AddRessource : Ajoute un pointeur sur ressource à une tuile
 func (t *Tuile)AddRessource(res *ressource.Ressource){
+	if t.lock == nil {
+		var m sync.Mutex
+		t.lock = &m
+	}
 	(*t).typ=2
 	(*t).res=res
 	(*t).bat=nil
@@ -53,6 +59,7 @@ func (t *Tuile)AddRessource(res *ressource.Ressource){
 
 //Empty : Vide une tuile de son contenu
 func (t *Tuile)Empty(){
+	t.lock.Lock()
 	(*t).typ=0
 	(*t).bat=nil
 	if (*t).res !=nil {
@@ -64,4 +71,5 @@ func (t *Tuile)Empty(){
 		}
 	}
 	(*t).res=nil
+	t.lock.Unlock()
 }

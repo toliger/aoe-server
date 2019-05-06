@@ -453,6 +453,7 @@ func (pnj *Npc) StaticFightBuilding(target *batiment.Batiment) {
 		if pnj.GetPv() <= 0 || pnj.GetX() != initialPosX || pnj.GetY() != initialPosY {
 			return
 		}
+		log.Println("passed moved")
 		//The target is dead
 		if target.GetPv() <= 0 {
 			pnj.SetActive(false)
@@ -461,6 +462,7 @@ func (pnj *Npc) StaticFightBuilding(target *batiment.Batiment) {
 		select {
 		case <-moveA:
 			pnj.SetActive(false)
+			log.Println("moveA stop")
 			return
 		case <-uptimeTicker.C:
 			if target.GetPv() <= 0 {

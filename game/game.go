@@ -132,7 +132,7 @@ func (g *Game) LaunchAutomaticFight() {
 				}
 				for _,pnj := range player.GetEntities(){
 					if pnj == nil{
-						break
+						continue
 					}
 					if pnj.IsActive() == false{
 						for _,p := range g.Joueurs{
@@ -266,8 +266,9 @@ Modification: Changement pour des valeurs statiques (temporaire)
 func (g *Game) GetPlayerData() {
 	(*g).Joueurs = make([]*joueur.Joueur, 2)
 	id1:= data.ExtractFromToken(constants.Player1JWT).UID
-	log.Println(id1)
+	utils.Debug("j1: "+id1)
 	id2:= data.ExtractFromToken(constants.Player2JWT).UID
+	utils.Debug("j2: "+id2)
 	j0 := joueur.Create(0, "Bob", id1)
 	j1 := joueur.Create(1, "Alice", id2)
 	(*g).Joueurs[0] = &j0

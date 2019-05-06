@@ -100,7 +100,7 @@ func (ress Ressource)stringify(id string)map[string]string{
 func (ress Ressource) Transmit(id string,typ int){
 	arr:=ress.stringify(id)
 	for k,e := range arr{
-		data.AddToAllAction(typ,id,k,e)
+		data.AjoutConcurrent(typ,id,k,e)
 	}
 }
 

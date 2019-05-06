@@ -177,6 +177,9 @@ func (j Joueur) GetBatiment(i int) batiment.Batiment {
 
 //DeleteBatimentFromList retire un batiment de la liste du joueur
 func (j *Joueur) DeleteBatimentFromList(x int, y int, typ int) bool {
+	if j == nil {
+		return false
+	}
 	for i := range j.batiments {
 		if j.batiments[i].X == x && j.batiments[i].Y == y && j.batiments[i].Typ == typ {
 			j.batiments[i] = nil
@@ -262,7 +265,7 @@ func (j *Joueur)IsThereBuildingInRange(pnj *npc.Npc) (*batiment.Batiment){
 		for x := pnj.GetX() - pnj.GetPortee(); x <= pnj.GetX()+pnj.GetPortee(); x++ {
 			for y := pnj.GetY() - pnj.GetPortee(); y <= pnj.GetY()+pnj.GetPortee(); y++ {
 				if (*j).batiments[i] == nil{
-					break
+					continue
 				}
 				if ((*j).batiments[i].GetX() == x) && ((*j).batiments[i].GetY() == y){
 					return (*j).batiments[i]
