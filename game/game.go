@@ -169,6 +169,9 @@ func (g *Game) BrokenBuildingsCollector() {
 					continue
 				}
 				for key, bat := range list {
+					if bat ==nil{
+						continue
+					}
 					if bat.GetPv() <= 0 {
 						g.DeleteBuilding(bat)
 						if key == 0 { //Auberge
@@ -262,9 +265,13 @@ Modification: Changement pour des valeurs statiques (temporaire)
 */
 func (g *Game) GetPlayerData() {
 	(*g).Joueurs = make([]*joueur.Joueur, 2)
-	id1:= data.ExtractFromToken(constants.Player1JWT).UID
+	ids,err:=data.GetPlayers()
+	if err!=nil{
+		os.Exit(1)
+	}
+	id1:= ids[0]
 	utils.Debug("j1: "+id1)
-	id2:= data.ExtractFromToken(constants.Player2JWT).UID
+	id2:= ids[1]
 	utils.Debug("j2: "+id2)
 	j0 := joueur.Create(0, "Bob", id1)
 	j1 := joueur.Create(1, "Alice", id2)
