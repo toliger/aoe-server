@@ -269,7 +269,8 @@ func (g *Game) GetPlayerData() {
 	if err!=nil{
 		os.Exit(1)
 	}
-	id1:= ids[0]
+	//id1:= ids[0]
+	id1:="907ff305-48da-4b1a-b262-aed1c10363f9"
 	utils.Debug("j1: "+id1)
 	id2:= ids[1]
 	utils.Debug("j2: "+id2)
