@@ -3,6 +3,7 @@
 package server
 
 import (
+	"os"
 	"context"
 	"errors"
 	"fmt"
@@ -85,6 +86,24 @@ func (s *Arguments) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.Hell
 	// For Debug Mode
 	utils.Debug("Reception d'un HelloRequest et envoie d'un HelloReply")
 	return &pb.HelloReply{}, nil
+}
+
+// SecretKill :
+// Function of the service Hello: SecretKill
+func (s *Arguments) SecretKill(ctx context.Context, in *pb.SecretKillRequest) (*pb.SecretKillReply, error) {
+
+	// For Debug
+	utils.Debug("Reception d'un SecretKillRequest et envoie d'un SecretKillReply")
+
+	secret := utils.Getenv("SECRETSTOP", "paul")
+
+	if (secret == in.Sentence) {
+		os.Exit(0)
+	} else {
+		utils.Debug("Phrase secret érroné")
+	}
+	
+	return &pb.SecretKillReply{}, nil
 }
 
 // RightClick :
@@ -292,4 +311,14 @@ func (s *Arguments) AskCreation(ctx context.Context, in *pb.AskCreationRequest) 
 	}
 
 	return &pb.AskCreationReply{Validation: true}, nil
+}
+
+// Authentificate : 
+// Function of authentification and creation of player
+func (s *Arguments) Authentificate(ctx context.Context, in *pb.AuthentificateRequest) (*pb.AuthentificateReply, error) {
+
+	// For Debug Mode
+	utils.Debug("Reception d'un AuthentificateRequest et envoie d'un AuthentificateReply")
+
+	return &pb.AuthentificateReply{IsAuthentificate: true}, nil
 }

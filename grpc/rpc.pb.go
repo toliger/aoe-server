@@ -100,6 +100,155 @@ func (m *HelloReply) GetName() string {
 	return ""
 }
 
+type SecretKillRequest struct {
+	Sentence             string   `protobuf:"bytes,1,opt,name=Sentence,proto3" json:"Sentence,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *SecretKillRequest) Reset()         { *m = SecretKillRequest{} }
+func (m *SecretKillRequest) String() string { return proto.CompactTextString(m) }
+func (*SecretKillRequest) ProtoMessage()    {}
+func (*SecretKillRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_77a6da22d6a3feb1, []int{2}
+}
+
+func (m *SecretKillRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_SecretKillRequest.Unmarshal(m, b)
+}
+func (m *SecretKillRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_SecretKillRequest.Marshal(b, m, deterministic)
+}
+func (m *SecretKillRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SecretKillRequest.Merge(m, src)
+}
+func (m *SecretKillRequest) XXX_Size() int {
+	return xxx_messageInfo_SecretKillRequest.Size(m)
+}
+func (m *SecretKillRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_SecretKillRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_SecretKillRequest proto.InternalMessageInfo
+
+func (m *SecretKillRequest) GetSentence() string {
+	if m != nil {
+		return m.Sentence
+	}
+	return ""
+}
+
+type SecretKillReply struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *SecretKillReply) Reset()         { *m = SecretKillReply{} }
+func (m *SecretKillReply) String() string { return proto.CompactTextString(m) }
+func (*SecretKillReply) ProtoMessage()    {}
+func (*SecretKillReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_77a6da22d6a3feb1, []int{3}
+}
+
+func (m *SecretKillReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_SecretKillReply.Unmarshal(m, b)
+}
+func (m *SecretKillReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_SecretKillReply.Marshal(b, m, deterministic)
+}
+func (m *SecretKillReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SecretKillReply.Merge(m, src)
+}
+func (m *SecretKillReply) XXX_Size() int {
+	return xxx_messageInfo_SecretKillReply.Size(m)
+}
+func (m *SecretKillReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_SecretKillReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_SecretKillReply proto.InternalMessageInfo
+
+// Message liés à Authentificate
+type AuthentificateRequest struct {
+	Token                string   `protobuf:"bytes,1,opt,name=Token,proto3" json:"Token,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *AuthentificateRequest) Reset()         { *m = AuthentificateRequest{} }
+func (m *AuthentificateRequest) String() string { return proto.CompactTextString(m) }
+func (*AuthentificateRequest) ProtoMessage()    {}
+func (*AuthentificateRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_77a6da22d6a3feb1, []int{4}
+}
+
+func (m *AuthentificateRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_AuthentificateRequest.Unmarshal(m, b)
+}
+func (m *AuthentificateRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_AuthentificateRequest.Marshal(b, m, deterministic)
+}
+func (m *AuthentificateRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AuthentificateRequest.Merge(m, src)
+}
+func (m *AuthentificateRequest) XXX_Size() int {
+	return xxx_messageInfo_AuthentificateRequest.Size(m)
+}
+func (m *AuthentificateRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_AuthentificateRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AuthentificateRequest proto.InternalMessageInfo
+
+func (m *AuthentificateRequest) GetToken() string {
+	if m != nil {
+		return m.Token
+	}
+	return ""
+}
+
+type AuthentificateReply struct {
+	IsAuthentificate     bool     `protobuf:"varint,1,opt,name=IsAuthentificate,proto3" json:"IsAuthentificate,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *AuthentificateReply) Reset()         { *m = AuthentificateReply{} }
+func (m *AuthentificateReply) String() string { return proto.CompactTextString(m) }
+func (*AuthentificateReply) ProtoMessage()    {}
+func (*AuthentificateReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_77a6da22d6a3feb1, []int{5}
+}
+
+func (m *AuthentificateReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_AuthentificateReply.Unmarshal(m, b)
+}
+func (m *AuthentificateReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_AuthentificateReply.Marshal(b, m, deterministic)
+}
+func (m *AuthentificateReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AuthentificateReply.Merge(m, src)
+}
+func (m *AuthentificateReply) XXX_Size() int {
+	return xxx_messageInfo_AuthentificateReply.Size(m)
+}
+func (m *AuthentificateReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_AuthentificateReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AuthentificateReply proto.InternalMessageInfo
+
+func (m *AuthentificateReply) GetIsAuthentificate() bool {
+	if m != nil {
+		return m.IsAuthentificate
+	}
+	return false
+}
+
 //
 // Demande du Client : Demande le déplacement de une ou plusieurs unités
 // Argument donné par Client :
@@ -125,7 +274,7 @@ func (m *RightClickRequest) Reset()         { *m = RightClickRequest{} }
 func (m *RightClickRequest) String() string { return proto.CompactTextString(m) }
 func (*RightClickRequest) ProtoMessage()    {}
 func (*RightClickRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_77a6da22d6a3feb1, []int{2}
+	return fileDescriptor_77a6da22d6a3feb1, []int{6}
 }
 
 func (m *RightClickRequest) XXX_Unmarshal(b []byte) error {
@@ -187,7 +336,7 @@ func (m *RightClickReply) Reset()         { *m = RightClickReply{} }
 func (m *RightClickReply) String() string { return proto.CompactTextString(m) }
 func (*RightClickReply) ProtoMessage()    {}
 func (*RightClickReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_77a6da22d6a3feb1, []int{3}
+	return fileDescriptor_77a6da22d6a3feb1, []int{7}
 }
 
 func (m *RightClickReply) XXX_Unmarshal(b []byte) error {
@@ -223,7 +372,7 @@ func (m *Coordinates) Reset()         { *m = Coordinates{} }
 func (m *Coordinates) String() string { return proto.CompactTextString(m) }
 func (*Coordinates) ProtoMessage()    {}
 func (*Coordinates) Descriptor() ([]byte, []int) {
-	return fileDescriptor_77a6da22d6a3feb1, []int{4}
+	return fileDescriptor_77a6da22d6a3feb1, []int{8}
 }
 
 func (m *Coordinates) XXX_Unmarshal(b []byte) error {
@@ -273,7 +422,7 @@ func (m *AskUpdateRequest) Reset()         { *m = AskUpdateRequest{} }
 func (m *AskUpdateRequest) String() string { return proto.CompactTextString(m) }
 func (*AskUpdateRequest) ProtoMessage()    {}
 func (*AskUpdateRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_77a6da22d6a3feb1, []int{5}
+	return fileDescriptor_77a6da22d6a3feb1, []int{9}
 }
 
 func (m *AskUpdateRequest) XXX_Unmarshal(b []byte) error {
@@ -322,7 +471,7 @@ func (m *AskUpdateReply) Reset()         { *m = AskUpdateReply{} }
 func (m *AskUpdateReply) String() string { return proto.CompactTextString(m) }
 func (*AskUpdateReply) ProtoMessage()    {}
 func (*AskUpdateReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_77a6da22d6a3feb1, []int{6}
+	return fileDescriptor_77a6da22d6a3feb1, []int{10}
 }
 
 func (m *AskUpdateReply) XXX_Unmarshal(b []byte) error {
@@ -373,7 +522,7 @@ func (m *AskCreationRequest) Reset()         { *m = AskCreationRequest{} }
 func (m *AskCreationRequest) String() string { return proto.CompactTextString(m) }
 func (*AskCreationRequest) ProtoMessage()    {}
 func (*AskCreationRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_77a6da22d6a3feb1, []int{7}
+	return fileDescriptor_77a6da22d6a3feb1, []int{11}
 }
 
 func (m *AskCreationRequest) XXX_Unmarshal(b []byte) error {
@@ -437,7 +586,7 @@ func (m *AskCreationReply) Reset()         { *m = AskCreationReply{} }
 func (m *AskCreationReply) String() string { return proto.CompactTextString(m) }
 func (*AskCreationReply) ProtoMessage()    {}
 func (*AskCreationReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_77a6da22d6a3feb1, []int{8}
+	return fileDescriptor_77a6da22d6a3feb1, []int{12}
 }
 
 func (m *AskCreationReply) XXX_Unmarshal(b []byte) error {
@@ -575,7 +724,7 @@ func (m *UpdateAsked) Reset()         { *m = UpdateAsked{} }
 func (m *UpdateAsked) String() string { return proto.CompactTextString(m) }
 func (*UpdateAsked) ProtoMessage()    {}
 func (*UpdateAsked) Descriptor() ([]byte, []int) {
-	return fileDescriptor_77a6da22d6a3feb1, []int{9}
+	return fileDescriptor_77a6da22d6a3feb1, []int{13}
 }
 
 func (m *UpdateAsked) XXX_Unmarshal(b []byte) error {
@@ -629,7 +778,7 @@ func (m *Param) Reset()         { *m = Param{} }
 func (m *Param) String() string { return proto.CompactTextString(m) }
 func (*Param) ProtoMessage()    {}
 func (*Param) Descriptor() ([]byte, []int) {
-	return fileDescriptor_77a6da22d6a3feb1, []int{10}
+	return fileDescriptor_77a6da22d6a3feb1, []int{14}
 }
 
 func (m *Param) XXX_Unmarshal(b []byte) error {
@@ -667,6 +816,10 @@ func (m *Param) GetValue() string {
 func init() {
 	proto.RegisterType((*HelloRequest)(nil), "communication.HelloRequest")
 	proto.RegisterType((*HelloReply)(nil), "communication.HelloReply")
+	proto.RegisterType((*SecretKillRequest)(nil), "communication.SecretKillRequest")
+	proto.RegisterType((*SecretKillReply)(nil), "communication.SecretKillReply")
+	proto.RegisterType((*AuthentificateRequest)(nil), "communication.AuthentificateRequest")
+	proto.RegisterType((*AuthentificateReply)(nil), "communication.AuthentificateReply")
 	proto.RegisterType((*RightClickRequest)(nil), "communication.RightClickRequest")
 	proto.RegisterType((*RightClickReply)(nil), "communication.RightClickReply")
 	proto.RegisterType((*Coordinates)(nil), "communication.Coordinates")
@@ -681,39 +834,45 @@ func init() {
 func init() { proto.RegisterFile("rpc.proto", fileDescriptor_77a6da22d6a3feb1) }
 
 var fileDescriptor_77a6da22d6a3feb1 = []byte{
-	// 506 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x94, 0xcd, 0x6e, 0xd3, 0x40,
-	0x10, 0xc7, 0xd9, 0x38, 0xae, 0x92, 0x49, 0x80, 0x76, 0xa9, 0x90, 0x31, 0x22, 0x35, 0x7b, 0x40,
-	0xe1, 0x12, 0xa2, 0xf0, 0x04, 0x26, 0x45, 0xa2, 0x42, 0x45, 0xd1, 0x26, 0xa9, 0xda, 0xe3, 0xe2,
-	0xac, 0xc2, 0xca, 0x8e, 0x6d, 0xd6, 0x9b, 0x83, 0xef, 0x9c, 0x78, 0x0f, 0xde, 0x13, 0x79, 0x6c,
-	0x52, 0xe3, 0xa6, 0x3e, 0x65, 0x66, 0xfc, 0xcb, 0xcc, 0x7f, 0x3e, 0x6c, 0xe8, 0xeb, 0x34, 0x98,
-	0xa4, 0x3a, 0x31, 0x09, 0x7d, 0x1a, 0x24, 0xbb, 0xdd, 0x3e, 0x56, 0x81, 0x30, 0x2a, 0x89, 0x19,
-	0x83, 0xe1, 0x17, 0x19, 0x45, 0x09, 0x97, 0x3f, 0xf7, 0x32, 0x33, 0x94, 0x42, 0xf7, 0x9b, 0xd8,
-	0x49, 0x87, 0x78, 0x64, 0xdc, 0xe7, 0x68, 0x33, 0x0f, 0xa0, 0x62, 0xd2, 0x28, 0x3f, 0x4a, 0xfc,
-	0x21, 0x70, 0xc6, 0xd5, 0xf6, 0x87, 0x99, 0x47, 0x2a, 0x08, 0xff, 0xe5, 0x3a, 0x07, 0x7b, 0x95,
-	0x84, 0x32, 0xae, 0xd0, 0xd2, 0xa1, 0x53, 0xb0, 0x17, 0x89, 0x8a, 0x8d, 0xd3, 0xf1, 0xc8, 0x78,
-	0x30, 0x73, 0x27, 0xff, 0x09, 0x9a, 0xcc, 0x93, 0x44, 0x6f, 0x54, 0x2c, 0x8c, 0xcc, 0x78, 0x09,
-	0xd2, 0x29, 0xbc, 0xf8, 0x1c, 0x1b, 0x65, 0xf2, 0xa5, 0x8c, 0x64, 0x50, 0x50, 0xeb, 0xf5, 0xd5,
-	0xa5, 0x63, 0x79, 0xd6, 0xb8, 0xcf, 0x8f, 0x3d, 0xa2, 0x2f, 0xe1, 0x64, 0x25, 0xf4, 0x56, 0x1a,
-	0xa7, 0x8b, 0xa5, 0x2b, 0x8f, 0x9d, 0xc1, 0xf3, 0xba, 0xcc, 0x34, 0xca, 0xd9, 0x7b, 0x18, 0xd4,
-	0x4a, 0xd2, 0x21, 0x90, 0x5b, 0xd4, 0xdb, 0xe1, 0xe4, 0xb6, 0xf0, 0xee, 0x50, 0x67, 0x87, 0x93,
-	0x3b, 0x36, 0x86, 0x53, 0x3f, 0x0b, 0xd7, 0xe9, 0x46, 0x18, 0xd9, 0xda, 0x23, 0xfb, 0x04, 0xcf,
-	0x6a, 0x64, 0x31, 0xb5, 0x29, 0xd8, 0xbe, 0xd6, 0x22, 0x77, 0x88, 0x67, 0x1d, 0xe9, 0xba, 0x44,
-	0xfd, 0x2c, 0x94, 0x1b, 0x5e, 0x82, 0xec, 0x37, 0x01, 0xea, 0x67, 0xe1, 0x5c, 0x4b, 0x44, 0xda,
-	0x87, 0x4a, 0xa1, 0xbb, 0xca, 0x53, 0x89, 0x5a, 0x6d, 0x8e, 0x36, 0x75, 0xa1, 0x57, 0xfc, 0xae,
-	0x63, 0x65, 0x1c, 0x0b, 0xe3, 0x07, 0x9f, 0x4e, 0xa0, 0x3b, 0x17, 0x99, 0xc4, 0xf1, 0xb4, 0xef,
-	0x00, 0x39, 0x36, 0xc3, 0xd6, 0xef, 0xb5, 0x14, 0x2d, 0x8d, 0x00, 0x6e, 0x44, 0xa4, 0x36, 0x18,
-	0x42, 0x39, 0x3d, 0x5e, 0x8b, 0x30, 0x05, 0x83, 0x5a, 0x5b, 0x07, 0x89, 0xa4, 0x26, 0x71, 0x04,
-	0x50, 0xae, 0x0f, 0x17, 0xda, 0xc1, 0x8e, 0x6a, 0x11, 0xfa, 0x0e, 0x2c, 0x5f, 0x6f, 0x71, 0xd3,
-	0x83, 0xd9, 0x79, 0x43, 0xe5, 0x42, 0x68, 0xb1, 0xe3, 0x05, 0xc0, 0x3e, 0x80, 0x8d, 0x1e, 0x3d,
-	0x05, 0xeb, 0xab, 0xcc, 0xab, 0xd9, 0x14, 0x66, 0x31, 0xaf, 0x1b, 0x11, 0xed, 0x65, 0x95, 0xbd,
-	0x74, 0x66, 0xd7, 0x60, 0xe3, 0x49, 0xd3, 0x4b, 0xe8, 0x2d, 0x45, 0x5e, 0xda, 0xaf, 0x1b, 0x05,
-	0xea, 0x2f, 0x86, 0xfb, 0xea, 0xf8, 0xc3, 0xe2, 0x84, 0x9e, 0xcc, 0x7e, 0x75, 0x60, 0x78, 0x15,
-	0x1b, 0xa9, 0x05, 0xde, 0x60, 0x46, 0x17, 0x00, 0xf7, 0x87, 0x46, 0xbd, 0xc6, 0x7f, 0x1f, 0xbc,
-	0x2a, 0xee, 0xa8, 0x85, 0xc0, 0x12, 0xf4, 0x1a, 0xfa, 0x87, 0x93, 0xa2, 0x17, 0x0d, 0xbc, 0x79,
-	0x96, 0xee, 0x9b, 0xc7, 0x81, 0x32, 0xdd, 0x12, 0x06, 0xb5, 0x85, 0xd2, 0xb7, 0x0f, 0xf9, 0xc6,
-	0xe1, 0xb9, 0x17, 0x6d, 0x08, 0x26, 0xfd, 0x7e, 0x82, 0x9f, 0x98, 0x8f, 0x7f, 0x03, 0x00, 0x00,
-	0xff, 0xff, 0x11, 0x24, 0xa4, 0x54, 0x6f, 0x04, 0x00, 0x00,
+	// 603 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x94, 0xd1, 0x6e, 0xda, 0x3c,
+	0x14, 0xc7, 0x1b, 0x42, 0x2a, 0x38, 0xf0, 0xf5, 0x03, 0xb7, 0x9b, 0xb2, 0x4c, 0xa3, 0x99, 0x35,
+	0x4d, 0x6c, 0xd2, 0x28, 0x62, 0x4f, 0x90, 0xd1, 0x49, 0x43, 0xd5, 0x26, 0x14, 0xa0, 0x6a, 0xa5,
+	0xdd, 0x78, 0xc1, 0xa3, 0x16, 0x21, 0xc9, 0x1c, 0x73, 0x91, 0x57, 0xd8, 0x4b, 0xec, 0x6a, 0x2f,
+	0xb6, 0x27, 0x99, 0xec, 0x04, 0x08, 0x09, 0xa3, 0x57, 0xf8, 0xd8, 0xbf, 0x1c, 0xff, 0xcf, 0xf1,
+	0xf9, 0x03, 0x75, 0x1e, 0x79, 0xbd, 0x88, 0x87, 0x22, 0x44, 0xff, 0x79, 0xe1, 0x6a, 0xb5, 0x0e,
+	0x98, 0x47, 0x04, 0x0b, 0x03, 0x8c, 0xa1, 0xf9, 0x89, 0xfa, 0x7e, 0xe8, 0xd2, 0x1f, 0x6b, 0x1a,
+	0x0b, 0x84, 0xa0, 0xfa, 0x85, 0xac, 0xa8, 0xa9, 0xd9, 0x5a, 0xb7, 0xee, 0xaa, 0x35, 0xb6, 0x01,
+	0x32, 0x26, 0xf2, 0x93, 0x83, 0xc4, 0x15, 0xb4, 0x27, 0xd4, 0xe3, 0x54, 0xdc, 0x30, 0xdf, 0xdf,
+	0xa4, 0xb2, 0xa0, 0x36, 0xa1, 0x81, 0xa0, 0x81, 0xb7, 0x81, 0xb7, 0x31, 0x6e, 0xc3, 0xff, 0xf9,
+	0x0f, 0x22, 0x3f, 0xc1, 0xef, 0xe0, 0x89, 0xb3, 0x16, 0x0f, 0x34, 0x10, 0xec, 0xbb, 0x54, 0x47,
+	0x37, 0x79, 0x2e, 0xc0, 0x98, 0x86, 0x4b, 0x1a, 0x64, 0x49, 0xd2, 0x00, 0x3b, 0x70, 0x5e, 0xc4,
+	0xa5, 0xba, 0xb7, 0xd0, 0x1a, 0xc5, 0xfb, 0x07, 0xea, 0xbb, 0x9a, 0x5b, 0xda, 0xc7, 0xbf, 0x35,
+	0x68, 0xbb, 0x6c, 0xf1, 0x20, 0x86, 0x3e, 0xf3, 0x96, 0x47, 0xaf, 0x43, 0x7d, 0x30, 0xc6, 0x21,
+	0x0b, 0x84, 0x59, 0xb1, 0xb5, 0x6e, 0x63, 0x60, 0xf5, 0xf6, 0xda, 0xd8, 0x1b, 0x86, 0x21, 0x9f,
+	0xb3, 0x80, 0x08, 0x1a, 0xbb, 0x29, 0x88, 0xfa, 0x70, 0xfe, 0x31, 0x10, 0x4c, 0x24, 0x13, 0xea,
+	0x53, 0x4f, 0x52, 0xb3, 0xd9, 0xe8, 0xda, 0xd4, 0x6d, 0xbd, 0x5b, 0x77, 0x0f, 0x1d, 0xa1, 0xa7,
+	0x70, 0x3a, 0x25, 0x7c, 0x41, 0x85, 0x59, 0x55, 0x57, 0x67, 0x91, 0x6c, 0x56, 0x5e, 0xa6, 0x6c,
+	0xd6, 0x1b, 0x68, 0xe4, 0xae, 0x44, 0x4d, 0xd0, 0xee, 0x94, 0xde, 0x8a, 0xab, 0xdd, 0xc9, 0xe8,
+	0x5e, 0xe9, 0xac, 0xb8, 0xda, 0x3d, 0xee, 0x42, 0xcb, 0x89, 0x97, 0xb3, 0x68, 0xfe, 0x68, 0x4b,
+	0x3f, 0xc0, 0x59, 0x8e, 0x94, 0xdd, 0xec, 0x83, 0xe1, 0x70, 0x4e, 0x12, 0x53, 0xb3, 0xf5, 0x03,
+	0x55, 0xa7, 0xa8, 0x13, 0x2f, 0xe9, 0xdc, 0x4d, 0x41, 0xfc, 0x53, 0x03, 0xe4, 0xc4, 0xcb, 0x21,
+	0xa7, 0x0a, 0x39, 0xde, 0x54, 0x04, 0xd5, 0x69, 0x12, 0x51, 0xa5, 0xd5, 0x70, 0xd5, 0x5a, 0x4e,
+	0x8d, 0xfc, 0x9d, 0x05, 0x4c, 0x98, 0xba, 0xda, 0xdf, 0xc6, 0xa8, 0x07, 0xd5, 0x21, 0x89, 0xa9,
+	0x6a, 0xcf, 0xf1, 0x37, 0x50, 0x1c, 0x1e, 0xa8, 0xd2, 0x77, 0x5a, 0x64, 0x49, 0x1d, 0x80, 0x5b,
+	0xe2, 0xb3, 0xb9, 0xda, 0xca, 0x46, 0x23, 0xb7, 0x83, 0x19, 0x34, 0x72, 0x65, 0x6d, 0x25, 0x6a,
+	0x39, 0x89, 0x1d, 0x80, 0xf4, 0xf9, 0xd4, 0x83, 0x56, 0x54, 0x45, 0xb9, 0x1d, 0xf4, 0x1a, 0x74,
+	0x87, 0x2f, 0xd4, 0x4b, 0x37, 0x06, 0x17, 0x05, 0x95, 0x63, 0xc2, 0xc9, 0xca, 0x95, 0x00, 0xbe,
+	0x02, 0x43, 0x45, 0xa8, 0x05, 0xfa, 0x0d, 0x4d, 0xb2, 0xde, 0xc8, 0xa5, 0xec, 0xd7, 0x2d, 0xf1,
+	0xd7, 0x34, 0xcb, 0x9e, 0x06, 0x83, 0x5f, 0x1a, 0x18, 0xca, 0x89, 0xe8, 0x1a, 0x6a, 0x13, 0x92,
+	0xa4, 0xeb, 0xe7, 0x85, 0x1b, 0xf2, 0x7e, 0xb6, 0x9e, 0x1d, 0x3e, 0x94, 0x33, 0x74, 0x82, 0xc6,
+	0x00, 0x3b, 0x17, 0x22, 0xbb, 0x80, 0x96, 0x1c, 0x6d, 0x75, 0x8e, 0x10, 0x2a, 0xe3, 0xe0, 0x4f,
+	0x05, 0x9a, 0xa3, 0x40, 0x50, 0x4e, 0xd4, 0x58, 0xc7, 0xe8, 0x2b, 0x9c, 0xed, 0xbb, 0x0e, 0xbd,
+	0x2a, 0x24, 0x39, 0x68, 0x7a, 0x0b, 0x3f, 0x42, 0x6d, 0x0b, 0xd8, 0x39, 0xa3, 0x54, 0x40, 0xc9,
+	0xdb, 0xa5, 0x02, 0x8a, 0xb6, 0x3a, 0x41, 0x9f, 0xa1, 0xbe, 0xf5, 0x00, 0xba, 0x2c, 0x8a, 0x28,
+	0xf8, 0xc8, 0x7a, 0xf1, 0x6f, 0x20, 0x4d, 0x37, 0x81, 0x46, 0x6e, 0x02, 0xd1, 0xcb, 0x32, 0x5f,
+	0x70, 0x8a, 0x75, 0x79, 0x0c, 0x51, 0x49, 0xbf, 0x9d, 0xaa, 0x7f, 0xf2, 0xf7, 0x7f, 0x03, 0x00,
+	0x00, 0xff, 0xff, 0x40, 0xc2, 0xfa, 0x35, 0xd6, 0x05, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -730,6 +889,8 @@ const _ = grpc.SupportPackageIsVersion4
 type HelloClient interface {
 	// Fonction servant juste au test de connection
 	SayHello(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloReply, error)
+	// Fonction qui sert à tué secrètement le serveur
+	SecretKill(ctx context.Context, in *SecretKillRequest, opts ...grpc.CallOption) (*SecretKillReply, error)
 }
 
 type helloClient struct {
@@ -749,10 +910,21 @@ func (c *helloClient) SayHello(ctx context.Context, in *HelloRequest, opts ...gr
 	return out, nil
 }
 
+func (c *helloClient) SecretKill(ctx context.Context, in *SecretKillRequest, opts ...grpc.CallOption) (*SecretKillReply, error) {
+	out := new(SecretKillReply)
+	err := c.cc.Invoke(ctx, "/communication.Hello/SecretKill", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // HelloServer is the server API for Hello service.
 type HelloServer interface {
 	// Fonction servant juste au test de connection
 	SayHello(context.Context, *HelloRequest) (*HelloReply, error)
+	// Fonction qui sert à tué secrètement le serveur
+	SecretKill(context.Context, *SecretKillRequest) (*SecretKillReply, error)
 }
 
 func RegisterHelloServer(s *grpc.Server, srv HelloServer) {
@@ -777,6 +949,24 @@ func _Hello_SayHello_Handler(srv interface{}, ctx context.Context, dec func(inte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Hello_SecretKill_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SecretKillRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HelloServer).SecretKill(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/communication.Hello/SecretKill",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HelloServer).SecretKill(ctx, req.(*SecretKillRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Hello_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "communication.Hello",
 	HandlerType: (*HelloServer)(nil),
@@ -784,6 +974,10 @@ var _Hello_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SayHello",
 			Handler:    _Hello_SayHello_Handler,
+		},
+		{
+			MethodName: "SecretKill",
+			Handler:    _Hello_SecretKill_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -794,6 +988,8 @@ var _Hello_serviceDesc = grpc.ServiceDesc{
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type InteractionsClient interface {
+	// Fonction qui vérifie si le jour appartient bien à la partie
+	Authentificate(ctx context.Context, in *AuthentificateRequest, opts ...grpc.CallOption) (*AuthentificateReply, error)
 	// Fonction transmettant un click du client au serveur
 	RightClick(ctx context.Context, in *RightClickRequest, opts ...grpc.CallOption) (*RightClickReply, error)
 	// Fonction permettant au client de demander les mises à jour
@@ -808,6 +1004,15 @@ type interactionsClient struct {
 
 func NewInteractionsClient(cc *grpc.ClientConn) InteractionsClient {
 	return &interactionsClient{cc}
+}
+
+func (c *interactionsClient) Authentificate(ctx context.Context, in *AuthentificateRequest, opts ...grpc.CallOption) (*AuthentificateReply, error) {
+	out := new(AuthentificateReply)
+	err := c.cc.Invoke(ctx, "/communication.Interactions/Authentificate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *interactionsClient) RightClick(ctx context.Context, in *RightClickRequest, opts ...grpc.CallOption) (*RightClickReply, error) {
@@ -839,6 +1044,8 @@ func (c *interactionsClient) AskCreation(ctx context.Context, in *AskCreationReq
 
 // InteractionsServer is the server API for Interactions service.
 type InteractionsServer interface {
+	// Fonction qui vérifie si le jour appartient bien à la partie
+	Authentificate(context.Context, *AuthentificateRequest) (*AuthentificateReply, error)
 	// Fonction transmettant un click du client au serveur
 	RightClick(context.Context, *RightClickRequest) (*RightClickReply, error)
 	// Fonction permettant au client de demander les mises à jour
@@ -849,6 +1056,24 @@ type InteractionsServer interface {
 
 func RegisterInteractionsServer(s *grpc.Server, srv InteractionsServer) {
 	s.RegisterService(&_Interactions_serviceDesc, srv)
+}
+
+func _Interactions_Authentificate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AuthentificateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(InteractionsServer).Authentificate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/communication.Interactions/Authentificate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(InteractionsServer).Authentificate(ctx, req.(*AuthentificateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _Interactions_RightClick_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -909,6 +1134,10 @@ var _Interactions_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "communication.Interactions",
 	HandlerType: (*InteractionsServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "Authentificate",
+			Handler:    _Interactions_Authentificate_Handler,
+		},
 		{
 			MethodName: "RightClick",
 			Handler:    _Interactions_RightClick_Handler,
