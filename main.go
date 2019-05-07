@@ -21,9 +21,8 @@ func main() {
 	go g.BrokenBuildingsCollector()
 	// Listen
 	go g.GameLoop()
-	for key:=range d.ActionBuffer{
-		log.Println(key)
-	}
+	log.Println(g.Joueurs[0].UID)
+	log.Println(g.Joueurs[1].UID)
 	server.InitListenerServer(&g)
 	//go initialize(&g)
 }

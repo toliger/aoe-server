@@ -39,13 +39,9 @@ func TestObjectID(t *testing.T) {
 	}
 }
 func TestCurl(t *testing.T){
-	_,err:=(Curl("game(id:\"2b6a0353-6a88-4060-93bc-f1208c623e80\"){players{id}}"))
-	if err != nil {
+	tab,err:=GetPlayersFromGID()
+	t.Log(tab)
+	if err!=nil{
 		t.Error(err)
-	}
-	players,err2:=GetPlayers()
-	t.Log(players)
-	if err2!=nil{
-		t.Error(err2)
 	}
 }

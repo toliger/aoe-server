@@ -2,8 +2,8 @@ package data
 
 import (
 	"encoding/json"
-	//"io/ioutil"
-	//"net/http"
+	"io/ioutil"
+	"net/http"
 	"sync"
 	"strconv"
 	"strings"
@@ -11,7 +11,6 @@ import (
 	"git.unistra.fr/AOEINT/server/utils"
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/machinebox/graphql"
-	//"errors"
 	"context"
 )
 
@@ -233,6 +232,27 @@ func GetPlayers()([]string,error){
 	res[0]=t3.(map[string]interface{})["id"].(string)
 	res[1]=t4.(map[string]interface{})["id"].(string)
 	return res,nil
+}
+//GetPlayersFromGID  get player ids from new api
+func GetPlayersFromGID() ([]string,error){
+	resp, err := http.Get(constants.APIHOST+"/v1/game/"+constants.GameUUID)
+	if err != nil {
+		utils.Debug(err.Error())
+		return nil,err
+	}
+	tab:=make([]string,2)
+	defer resp.Body.Close()
+	bodyBytes,err:= ioutil.ReadAll(resp.Body)
+	if err != nil{
+		utils.Debug(err.Error())
+		return nil,err
+	}
+	var response map[string]interface{}
+	json.Unmarshal(bodyBytes,&response)
+	t1:=(response["Players"]).([]interface{})
+	tab[0]=t1[0].(string)
+	tab[1]=t1[1].(string)
+	return tab,nil
 }
 
 //Curl method POST/GET, query body ex: mutation{login(email: "gege@hotmail.fr",  password: "un")  }

@@ -265,15 +265,16 @@ Modification: Changement pour des valeurs statiques (temporaire)
 */
 func (g *Game) GetPlayerData() {
 	(*g).Joueurs = make([]*joueur.Joueur, 2)
-	/*ds,err:=data.GetPlayers()
+	ids,err:=data.GetPlayersFromGID()
 	if err!=nil{
+		utils.Debug(err.Error())
 		os.Exit(1)
-	}*/
-	//id1:= ids[0]
-	id1:="907ff305-48da-4b1a-b262-aed1c10363f9"
+	}
+	id1:= ids[0]
+	//id1:="907ff305-48da-4b1a-b262-aed1c10363f9"
 	utils.Debug("j1: "+id1)
-	//id2:= ids[1]
-	id2:= "4b462ba3-e594-4d47-aa9d-a9ebd1450db3"
+	id2:= ids[1]
+	//id2:= "4b462ba3-e594-4d47-aa9d-a9ebd1450db3"
 	utils.Debug("j2: "+id2)
 	j0 := joueur.Create(0, "Bob", id1)
 	j1 := joueur.Create(1, "Alice", id2)

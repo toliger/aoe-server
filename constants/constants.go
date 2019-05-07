@@ -266,7 +266,7 @@ const VillagerDamage = 5
 //===== Default API values ======
 
 //APIHOST default API host
-var APIHOST = utils.Getenv("APIHOST", "https://api.archisme.com/graphql")
+var APIHOST = utils.Getenv("APIHOST", "https://game.api.archisme.com")
 
 //APIPORT default API port
 var APIPORT = utils.Getenv("APIPORT", "443")
