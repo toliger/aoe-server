@@ -146,6 +146,27 @@ func (s *Arguments) RightClick(ctx context.Context, in *pb.RightClickRequest) (*
 				log.Println(msg)
 				continue
 			}
+
+			path := entity.(*npc.Npc).MoveTo(s.g.Carte, int(in.Point.X), int(in.Point.Y), nil)
+
+			// Filling ActionBuffer with the right data
+			entityData := entity.(*npc.Npc).Stringify(constants.ActionNewNpc)
+			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "pv", entityData["pv"])
+			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "x", entityData["x"])
+			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "y", entityData["y"])
+			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "vitesse", entityData["vitesse"])
+			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "damage", entityData["damage"])
+			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "vue", entityData["vue"])
+			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "portee", entityData["portee"])
+			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "pv", entityData["pv"])
+			if len(path) != 0 {
+				data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "destX", fmt.Sprintf("%f", in.Point.X))
+				data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "destY", fmt.Sprintf("%f", in.Point.Y))
+			} else {
+				data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "destX", "-1")
+				data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "destY", "-1")
+			}
+
 			go entity.(*npc.Npc).MoveTo(s.g.Carte, int(in.Point.X), int(in.Point.Y), nil)
 			
 		}

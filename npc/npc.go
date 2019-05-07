@@ -373,8 +373,8 @@ func (pnj *Npc) MoveTo(c carte.Carte, destx int, desty int, wg *sync.WaitGroup) 
 		if len(path) > 0{
 			pnj.SetDestX(destx)
 			pnj.SetDestY(desty)
-			log.Println("Envoi type :",constants.ActionAlterationNpc, " id: ",pnj.PlayerUUID)
-			pnj.Transmit(data.IDMap.GetIDFromObject(pnj),constants.ActionAlterationNpc)
+			//log.Println("Envoi type :",constants.ActionAlterationNpc, " id: ",pnj.PlayerUUID)
+			//pnj.Transmit(data.IDMap.GetIDFromObject(pnj),constants.ActionAlterationNpc)
 		}
 		go pnj.deplacement(path, wg)
 	}
