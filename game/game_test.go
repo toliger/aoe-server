@@ -60,8 +60,8 @@ func TestAutoFight(t *testing.T) {
 	(&g).GetPlayerData()
 	data := ExtractData()
 	(&g).GenerateMap(data)
-	player1 := g.GetPlayerFromUID(d.ExtractFromToken(cst.Player1JWT).UID)
-	player2 := g.GetPlayerFromUID(d.ExtractFromToken(cst.Player2JWT).UID)
+	player1 := g.GetPlayerFromUID(cst.PlayerUID1)
+	player2 := g.GetPlayerFromUID(cst.PlayerUID2)
 	player1.EntityListMutex.RLock()
 	log.Println("Player 1")
 	for _, pnj := range player1.GetEntities() {
@@ -137,8 +137,8 @@ func TestMoveTargetNpc(t *testing.T) {
 	(&g).GetPlayerData()
 	data := ExtractData()
 	(&g).GenerateMap(data)
-	player1 := g.GetPlayerFromUID(d.ExtractFromToken(cst.Player1JWT).UID)
-	player2 := g.GetPlayerFromUID(d.ExtractFromToken(cst.Player2JWT).UID)
+	player1 := g.GetPlayerFromUID(cst.PlayerUID1)
+	player2 := g.GetPlayerFromUID(cst.PlayerUID2)
 	player1.EntityListMutex.RLock()
 	log.Println("Player 1")
 	for _, pnj := range player1.GetEntities() {
@@ -214,8 +214,8 @@ func TestMoveTargetBuilding(t *testing.T) {
 	(&g).GetPlayerData()
 	data := ExtractData()
 	(&g).GenerateMap(data)
-	player1 := g.GetPlayerFromUID(d.ExtractFromToken(cst.Player1JWT).UID)
-	player2 := g.GetPlayerFromUID(d.ExtractFromToken(cst.Player2JWT).UID)
+	player1 := g.GetPlayerFromUID(cst.PlayerUID1)
+	player2 := g.GetPlayerFromUID(cst.PlayerUID2)
 	for i, building := range player2.GetBuildings() {
 		if building == nil {
 			continue
