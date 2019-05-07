@@ -19,6 +19,7 @@ func main() {
 	g.GenerateMap(data)
 	go g.LaunchAutomaticFight()
 	go g.BrokenBuildingsCollector()
+	//for _,g.Buildings
 	// Listen
 	go g.GameLoop()
 	log.Println(g.Joueurs[0].UID)
