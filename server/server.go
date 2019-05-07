@@ -129,7 +129,7 @@ func (s *Arguments) RightClick(ctx context.Context, in *pb.RightClickRequest) (*
 			}
 
 			// Get the path of the entity
-			path := entity.(*npc.Npc).MoveTo(s.g.Carte, int(in.Point.X), int(in.Point.Y), nil)
+			go entity.(*npc.Npc).MoveTo(s.g.Carte, int(in.Point.X), int(in.Point.Y), nil)
 		}
 
 	} else { // Attack request
@@ -160,10 +160,10 @@ func (s *Arguments) RightClick(ctx context.Context, in *pb.RightClickRequest) (*
 
 			switch reflect.TypeOf(target) {
 			case reflect.TypeOf(&npc.Npc{}):
-				go entity.(*npc.Npc).MoveTargetNPC(s.g.Carte, target.(*npc.Npc), nil)
+				go entity.(*npc.Npc).MoveTargetNpc(s.g.Carte, target.(*npc.Npc), nil)
 
 			case reflect.TypeOf(&batiment.Batiment{}):
-				go entity.(*npc.Npc).MoveTargetBuilding(s.g.Carte, target.(*npc.Npc), nil)
+				go entity.(*npc.Npc).MoveTargetBuilding(s.g.Carte, target.(*batiment.Batiment), nil)
 
 			case reflect.TypeOf(&ressource.Ressource{}):
 				go entity.(*npc.Npc).MoveHarvestTarget(s.g.Carte, target.(*ressource.Ressource))

@@ -146,7 +146,7 @@ func TestAskUpdate(t *testing.T) {
 
 	fmt.Println("\n2. AskUpdate Token remplie (mal v3)")
 	_, err = s.AskUpdate(ctx, &pb.AskUpdateRequest{
-		Token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxw",
+		Token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI5MDdmZjMwNS00OGRhLTRiMWEtYjI2Mi1hZWQxYzEwMzYzZjkiLCJpYXQiOjE1NTY3MjY3NjUsImV4cCI6MTU1NjczMzk2NX0.tcnpzN-ZDUOzvh10ovs1jCUAEW39j-nNfEFLQ5gSvhk",
 	});
 	if err == nil {
 		t.Errorf("Erreur du test, message d'erreur vide")
