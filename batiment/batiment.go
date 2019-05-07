@@ -110,6 +110,11 @@ func (bat *Batiment) GetChannel() *(chan int) {
 	return bat.batimentChannel
 }
 
+//GetType : retourne le type du batiment
+func (bat Batiment) GetType() int {
+	return bat.Typ
+}
+
 //GetPv : Retourne les pv d'un bâtiment
 func (bat Batiment) GetPv() int {
 	bat.m.Lock()
@@ -148,6 +153,11 @@ func (bat Batiment) GetLargeur() int {
 //GetPlayerUID : Retourne l'id du joueur auquel appartient ce batiment
 func (bat Batiment) GetPlayerUID() string {
 	return bat.PlayerUID
+}
+
+//SetPlayerUID : Change le playerUUID d'un batiment
+func (bat *Batiment) SetPlayerUID(UID string) {
+	bat.PlayerUID = UID
 }
 
 //GetX : Retourne un coordonnée x de Batiment

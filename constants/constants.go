@@ -71,9 +71,6 @@ const (
 	ActionEndOfGame = 10
 )
 
-//Epsilon for float comparisons
-const Epsilon = 1e-9
-
 //MaxActions constante maxActions
 const MaxActions = 10
 
@@ -156,7 +153,7 @@ const PrixStoneCaserne = 5
 const PrixWoodCaserne = 5
 
 //PrixStoneEtabli cout etabli en stone
-const PrixStoneEtabli = 5
+const PrixStoneEtabli = 0
 
 //PrixWoodEtabli cout etabli en bois
 const PrixWoodEtabli = 5
@@ -245,9 +242,6 @@ const HarvesterVue = 10
 //HarvesterSize taille d'un harvester
 const HarvesterSize = 1
 
-//HarvesterDamage degats d'un harvester
-const HarvesterDamage = 7
-
 //VillagerPv pv d'un villager
 const VillagerPv = 4
 
@@ -262,6 +256,21 @@ const VillagerSize = 1
 
 //VillagerDamage degats d'un villager
 const VillagerDamage = 5
+
+//VillagerFoodCost : cout en nourriture d'un villageois
+const VillagerFoodCost = 25
+
+//HarvesterFoodCost : cout en nourriture d'un harvester
+const HarvesterFoodCost = 30
+
+//HarvesterWoodCost : cout en bois d'un harvester
+const HarvesterWoodCost = 20
+
+//SoldierFoodCost : cout en nourriture d'un soldat
+const SoldierFoodCost = 50
+
+//SoldierWoodCost : cout en bois d'un soldat
+const SoldierWoodCost = 10
 
 //===== Default API values ======
 
