@@ -243,6 +243,7 @@ func (s *Arguments) AskUpdate(ctx context.Context, in *pb.AskUpdateRequest) (*pb
 				upAsk := pb.UpdateAsked{Type: int32(actionType), EntityUUID: entityUUID}
 
 				for key, value := range data.ActionBuffer[playerUUID.UID][actionType].Description[entityUUID] {
+					//delete(data.ActionBuffer[playerUUID.UID][actionType].Description[entityUUID],key)
 					upAsk.Arg = append(upAsk.Arg, &pb.Param{Key: key, Value: value})
 				}
 				//log.Print("envoyé: joueur: ",playerUUID.UID," type: ",actionType)

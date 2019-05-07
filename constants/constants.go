@@ -72,7 +72,7 @@ const (
 )
 
 //MaxActions constante maxActions
-const MaxActions = 10
+const MaxActions = 11
 
 //ActionChannelSize Nombre d'actions simultanées stockées dans le channel
 const ActionChannelSize = 10
