@@ -4,6 +4,7 @@ import (
 	d "git.unistra.fr/AOEINT/server/data"
 	"git.unistra.fr/AOEINT/server/game"
 	"git.unistra.fr/AOEINT/server/server"
+	"log"
 )
 
 func main() {
@@ -12,10 +13,19 @@ func main() {
 	d.IDMap = d.NewObjectID()
 	cExit := make(chan(bool))
 	g.GameRunning = cExit
-
+	g.GetPlayerData()
+	d.InitiateActionBuffer()
+	data := game.ExtractData()
+	g.GenerateMap(data)
+	go g.LaunchAutomaticFight()
+	go g.BrokenBuildingsCollector()
 	// Listen
+	go g.GameLoop()
+	for key:=range d.ActionBuffer{
+		log.Println(key)
+	}
 	server.InitListenerServer(&g)
-	go initialize(&g)
+	//go initialize(&g)
 }
 
 func initialize(g *game.Game){
