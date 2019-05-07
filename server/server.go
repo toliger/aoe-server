@@ -297,6 +297,7 @@ func (s *Arguments) AskCreation(ctx context.Context, in *pb.AskCreationRequest) 
 		// Create NPC into the right player and update ActionBuffer
 		player := s.g.GetPlayerFromUID(playerUUID.UID)
 		b := batiment.Create(class, int(in.Case.X), int(in.Case.Y))
+		log.Println("création du batiment du joueur: ",b.GetPlayerUID())
 		if s.g.Carte.AddNewBuilding(&b) != true {
 			log.Print("Erreur, peut pas créer un batiment dans AskCreation")
 			return &pb.AskCreationReply{Validation: false}, nil
