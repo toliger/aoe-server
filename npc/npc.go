@@ -547,7 +547,6 @@ func (pnj *Npc) MoveTargetNpc(c carte.Carte, target *Npc, wg *sync.WaitGroup) {
 		return
 	}
 	go pnj.MoveTo(c, posFightPnjX, posFightPnjY, wg)
-	pnj.Transmit(data.IDMap.GetIDFromObject(pnj), constants.ActionAlterationNpc)
 }
 
 //MoveTargetBuilding : move to a target to be able to attack it
@@ -582,7 +581,6 @@ func (pnj *Npc) MoveTargetBuilding(c carte.Carte, target *batiment.Batiment, wg 
 		return
 	}
 	go pnj.MoveTo(c, posFightBuildingX, posFightBuildingY, wg)
-	pnj.Transmit(data.IDMap.GetIDFromObject(pnj), constants.ActionAlterationNpc)
 }
 
 //MoveFightBuilding : attack a given building
