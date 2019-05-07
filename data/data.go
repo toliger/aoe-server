@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	"crypto/tls"
 	"sync"
 	"strconv"
 	"strings"
@@ -235,6 +236,7 @@ func GetPlayers()([]string,error){
 }
 //GetPlayersFromGID  get player ids from new api
 func GetPlayersFromGID() ([]string,error){
+	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
 	resp, err := http.Get(constants.APIHOST+"/v1/game/"+constants.GameUUID)
 	if err != nil {
 		utils.Debug(err.Error())
@@ -248,8 +250,8 @@ func GetPlayersFromGID() ([]string,error){
 		return nil,err
 	}
 	var response map[string]interface{}
-	err=json.Unmarshal(bodyBytes,&response)
-	if err != nil {
+	err =json.Unmarshal(bodyBytes,&response)
+	if err!=nil{
 		return nil,err
 	}
 	t1:=(response["Players"]).([]interface{})
