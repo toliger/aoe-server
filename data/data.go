@@ -250,7 +250,10 @@ func GetPlayersFromGID() ([]string,error){
 		return nil,err
 	}
 	var response map[string]interface{}
-	json.Unmarshal(bodyBytes,&response)
+	err =json.Unmarshal(bodyBytes,&response)
+	if err!=nil{
+		return nil,err
+	}
 	t1:=(response["Players"]).([]interface{})
 	tab[0]=t1[0].(string)
 	tab[1]=t1[1].(string)
