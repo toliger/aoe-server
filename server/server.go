@@ -146,7 +146,6 @@ func (s *Arguments) RightClick(ctx context.Context, in *pb.RightClickRequest) (*
 				log.Println(msg)
 				continue
 			}
-
 			go entity.(*npc.Npc).MoveTo(s.g.Carte, int(in.Point.X), int(in.Point.Y), nil)
 			
 		}
@@ -298,11 +297,12 @@ func (s *Arguments) AskCreation(ctx context.Context, in *pb.AskCreationRequest) 
 		// Create NPC into the right player and update ActionBuffer
 		player := s.g.GetPlayerFromUID(playerUUID.UID)
 		b := batiment.Create(class, int(in.Case.X), int(in.Case.Y))
+		player.AddBuilding(&b)
+		log.Println("création du batiment du joueur: ",b.GetPlayerUID())
 		if s.g.Carte.AddNewBuilding(&b) != true {
 			log.Print("Erreur, peut pas créer un batiment dans AskCreation")
 			return &pb.AskCreationReply{Validation: false}, nil
 		}
-		player.AddBuilding(&b)
 
 	default:
 		log.Print("Format de requête invalide dans AskCreation")

@@ -186,8 +186,9 @@ func (g *Game) BrokenBuildingsCollector() {
 
 //EndOfGame : Interromps la boucle principale du jeu
 func (g *Game) EndOfGame() {
-	(*g).GameRunning <- false
+	log.Println("Fin du jeu")
 	data.AddToAllAction(constants.ActionEndOfGame, "useless", "useless", "useless")
+	(*g).GameRunning <- false
 }
 
 //GameLoop : fonction contenant la boucle principale du jeu
