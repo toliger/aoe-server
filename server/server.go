@@ -129,25 +129,7 @@ func (s *Arguments) RightClick(ctx context.Context, in *pb.RightClickRequest) (*
 			}
 
 			// Get the path of the entity
-			path := entity.(*npc.Npc).MoveTo(s.g.Carte, int(in.Point.X), int(in.Point.Y), nil)
-
-			// Filling ActionBuffer with the right data
-			entityData := entity.(*npc.Npc).Stringify(constants.ActionNewNpc)
-			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "pv", entityData["pv"])
-			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "x", entityData["x"])
-			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "y", entityData["y"])
-			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "vitesse", entityData["vitesse"])
-			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "damage", entityData["damage"])
-			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "vue", entityData["vue"])
-			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "portee", entityData["portee"])
-			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "pv", entityData["pv"])
-			if len(path) != 0 {
-				data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "destX", fmt.Sprintf("%f", in.Point.X))
-				data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "destY", fmt.Sprintf("%f", in.Point.Y))
-			} else {
-				data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "destX", "-1")
-				data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "destY", "-1")
-			}
+			go entity.(*npc.Npc).MoveTo(s.g.Carte, int(in.Point.X), int(in.Point.Y), nil)
 		}
 
 	} else { // Attack request
@@ -178,9 +160,10 @@ func (s *Arguments) RightClick(ctx context.Context, in *pb.RightClickRequest) (*
 
 			switch reflect.TypeOf(target) {
 			case reflect.TypeOf(&npc.Npc{}):
-				go entity.(*npc.Npc).MoveFight(s.g.Carte, target.(*npc.Npc))
+				go entity.(*npc.Npc).MoveTargetNpc(s.g.Carte, target.(*npc.Npc), nil)
 
 			case reflect.TypeOf(&batiment.Batiment{}):
+				go entity.(*npc.Npc).MoveTargetBuilding(s.g.Carte, target.(*batiment.Batiment), nil)
 
 			case reflect.TypeOf(&ressource.Ressource{}):
 				go entity.(*npc.Npc).MoveHarvestTarget(s.g.Carte, target.(*ressource.Ressource))
@@ -207,7 +190,7 @@ func (s *Arguments) AskUpdate(ctx context.Context, in *pb.AskUpdateRequest) (*pb
 	// Extract data from token to get player's UUID
 	playerUUID := data.ExtractFromToken(in.Token)
 	if playerUUID == nil {
-		msg := "Token invalide dans AskUpdate"
+		msg := "Token invalide dans AskUpdate: vide"
 		log.Print(msg)
 		return &pb.AskUpdateReply{Array: nil}, errors.New(msg)
 	}
@@ -223,12 +206,16 @@ func (s *Arguments) AskUpdate(ctx context.Context, in *pb.AskUpdateRequest) (*pb
 				for key, value := range data.ActionBuffer[playerUUID.UID][actionType].Description[entityUUID] {
 					upAsk.Arg = append(upAsk.Arg, &pb.Param{Key: key, Value: value})
 				}
-
+				log.Print("envoyé: joueur: ",playerUUID.UID," type: ",actionType)
 				toSend = append(toSend, &upAsk)
 			}
 		}
 	} else {
-		log.Print("PlayerUUID invalide dans AskUpdate")
+		log.Print("PlayerUUID invalide dans AskUpdate: ",playerUUID.UID)
+		log.Print("wanted:")
+		for key:=range data.ActionBuffer{
+			log.Print(key)
+		}
 		return &pb.AskUpdateReply{Array: nil}, nil
 	}
 

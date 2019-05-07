@@ -10,6 +10,8 @@ import (
 	"git.unistra.fr/AOEINT/server/constants"
 	"git.unistra.fr/AOEINT/server/utils"
 	jwt "github.com/dgrijalva/jwt-go"
+	"github.com/machinebox/graphql"
+	"context"
 )
 
 //Action classe detaillant une action de ActionBuffer
@@ -216,30 +218,54 @@ func ExtractFromToken(tokenString string) *TokenValue {
 	return &extract
 }
 
-//Curl method POST/GET, query body ex: mutation{login(email: "gege@hotmail.fr",  password: "un")  }
-func Curl(queryBody string) (string, error) {
-	body := strings.NewReader(`{ "query": "` + queryBody + `" }`)
-	req, err := http.NewRequest("POST", constants.APIHOST+":"+constants.APIPORT, body)
-	if err != nil {
-		return "", err
+//GetPlayers Returns the ids of the players of the current game
+func GetPlayers()([]string,error){
+	rep,err := Curl("game(id:\""+constants.GameUUID+"\"){players{id}}")
+	if err!= nil{
+		return nil,nil
 	}
-	req.Header.Set("Content-Type", "application/json")
+	t1:=rep["game"]
+	t2:=t1.(map[string]interface{})["players"]
+	t3:=t2.([]interface{})[0]
+	t4:=t2.([]interface{})[1]
+	res:=make([]string,2)
+	res[0]=t3.(map[string]interface{})["id"].(string)
+	res[1]=t4.(map[string]interface{})["id"].(string)
+	return res,nil
+}
+//GetPlayersFromGID  get player ids from new api
+func GetPlayersFromGID() ([]string,error){
+	resp, err := http.Get(constants.APIHOST+"/v1/game/"+constants.GameUUID)
+	if err != nil {
+		utils.Debug(err.Error())
+		return nil,err
+	}
+	tab:=make([]string,2)
+	//defer resp.Body.Close()
+	bodyBytes,err:= ioutil.ReadAll(resp.Body)
+	if err != nil{
+		utils.Debug(err.Error())
+		return nil,err
+	}
+	var response map[string]interface{}
+	json.Unmarshal(bodyBytes,&response)
+	t1:=(response["Players"]).([]interface{})
+	tab[0]=t1[0].(string)
+	tab[1]=t1[1].(string)
+	errClose:=resp.Body.Close()
+	return tab,errClose
+}
 
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return "", err
+//Curl method POST/GET, query body ex: mutation{login(email: "gege@hotmail.fr",  password: "un")  }
+func Curl(queryBody string) (map[string]interface{}, error) {
+	client := graphql.NewClient(constants.APIHOST)
+	req := graphql.NewRequest("query{"+queryBody+"}")
+	req.Header.Set("Cache-Control", "no-cache")
+	ctx := context.Background()
+	var respData map[string]interface{}
+	if err := client.Run(ctx, req, &respData); err != nil {
+		return nil,err
 	}
-	var errClose error
-	defer func() {
-		errClose = resp.Body.Close()
-	}()
-	if resp.StatusCode != http.StatusOK {
-		return "", err
-	}
-	bodyBytes, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return "", err
-	}
-	bodyString := string(bodyBytes)
-	return bodyString, errClose
+
+	return respData, nil
 }

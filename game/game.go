@@ -35,7 +35,7 @@ type Data struct {
 func ExtractData() Data {
 	datafileName := "data/GameData.json"
 	if constants.UseSmallMap {
-		datafileName = "data/SmallTestMap.json"
+		datafileName = "SmallTestMap.json"
 	}
 	if constants.Testing {
 		datafileName = "../" + datafileName
@@ -130,8 +130,8 @@ func (g *Game) LaunchAutomaticFight() {
 				if (*player).GetEntities() == nil {
 					continue
 				}
-				for _, pnj := range player.GetEntities() {
-					if pnj == nil {
+				for _,pnj := range player.GetEntities(){
+					if pnj == nil{
 						continue
 					}
 					if pnj.IsActive() == false {
@@ -169,6 +169,9 @@ func (g *Game) BrokenBuildingsCollector() {
 					continue
 				}
 				for key, bat := range list {
+					if bat ==nil{
+						continue
+					}
 					if bat.GetPv() <= 0 {
 						g.DeleteBuilding(bat)
 						if key == 0 { //Auberge
@@ -262,8 +265,17 @@ Modification: Changement pour des valeurs statiques (temporaire)
 */
 func (g *Game) GetPlayerData() {
 	(*g).Joueurs = make([]*joueur.Joueur, 2)
-	id1 := data.ExtractFromToken(constants.Player1JWT).UID
-	id2 := data.ExtractFromToken(constants.Player2JWT).UID
+	ids,err:=data.GetPlayersFromGID()
+	if err!=nil{
+		utils.Debug(err.Error())
+		os.Exit(1)
+	}
+	id1:= ids[0]
+	//id1:="907ff305-48da-4b1a-b262-aed1c10363f9"
+	utils.Debug("j1: "+id1)
+	id2:= ids[1]
+	//id2:= "4b462ba3-e594-4d47-aa9d-a9ebd1450db3"
+	utils.Debug("j2: "+id2)
 	j0 := joueur.Create(0, "Bob", id1)
 	j1 := joueur.Create(1, "Alice", id2)
 	(*g).Joueurs[0] = &j0

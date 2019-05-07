@@ -161,7 +161,7 @@ const PrixWoodEtabli = 5
 //DataRecup consts
 var (
 	//GameUUID id de partie
-	GameUUID string = utils.Getenv("GAMEUUID", "DEFAULT")
+	GameUUID string = utils.Getenv("GAMEUUID", "2b6a0353-6a88-4060-93bc-f1208c623e80")
 
 	//APIHost API
 	APIHost string = utils.Getenv("APIHOST", "DEFAULT")
@@ -275,10 +275,10 @@ const SoldierWoodCost = 10
 //===== Default API values ======
 
 //APIHOST default API host
-var APIHOST = utils.Getenv("APIHOST", "localhost")
+var APIHOST = utils.Getenv("APIHOST", "https://game.api.archisme.com")
 
 //APIPORT default API port
-var APIPORT = utils.Getenv("APIPORT", "4000")
+var APIPORT = utils.Getenv("APIPORT", "443")
 
 //Testing used to enable functionalities for testing
 var Testing = false

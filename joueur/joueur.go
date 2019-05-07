@@ -186,6 +186,9 @@ func (j Joueur) GetBatiment(i int) batiment.Batiment {
 
 //DeleteBatimentFromList retire un batiment de la liste du joueur
 func (j *Joueur) DeleteBatimentFromList(x int, y int, typ int) bool {
+	if j == nil {
+		return false
+	}
 	for i := range j.batiments {
 		if j.batiments[i].X == x && j.batiments[i].Y == y && j.batiments[i].Typ == typ {
 			j.batiments[i] = nil
@@ -217,6 +220,7 @@ func (j *Joueur) AddFood(f int) {
 func (j *Joueur) AddBuilding(b *batiment.Batiment) {
 	b.SetPlayerUID(j.UID)
 	(*j).batiments = append(j.batiments, b)
+	b.PlayerUID=j.GetUID()
 }
 
 //AddNpc : add a new NPC to the player
