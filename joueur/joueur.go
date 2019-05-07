@@ -74,7 +74,7 @@ func (j Joueur) stringify() map[string]string {
 func (j Joueur) Transmit() {
 	arr := j.stringify()
 	for k, e := range arr {
-		data.AddNewAction(j.UID, constants.ActionPlayerRessource, j.UID, k, e)
+		data.AjoutJoueurConcurrent(j.UID, constants.ActionPlayerRessource, j.UID, k, e)
 	}
 }
 
@@ -90,9 +90,9 @@ func (j *Joueur) ressourceUpdate() {
 			j.AddWood(res[0])
 			j.AddStone(res[1])
 			j.AddFood(res[2])
-			data.AddNewAction(j.UID, constants.ActionPlayerRessource, j.UID, "wood", strconv.Itoa(j.GetWood()))
-			data.AddNewAction(j.UID, constants.ActionPlayerRessource, j.UID, "food", strconv.Itoa(j.GetFood()))
-			data.AddNewAction(j.UID, constants.ActionPlayerRessource, j.UID, "stone", strconv.Itoa(j.GetStone()))
+			data.AjoutJoueurConcurrent(j.UID, constants.ActionPlayerRessource, j.UID, "wood", strconv.Itoa(j.GetWood()))
+			data.AjoutJoueurConcurrent(j.UID, constants.ActionPlayerRessource, j.UID, "food", strconv.Itoa(j.GetFood()))
+			data.AjoutJoueurConcurrent(j.UID, constants.ActionPlayerRessource, j.UID, "stone", strconv.Itoa(j.GetStone()))
 			log.Print("ressourceUpdate")
 		} else {
 			break

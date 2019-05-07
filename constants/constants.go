@@ -75,7 +75,7 @@ const (
 const MaxActions = 11
 
 //ActionChannelSize Nombre d'actions simultanées stockées dans le channel
-const ActionChannelSize = 10
+const ActionChannelSize = 150
 
 //===== caracteristiques d'une partie =====
 

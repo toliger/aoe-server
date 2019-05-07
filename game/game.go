@@ -84,7 +84,7 @@ func (g *Game) DeleteBuilding(bat *batiment.Batiment) bool {
 	}
 	//On retire le batiment de la liste des batiments du jeu
 	data.IDMap.DeleteObjectFromID(id)
-	data.AddToAllAction(constants.ActionDestroyBuilding, id, "useless", "useless")
+	data.AjoutConcurrent(constants.ActionDestroyBuilding, id, "useless", "useless")
 	bat = nil
 	return true
 }
@@ -102,7 +102,7 @@ func (g *Game) DeleteNpc(pnj *npc.Npc) bool {
 	}
 	//On retire le pnj de la liste des pnj du jeu
 	data.IDMap.DeleteObjectFromID(id)
-	data.AddToAllAction(constants.ActionDelNpc, id, "useless", "useless")
+	data.AjoutConcurrent(constants.ActionDelNpc, id, "useless", "useless")
 	return true
 }
 
@@ -189,8 +189,8 @@ func (g *Game) BrokenBuildingsCollector() {
 //EndOfGame : Interromps la boucle principale du jeu
 func (g *Game) EndOfGame() {
 	log.Println("Fin du jeu")
-	data.AddToAllAction(constants.ActionEndOfGame, "useless", "useless", "useless")
-	(*g).GameRunning <- false
+	data.AjoutConcurrent(constants.ActionEndOfGame, "useless", "useless", "useless")
+	(*g).GameRunning <- true
 }
 
 //GameLoop : fonction contenant la boucle principale du jeu
@@ -198,11 +198,12 @@ func (g *Game) GameLoop() {
 	var test bool
 	for {
 		test = <-g.GameRunning
-		if test == false {
+		if test == true {
 			break
 		}
 	}
 	time.Sleep(time.Duration(time.Second * constants.TimeBeforeExit))
+	os.Exit(0)
 }
 
 //GenerateMap : Permet de generer la Carte a partir d'une structure data

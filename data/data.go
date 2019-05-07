@@ -42,6 +42,7 @@ func InitiateActionBuffer() {
 }
 
 type request struct{
+	playerUID string
 	typ int
 	uuid string
 	key string
@@ -50,9 +51,15 @@ type request struct{
 
 var actionChannel chan(request)
 
-//AjoutConcurrent Permet d'effectuer un AddToAllAction de manière
+//AjoutConcurrent Permet d'effectuer un AddToAllAction sécurisé avec channel
 func AjoutConcurrent(typ int, uuid string, key string, description string){
-	req := request{typ,uuid,key,description}
+	req := request{"-1",typ,uuid,key,description}
+	actionChannel <- req
+}
+
+//AjoutJoueurConcurrent Permet d'effecuer un AddNewAction sécurisé avec channel
+func AjoutJoueurConcurrent(PlayerUID string, typ int, uuid string, key string, description string){
+	req := request{PlayerUID,typ,uuid,key,description}
 	actionChannel <- req
 }
 
@@ -61,8 +68,11 @@ func bufferLoop(){
 		req:= <- actionChannel
 		if(req.typ == -1){
 			break
+		}else if req.playerUID=="-1"{
+			AddToAllAction(req.typ,req.uuid,req.key,req.description)
+		}else{
+			AddNewAction(req.playerUID,req.typ,req.uuid,req.key,req.description)
 		}
-		AddToAllAction(req.typ,req.uuid,req.key,req.description)
 	}
 }
 

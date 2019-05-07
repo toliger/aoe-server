@@ -3,7 +3,6 @@
 package server
 
 import (
-	"os"
 	"context"
 	"errors"
 	"fmt"
@@ -98,7 +97,7 @@ func (s *Arguments) SecretKill(ctx context.Context, in *pb.SecretKillRequest) (*
 	secret := utils.Getenv("SECRETSTOP", "paul")
 
 	if (secret == in.Sentence) {
-		os.Exit(0)
+		s.g.EndOfGame()
 	} else {
 		utils.Debug("Phrase secret érroné")
 	}
@@ -151,20 +150,20 @@ func (s *Arguments) RightClick(ctx context.Context, in *pb.RightClickRequest) (*
 
 			// Filling ActionBuffer with the right data
 			/*entityData := entity.(*npc.Npc).Stringify(constants.ActionNewNpc)
-			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "pv", entityData["pv"])
-			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "x", entityData["x"])
-			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "y", entityData["y"])
-			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "vitesse", entityData["vitesse"])
-			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "damage", entityData["damage"])
-			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "vue", entityData["vue"])
-			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "portee", entityData["portee"])
-			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "pv", entityData["pv"])
+			data.AjoutConcurrent(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "pv", entityData["pv"])
+			data.AjoutConcurrent(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "x", entityData["x"])
+			data.AjoutConcurrent(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "y", entityData["y"])
+			data.AjoutConcurrent(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "vitesse", entityData["vitesse"])
+			data.AjoutConcurrent(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "damage", entityData["damage"])
+			data.AjoutConcurrent(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "vue", entityData["vue"])
+			data.AjoutConcurrent(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "portee", entityData["portee"])
+			data.AjoutConcurrent(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "pv", entityData["pv"])
 			if len(path) != 0 {
-				data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "destX", fmt.Sprintf("%f", in.Point.X))
-				data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "destY", fmt.Sprintf("%f", in.Point.Y))
+				data.AjoutConcurrent(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "destX", fmt.Sprintf("%f", in.Point.X))
+				data.AjoutConcurrent(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "destY", fmt.Sprintf("%f", in.Point.Y))
 			} else {
-				data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "destX", "-1")
-				data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "destY", "-1")
+				data.AjoutConcurrent(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "destX", "-1")
+				data.AjoutConcurrent(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "destY", "-1")
 			}*/
 
 			go entity.(*npc.Npc).MoveTo(s.g.Carte, in.Point.X, in.Point.Y, nil)

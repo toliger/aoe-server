@@ -12,7 +12,7 @@ func TestActionBuffer(t *testing.T) {
 	if cap(ActionBuffer["A912HF18H129HF"]) == 0 {
 		t.Error("Echec Initialisation ActionBuffer")
 	}
-	AddNewAction(constants.PlayerUID1, 0, "test", "test2", "test3")
+	AjoutJoueurConcurrent(constants.PlayerUID1, 0, "test", "test2", "test3")
 	if ActionBuffer[constants.PlayerUID1][0].Description["test"]["test2"] != "test3" {
 		t.Error("Echec ajout ActionBuffer")
 	}

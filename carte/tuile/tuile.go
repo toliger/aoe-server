@@ -66,8 +66,8 @@ func (t *Tuile)Empty(){
 		id:=data.IDMap.GetIDFromObject((*t).res)
 		if id!="-1" {
 			data.IDMap.DeleteObjectFromID(id)
-			data.AddToAllAction(constants.ActionDelRessource,id,"x",strconv.Itoa(t.res.GetX()))
-			data.AddToAllAction(constants.ActionDelRessource,id,"y",strconv.Itoa(t.res.GetY()))
+			data.AjoutConcurrent(constants.ActionDelRessource,id,"x",strconv.Itoa(t.res.GetX()))
+			data.AjoutConcurrent(constants.ActionDelRessource,id,"y",strconv.Itoa(t.res.GetY()))
 		}
 	}
 	(*t).res=nil
