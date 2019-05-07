@@ -168,10 +168,16 @@ func TestFightNpc(t *testing.T) {
 	ress := ressource.Create("tree", 16, 18)
 	c.AddNewRessource(&ress)
 	//ch4 := make(chan bool, 2)
-	go (pnj1).MoveFight(c, pnj2)
-	time.Sleep(time.Duration(4 * time.Second))
-	go (pnj2).MoveTo(c, 17,15, nil)
-	time.Sleep(time.Duration(4 * time.Second))
+	var wg sync.WaitGroup
+	wg.Add(1)
+	go pnj1.MoveFight(c, pnj2, &wg)
+	wg.Wait()
+	time.Sleep(time.Duration(2100 * time.Millisecond))
+	if pnj2.GetPv() != cst.SoldierPv - 2 * cst.SoldierDamage{
+		t.Error("La target n'a pas reçu assez de dégats")
+	}
+	go pnj2.MoveTo(c, 17,15, nil)
+	time.Sleep(time.Duration(2100 * time.Millisecond))
 
 	if pnj1.GetX() != 16 && pnj1.GetY() != 15{
 		t.Error("mauvais deplacement apres un fight")
@@ -184,7 +190,7 @@ func TestFightNpc(t *testing.T) {
 
 	go (pnj1).MoveHarvestTarget(c, &ress)
 	time.Sleep(time.Duration(6 * time.Second))
-	go (pnj1).MoveFight(c, pnj2)
+	go (pnj1).MoveFight(c, pnj2, nil)
 	time.Sleep(time.Duration(4 * time.Second))
 	if pnj2.GetPv() == cst.SoldierPv {
 		t.Error("la cible n'a pas perdu de Pv")
