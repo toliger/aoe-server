@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 	"time"
-
+	"strconv"
 	"git.unistra.fr/AOEINT/server/batiment"
 	Carte "git.unistra.fr/AOEINT/server/carte"
 	"git.unistra.fr/AOEINT/server/constants"
@@ -173,8 +173,10 @@ func (g *Game) BrokenBuildingsCollector() {
 						continue
 					}
 					if bat.GetPv() <= 0 {
+						typ:=bat.Typ
 						g.DeleteBuilding(bat)
-						if key == 0 { //Auberge
+						log.Println("bat "+strconv.Itoa(key)+" destroyed")
+						if typ==0{ //Auberge
 							g.EndOfGame()
 						}
 					}

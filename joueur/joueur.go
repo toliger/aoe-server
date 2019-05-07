@@ -345,8 +345,10 @@ func (j *Joueur) IsThereBuildingInRange(pnj *npc.Npc) *batiment.Batiment {
 		}
 		for x := pnj.GetX() - pnj.GetPortee(); x <= pnj.GetX()+pnj.GetPortee(); x++ {
 			for y := pnj.GetY() - pnj.GetPortee(); y <= pnj.GetY()+pnj.GetPortee(); y++ {
-				if (*j).batiments[i].IsATile(x, y) {
-					return (*j).batiments[i]
+				if((*j).batiments[i]!=nil){
+					if (*j).batiments[i].GetX()==x && j.batiments[i].GetY()==y {
+						return (*j).batiments[i]
+					}
 				}
 			}
 		}
