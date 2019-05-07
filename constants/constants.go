@@ -11,7 +11,9 @@ const (
 	UseSmallMap = true
 
 	//Mode verbose eventuel
-	DEBUG = false
+	DEBUG      = false
+	Player1JWT = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI5MDdmZjMwNS00OGRhLTRiMWEtYjI2Mi1hZWQxYzEwMzYzZjkiLCJpYXQiOjE1NTY3MjY3NjUsImV4cCI6MTU1NjczMzk2NX0.tcnpzN-ZDUOzvh10ovs1jCUAEW39j-nNfEFLQ5gSvhk"
+	Player2JWT = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI2N2EyOGVlNi0xYTVjLTQ3NWQtYjY0Zi1hNGRjOGYwNDBkYzEiLCJpYXQiOjE1NTY3MjY4MTQsImV4cCI6MTU1NjczNDAxNH0.0Me2dBnn28ON6BvnO28sd2xeU4ub7hX_lCc99Dqs8BE"
 )
 
 var (
@@ -69,11 +71,15 @@ const (
 	ActionEndOfGame = 10
 )
 
+//Epsilon for float comparisons
+const Epsilon = 1e-9
+
 //MaxActions constante maxActions
 const MaxActions = 10
 
 //ActionChannelSize Nombre d'actions simultanées stockées dans le channel
 const ActionChannelSize = 10
+
 //===== caracteristiques d'une partie =====
 
 //MaxEntities nb entites max par joueur
@@ -102,6 +108,9 @@ const StartingFood = 50
 
 //MAXOBJECTS nb objets du buffer objets
 const MAXOBJECTS = 200
+
+//TimeBeforeExit Time before closing the server after the end of a game
+const TimeBeforeExit = 15
 
 //===== Batiments =====
 
@@ -155,7 +164,7 @@ const PrixWoodEtabli = 5
 //DataRecup consts
 var (
 	//GameUUID id de partie
-	GameUUID string = utils.Getenv("GAMEUUID", "DEFAULT")
+	GameUUID string = utils.Getenv("GAMEUUID", "2b6a0353-6a88-4060-93bc-f1208c623e80")
 
 	//APIHost API
 	APIHost string = utils.Getenv("APIHOST", "DEFAULT")
@@ -257,10 +266,10 @@ const VillagerDamage = 5
 //===== Default API values ======
 
 //APIHOST default API host
-var APIHOST = utils.Getenv("APIHOST", "localhost")
+var APIHOST = utils.Getenv("APIHOST", "https://game.api.archisme.com")
 
 //APIPORT default API port
-var APIPORT = utils.Getenv("APIPORT", "4000")
+var APIPORT = utils.Getenv("APIPORT", "443")
 
 //Testing used to enable functionalities for testing
 var Testing = false

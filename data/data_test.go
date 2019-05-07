@@ -2,7 +2,6 @@ package data
 
 import (
 	"testing"
-
 	"git.unistra.fr/AOEINT/server/constants"
 )
 
@@ -37,5 +36,12 @@ func TestObjectID(t *testing.T) {
 	}
 	if (&IDMap).GetIDFromObject(&b) != idb {
 		t.Error("Echec GetIDFromObject")
+	}
+}
+func TestCurl(t *testing.T){
+	tab,err:=GetPlayersFromGID()
+	t.Log(tab)
+	if err!=nil{
+		t.Error(err)
 	}
 }
