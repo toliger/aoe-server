@@ -35,7 +35,7 @@ type Data struct {
 func ExtractData() Data {
 	datafileName := "data/GameData.json"
 	if constants.UseSmallMap {
-		datafileName = "data/SmallTestMap.json"
+		datafileName = "SmallTestMap.json"
 	}
 	if constants.Testing {
 		datafileName = "../" + datafileName
