@@ -215,6 +215,7 @@ func (j *Joueur) AddFood(f int) {
 //AddBuilding : add a new building to the player
 func (j *Joueur) AddBuilding(b *batiment.Batiment) {
 	(*j).batiments = append(j.batiments, b)
+	b.PlayerUID=j.GetUID()
 }
 
 //AddNpc : add a new NPC to the player
