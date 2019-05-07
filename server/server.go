@@ -146,7 +146,6 @@ func (s *Arguments) RightClick(ctx context.Context, in *pb.RightClickRequest) (*
 				log.Println(msg)
 				continue
 			}
-
 			go entity.(*npc.Npc).MoveTo(s.g.Carte, int(in.Point.X), int(in.Point.Y), nil)
 			
 		}
