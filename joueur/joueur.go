@@ -190,10 +190,12 @@ func (j *Joueur) DeleteBatimentFromList(x int, y int, typ int) bool {
 		return false
 	}
 	for i := range j.batiments {
-		if j.batiments[i].X == x && j.batiments[i].Y == y && j.batiments[i].Typ == typ {
-			j.batiments[i] = nil
-			return true
-		}
+		if j.batiments[i]!=nil{
+			if j.batiments[i].X == x && j.batiments[i].Y == y && j.batiments[i].Typ == typ {
+				j.batiments[i] = nil
+				return true
+			}
+		}	
 	}
 	return false
 }
