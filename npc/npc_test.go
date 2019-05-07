@@ -149,14 +149,14 @@ func TestFightBuilding(t *testing.T){
 	go (&pnj1).MoveFightBuilding(c, &b, &ch)
 	time.Sleep(time.Duration(6*time.Second))
 
-	if((&b).Pv==constants.PVAuberge){
+	if((&b).Pv==cst.PVAuberge){
 		t.Error("la cible n'a pas perdu de Pv blbl")
 		t.Log("pv de la cible: ", b.GetPv())
 	}
 }
 */
 
-/*
+
 func TestFightNpc(t *testing.T) {
 	d.IDMap = d.NewObjectID()
 	d.InitiateActionBuffer()
@@ -170,14 +170,14 @@ func TestFightNpc(t *testing.T) {
 	//ch4 := make(chan bool, 2)
 	go (pnj1).MoveFight(c, pnj2)
 	time.Sleep(time.Duration(4 * time.Second))
-	// go (&pnj2).MoveTo(c, 17,15, nil)
-	// time.Sleep(time.Duration(4 * time.Second))
+	go (pnj2).MoveTo(c, 17,15, nil)
+	time.Sleep(time.Duration(4 * time.Second))
 
-	// if pnj1.GetX() != 17 || pnj1.GetY() != 15{
-	// 	t.Error("mauvais deplacement apres un fight")
-	// 	t.Log("pnjX :", pnj1.GetX(), " pnjY :", pnj1.GetY())
-	// }
-	if pnj2.GetPv() == constants.SoldierPv {
+	if pnj1.GetX() != 16 && pnj1.GetY() != 15{
+		t.Error("mauvais deplacement apres un fight")
+		t.Log("pnjX :", pnj1.GetX(), " pnjY :", pnj1.GetY())
+	}
+	if pnj2.GetPv() == cst.SoldierPv {
 		t.Error("la cible n'a pas perdu de Pv")
 		t.Log("pv de la cible: ", pnj2.GetPv())
 	}
@@ -186,13 +186,12 @@ func TestFightNpc(t *testing.T) {
 	time.Sleep(time.Duration(6 * time.Second))
 	go (pnj1).MoveFight(c, pnj2)
 	time.Sleep(time.Duration(4 * time.Second))
-	if pnj2.GetPv() == constants.SoldierPv {
+	if pnj2.GetPv() == cst.SoldierPv {
 		t.Error("la cible n'a pas perdu de Pv")
 		t.Log("pv de la cible: ", pnj2.GetPv())
 	}
-	// if(pnj1.GetPv()==constants.SoldierPv){
+	// if(pnj1.GetPv()==cst.SoldierPv){
 	// 	t.Error("l'agresseur n'a pas perdu de Pv")
 	// 	t.Log("pv de l'agresseur': ", pnj1.GetPv())
 	// }
 }
-*/

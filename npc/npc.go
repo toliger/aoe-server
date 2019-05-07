@@ -672,9 +672,14 @@ func (pnj *Npc) MoveFight(c carte.Carte, target *Npc) {
 	distance := 2000
 
 	for i = target.GetX() - pnj.portee; i <= target.GetX()+pnj.portee; i++ {
+		if i < 0{
+			i = 0
+		}
 		for j = target.GetY() - pnj.portee; j <= target.GetY()+pnj.portee; j++ {
-			if (Abs(i-pnj.GetX())+Abs(j-pnj.GetY())) < distance &&
-				c.IsEmpty(i, j) {
+			if j < 0{
+				j = 0
+			}
+			if (Abs(i-pnj.GetX())+Abs(j-pnj.GetY())) < distance && c.IsEmpty(i, j) {
 				distance = Abs(i-pnj.GetX()) + Abs(j-pnj.GetY())
 				posFightPnjX = i
 				posFightPnjY = j
@@ -708,9 +713,14 @@ func (pnj *Npc) MoveFight(c carte.Carte, target *Npc) {
 				distance = 2000
 
 				for i = target.GetDestX() - pnj.portee; i <= target.GetDestX()+pnj.portee; i++ {
+					if i < 0{
+						i = 0
+					}
 					for j = target.GetDestY() - pnj.portee; j <= target.GetDestY()+pnj.portee; j++ {
-						if (Abs(i-pnj.GetX())+Abs(j-pnj.GetY())) < distance &&
-							c.IsEmpty(i, j) {
+						if j < 0{
+							j = 0
+						}
+						if (Abs(i-pnj.GetX())+Abs(j-pnj.GetY())) < distance && c.IsEmpty(i, j) {
 							distance = Abs(i-pnj.GetX()) + Abs(j-pnj.GetY())
 							posFightPnjX = i
 							posFightPnjY = j
@@ -744,8 +754,7 @@ func (pnj *Npc) MoveFight(c carte.Carte, target *Npc) {
 }
 
 //Fight : attack a npc
-func (pnj *Npc) Fight(c carte.Carte, target *Npc, posFightPnjX int,
-	posFightPnjY int) {
+func (pnj *Npc) Fight(c carte.Carte, target *Npc, posFightPnjX int, posFightPnjY int) {
 	moveA := make(chan bool, 2)
 	pnj.wgAction.Wait()
 	pnj.actualizeMoveAction(&moveA)
@@ -764,12 +773,12 @@ func (pnj *Npc) Fight(c carte.Carte, target *Npc, posFightPnjX int,
 			return
 		}
 		//The target or the attacker is dead
-		if target.GetPv() == 0 || pnj.GetPv() == 0 {
+		if target.GetPv() == 0 {
 			pnj.SetActive(false)
 			break
 		}
 		//The attacker moved
-		if pnj.GetX() != (posFightPnjX) || pnj.GetY() != posFightPnjY {
+		if pnj.GetX() != (posFightPnjX) || pnj.GetY() != posFightPnjY || pnj.GetPv() == 0 {
 			break
 		}
 
