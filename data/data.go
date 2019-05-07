@@ -49,7 +49,7 @@ type request struct{
 
 var actionChannel chan(request)
 
-//AjoutConcurrent Permet d'effectuer un AddToAllAction de manière 
+//AjoutConcurrent Permet d'effectuer un AddToAllAction de manière
 func AjoutConcurrent(typ int, uuid string, key string, description string){
 	req := request{typ,uuid,key,description}
 	actionChannel <- req
@@ -248,7 +248,10 @@ func GetPlayersFromGID() ([]string,error){
 		return nil,err
 	}
 	var response map[string]interface{}
-	json.Unmarshal(bodyBytes,&response)
+	err=json.Unmarshal(bodyBytes,&response)
+	if err != nil {
+		return nil,err
+	}
 	t1:=(response["Players"]).([]interface{})
 	tab[0]=t1[0].(string)
 	tab[1]=t1[1].(string)

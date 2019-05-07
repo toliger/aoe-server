@@ -369,8 +369,10 @@ func (pnj *Npc) MoveTo(c carte.Carte, destx int, desty int, wg *sync.WaitGroup) 
 	path = nil
 	if c.GetTile(destx, desty).GetType() == 0 {
 		path = c.GetPathFromTo(pnj.GetX(), pnj.GetY(), destx, desty)
-		// pnj.SetDestX(destx)
-		// pnj.SetDestY(desty)
+		if len(path) > 0{
+			pnj.SetDestX(destx)
+			pnj.SetDestY(desty)
+		}
 		go pnj.deplacement(path, wg)
 	}
 	return path
@@ -544,6 +546,7 @@ func (pnj *Npc) MoveTargetNpc(c carte.Carte, target *Npc, wg *sync.WaitGroup) {
 		return
 	}
 	go pnj.MoveTo(c, posFightPnjX, posFightPnjY, wg)
+	pnj.Transmit(data.IDMap.GetIDFromObject(pnj), constants.ActionAlterationNpc)
 }
 
 //MoveTargetBuilding : move to a target to be able to attack it
@@ -578,6 +581,7 @@ func (pnj *Npc) MoveTargetBuilding(c carte.Carte, target *batiment.Batiment, wg 
 		return
 	}
 	go pnj.MoveTo(c, posFightBuildingX, posFightBuildingY, wg)
+	pnj.Transmit(data.IDMap.GetIDFromObject(pnj), constants.ActionAlterationNpc)
 }
 
 //MoveFightBuilding : attack a given building
