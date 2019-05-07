@@ -454,7 +454,6 @@ func (pnj *Npc) StaticFightBuilding(target *batiment.Batiment) {
 		if pnj.GetPv() <= 0 || pnj.GetX() != initialPosX || pnj.GetY() != initialPosY {
 			return
 		}
-		log.Println("passed moved")
 		//The target is dead
 		if target.GetPv() <= 0 {
 			pnj.SetActive(false)
