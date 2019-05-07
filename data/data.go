@@ -50,7 +50,7 @@ type request struct{
 
 var actionChannel chan(request)
 
-//AjoutConcurrent Permet d'effectuer un AddToAllAction de manière 
+//AjoutConcurrent Permet d'effectuer un AddToAllAction de manière
 func AjoutConcurrent(typ int, uuid string, key string, description string){
 	req := request{typ,uuid,key,description}
 	actionChannel <- req

@@ -347,6 +347,7 @@ func (pnj *Npc) deplacement(path []carte.Case, wg *sync.WaitGroup) {
 				}
 				pnj.SetDestX(pnj.GetX())
 				pnj.SetDestY(pnj.GetY())
+				pnj.Transmit(data.IDMap.GetIDFromObject(pnj), constants.ActionAlterationNpc)
 				pnj.SetActive(false)
 				return
 			default:
@@ -368,9 +369,11 @@ func (pnj *Npc) MoveTo(c carte.Carte, destx int, desty int, wg *sync.WaitGroup) 
 	path = nil
 	if c.GetTile(destx, desty).GetType() == 0 {
 		path = c.GetPathFromTo(pnj.GetX(), pnj.GetY(), destx, desty)
+		if len(path) > 0{
+			pnj.SetDestX(destx)
+			pnj.SetDestY(desty)
+		}
 		go pnj.deplacement(path, wg)
-		pnj.SetDestX(destx)
-		pnj.SetDestY(desty)
 	}
 	return path
 }
@@ -469,6 +472,9 @@ func (pnj *Npc) StaticFightBuilding(target *batiment.Batiment) {
 				pnj.SetActive(false)
 				return
 			}
+			if pnj.GetPv() <= 0 || pnj.GetX() != initialPosX || pnj.GetY() != initialPosY {
+				return
+			}
 			//log.Printf("(%v, %v) : attack (%v, %v) %v pv", pnj.GetX(), pnj.GetY(), target.GetX(), target.GetY(), target.GetPv())
 			target.SubPv(pnj.damage)
 			target.Transmit(constants.ActionHarmBuilding, data.IDMap.GetIDFromObject(target))
@@ -539,6 +545,7 @@ func (pnj *Npc) MoveTargetNpc(c carte.Carte, target *Npc, wg *sync.WaitGroup) {
 		return
 	}
 	go pnj.MoveTo(c, posFightPnjX, posFightPnjY, wg)
+	pnj.Transmit(data.IDMap.GetIDFromObject(pnj), constants.ActionAlterationNpc)
 }
 
 //MoveTargetBuilding : move to a target to be able to attack it
@@ -573,6 +580,7 @@ func (pnj *Npc) MoveTargetBuilding(c carte.Carte, target *batiment.Batiment, wg 
 		return
 	}
 	go pnj.MoveTo(c, posFightBuildingX, posFightBuildingY, wg)
+	pnj.Transmit(data.IDMap.GetIDFromObject(pnj), constants.ActionAlterationNpc)
 }
 
 //MoveFightBuilding : attack a given building

@@ -1,11 +1,13 @@
 package joueur
 
 import (
+	"log"
 	"strconv"
 
 	"sync"
 
 	"git.unistra.fr/AOEINT/server/batiment"
+	"git.unistra.fr/AOEINT/server/carte"
 	"git.unistra.fr/AOEINT/server/constants"
 	"git.unistra.fr/AOEINT/server/data"
 	"git.unistra.fr/AOEINT/server/npc"
@@ -84,13 +86,14 @@ func (j *Joueur) ressourceUpdate() {
 	utils.Debug(j.nom + ":channel actif")
 	for {
 		res = <-j.ressourceChannel
-		if res[0] != 1 {
+		if res[0] != -1 {
 			j.AddWood(res[0])
 			j.AddStone(res[1])
 			j.AddFood(res[2])
 			data.AddNewAction(j.UID, constants.ActionPlayerRessource, j.UID, "wood", strconv.Itoa(j.GetWood()))
 			data.AddNewAction(j.UID, constants.ActionPlayerRessource, j.UID, "food", strconv.Itoa(j.GetFood()))
 			data.AddNewAction(j.UID, constants.ActionPlayerRessource, j.UID, "stone", strconv.Itoa(j.GetStone()))
+			log.Print("ressourceUpdate")
 		} else {
 			break
 		}
@@ -210,10 +213,12 @@ func (j *Joueur) AddWood(w int) {
 //AddFood :
 func (j *Joueur) AddFood(f int) {
 	(*j).food += f
+	log.Print("addFood")
 }
 
 //AddBuilding : add a new building to the player
 func (j *Joueur) AddBuilding(b *batiment.Batiment) {
+	b.SetPlayerUID(j.UID)
 	(*j).batiments = append(j.batiments, b)
 	b.PlayerUID=j.GetUID()
 }
@@ -239,6 +244,72 @@ func (j *Joueur) AddAndCreateNpc(class string, x int, y int) {
 	entity, id := npc.Create(class, float64(x), float64(y), j.faction, &j.ressourceChannel)
 	j.AddNpc(entity)
 	entity.Transmit(id, constants.ActionNewNpc)
+}
+
+/*AddAndCreateNpcByBuilding : create and add a new NPC to the player by a building
+* The NPC is created preferably in front of or behind the building and cost ressources
+ */
+func (j *Joueur) AddAndCreateNpcByBuilding(c *carte.Carte, bat *batiment.Batiment) {
+	if bat.GetPlayerUID() != j.UID {
+		utils.Debug("batiment choisi n'appartenant pas au joueur")
+		return
+	}
+	y := bat.GetY()
+	x := bat.GetX()
+	if bat.GetY() > c.GetSize()/2 {
+		if c.IsEmpty(bat.GetX(), bat.GetY()-1) {
+			y = bat.GetY() - 1
+		} else if bat.GetX() > c.GetSize()/2 {
+			if c.IsEmpty(bat.GetX()-1, bat.GetY()) {
+				x = bat.GetX() - 1
+			} else if c.IsEmpty(bat.GetX()+1, bat.GetY()) {
+				x = bat.GetX() + 1
+			} else if c.IsEmpty(bat.GetX(), bat.GetY()+1) && y <= c.GetSize() {
+				y = bat.GetY() + 1
+			} else {
+				utils.Debug("no empty tiles near the building to create NPC")
+				return
+			}
+		} else {
+			if c.IsEmpty(bat.GetX()+1, bat.GetY()) {
+				x = bat.GetX() + 1
+			} else if c.IsEmpty(bat.GetX()-1, bat.GetY()) {
+				x = bat.GetX() - 1
+			} else if c.IsEmpty(bat.GetX(), bat.GetY()+1) && y <= c.GetSize() {
+				y = bat.GetY() + 1
+			} else {
+				utils.Debug("no empty tiles near the building to create NPC")
+				return
+			}
+		}
+	}
+	switch bat.GetType() {
+	case 0:
+		entity, id := npc.Create("villager", float64(x), float64(y), j.faction, &j.ressourceChannel)
+		j.AddNpc(entity)
+		entity.Transmit(id, constants.ActionNewNpc)
+		tabRessources := make([]int, 3) //0 bois 1 pierre 2 nourriture
+		tabRessources[2] = -(constants.VillagerFoodCost)
+		j.ressourceChannel <- tabRessources
+	case 1:
+		entity, id := npc.Create("soldier", float64(x), float64(y), j.faction, &j.ressourceChannel)
+		j.AddNpc(entity)
+		entity.Transmit(id, constants.ActionNewNpc)
+		tabRessources := make([]int, 3) //0 bois 1 pierre 2 nourriture
+		tabRessources[2] = -(constants.SoldierFoodCost)
+		tabRessources[0] = -(constants.SoldierWoodCost)
+		j.ressourceChannel <- tabRessources
+	case 2:
+		entity, id := npc.Create("harvester", float64(x), float64(y), j.faction, &j.ressourceChannel)
+		j.AddNpc(entity)
+		entity.Transmit(id, constants.ActionNewNpc)
+		tabRessources := make([]int, 3) //0 bois 1 pierre 2 nourriture
+		tabRessources[2] = -(constants.HarvesterFoodCost)
+		tabRessources[0] = -(constants.HarvesterWoodCost)
+		j.ressourceChannel <- tabRessources
+	default:
+		utils.Debug("Type du batiment non reconnu")
+	}
 }
 
 //IsThereNpcInRange : returns the first npc of the player in range of the given npc if there is one else nil
