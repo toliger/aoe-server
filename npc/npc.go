@@ -365,16 +365,16 @@ func (pnj *Npc) deplacement(path []carte.Case, wg *sync.WaitGroup) {
 }
 
 //MoveTo : move a npc from his position(x,y) to another position(x,y)
-func (pnj *Npc) MoveTo(c carte.Carte, destx int, desty int, wg *sync.WaitGroup) []carte.Case {
+func (pnj *Npc) MoveTo(c carte.Carte, destx float32, desty float32, wg *sync.WaitGroup) []carte.Case {
 	var path []carte.Case
 	path = nil
-	if c.GetTile(destx, desty).GetType() == 0 {
-		path = c.GetPathFromTo(pnj.GetX(), pnj.GetY(), destx, desty)
+	if c.GetTile(int(destx), int(desty)).GetType() == 0 {
+		path = c.GetPathFromTo(pnj.GetX(), pnj.GetY(), int(destx), int(desty))
 		if len(path) > 0{
-			pnj.SetDestX(destx)
-			pnj.SetDestY(desty)
+			pnj.Set64DestX(float64(destx))
+			pnj.Set64DestY(float64(desty))
 			//log.Println("Envoi type :",constants.ActionAlterationNpc, " id: ",pnj.PlayerUUID)
-			//pnj.Transmit(data.IDMap.GetIDFromObject(pnj),constants.ActionAlterationNpc)
+			pnj.Transmit(data.IDMap.GetIDFromObject(pnj),constants.ActionAlterationNpc)
 		}
 		go pnj.deplacement(path, wg)
 	}
@@ -547,7 +547,7 @@ func (pnj *Npc) MoveTargetNpc(c carte.Carte, target *Npc, wg *sync.WaitGroup) {
 	if distance == 2000 {
 		return
 	}
-	go pnj.MoveTo(c, posFightPnjX, posFightPnjY, wg)
+	go pnj.MoveTo(c, float32(posFightPnjX), float32(posFightPnjY), wg)
 }
 
 //MoveTargetBuilding : move to a target to be able to attack it
@@ -581,7 +581,7 @@ func (pnj *Npc) MoveTargetBuilding(c carte.Carte, target *batiment.Batiment, wg 
 	if distance == 2000 {
 		return
 	}
-	go pnj.MoveTo(c, posFightBuildingX, posFightBuildingY, wg)
+	go pnj.MoveTo(c, float32(posFightBuildingX), float32(posFightBuildingY), wg)
 }
 
 /*MoveFight : attack a given npc and also trigger the fight-back
@@ -629,7 +629,7 @@ func (pnj *Npc) MoveFight(c carte.Carte, target *Npc, wg *sync.WaitGroup) {
 		return
 	}
 	// Wait that the npc is in the range to attack
-	go pnj.MoveTo(c, posFightPnjX, posFightPnjY, wg)
+	go pnj.MoveTo(c, float32(posFightPnjX), float32(posFightPnjY), wg)
 
 	/* Verify each x ms that the target didn't move from his initial position
 	*  if he did move, do MoveTo to the new position, if not fight him when the
@@ -670,7 +670,7 @@ func (pnj *Npc) MoveFight(c carte.Carte, target *Npc, wg *sync.WaitGroup) {
 					return
 				}
 				// Wait that the npc is in the range to attack
-				go pnj.MoveTo(c, posFightPnjX, posFightPnjY, nil)
+				go pnj.MoveTo(c, float32(posFightPnjX), float32(posFightPnjY), nil)
 				initialTargetDestX = target.GetDestX()
 				initialTargetDestY = target.GetDestY()
 			}
@@ -872,7 +872,7 @@ func (pnj *Npc) MoveHarvestTarget(c carte.Carte, ress *ressource.Ressource) {
 	pnj.dextX.set(float64(posRecolteVillX))
 	pnj.destY.set(float64(posRecolteVillY))
 	pnj.Transmit(data.IDMap.GetIDFromObject(pnj), constants.ActionAlterationNpc)
-	go pnj.MoveTo(c, posRecolteVillX, posRecolteVillY, &wg)
+	go pnj.MoveTo(c, float32(posRecolteVillX), float32(posRecolteVillY), &wg)
 	wg.Wait()
 
 	// Le villageois se trouve bien à l'emplacement de la recolte?

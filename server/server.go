@@ -147,10 +147,10 @@ func (s *Arguments) RightClick(ctx context.Context, in *pb.RightClickRequest) (*
 				continue
 			}
 
-			path := entity.(*npc.Npc).MoveTo(s.g.Carte, int(in.Point.X), int(in.Point.Y), nil)
+			//path := entity.(*npc.Npc).MoveTo(s.g.Carte, int(in.Point.X), int(in.Point.Y), nil)
 
 			// Filling ActionBuffer with the right data
-			entityData := entity.(*npc.Npc).Stringify(constants.ActionNewNpc)
+			/*entityData := entity.(*npc.Npc).Stringify(constants.ActionNewNpc)
 			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "pv", entityData["pv"])
 			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "x", entityData["x"])
 			data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "y", entityData["y"])
@@ -165,9 +165,9 @@ func (s *Arguments) RightClick(ctx context.Context, in *pb.RightClickRequest) (*
 			} else {
 				data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "destX", "-1")
 				data.AddToAllAction(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "destY", "-1")
-			}
+			}*/
 
-			go entity.(*npc.Npc).MoveTo(s.g.Carte, int(in.Point.X), int(in.Point.Y), nil)
+			go entity.(*npc.Npc).MoveTo(s.g.Carte, in.Point.X, in.Point.Y, nil)
 			
 		}
 
