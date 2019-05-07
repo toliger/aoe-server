@@ -342,6 +342,7 @@ func (pnj *Npc) deplacement(path []carte.Case, wg *sync.WaitGroup) {
 		for i := 0; i <= ndep; i++ {
 			select {
 			case <-moveA:
+				log.Println("moveA")
 				if wg != nil {
 					wg.Done()
 				}
@@ -372,6 +373,7 @@ func (pnj *Npc) MoveTo(c carte.Carte, destx int, desty int, wg *sync.WaitGroup) 
 		if len(path) > 0{
 			pnj.SetDestX(destx)
 			pnj.SetDestY(desty)
+			pnj.Transmit(data.IDMap.GetIDFromObject(pnj),constants.ActionAlterationNpc)
 		}
 		go pnj.deplacement(path, wg)
 	}

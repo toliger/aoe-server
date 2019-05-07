@@ -128,8 +128,8 @@ func (s *Arguments) RightClick(ctx context.Context, in *pb.RightClickRequest) (*
 				continue
 			}
 
-			// Get the path of the entity
 			go entity.(*npc.Npc).MoveTo(s.g.Carte, int(in.Point.X), int(in.Point.Y), nil)
+			
 		}
 
 	} else { // Attack request
@@ -206,7 +206,7 @@ func (s *Arguments) AskUpdate(ctx context.Context, in *pb.AskUpdateRequest) (*pb
 				for key, value := range data.ActionBuffer[playerUUID.UID][actionType].Description[entityUUID] {
 					upAsk.Arg = append(upAsk.Arg, &pb.Param{Key: key, Value: value})
 				}
-				log.Print("envoyé: joueur: ",playerUUID.UID," type: ",actionType)
+				//log.Print("envoyé: joueur: ",playerUUID.UID," type: ",actionType)
 				toSend = append(toSend, &upAsk)
 			}
 		}
