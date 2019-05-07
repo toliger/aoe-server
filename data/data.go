@@ -241,7 +241,7 @@ func GetPlayersFromGID() ([]string,error){
 		return nil,err
 	}
 	tab:=make([]string,2)
-	defer resp.Body.Close()
+	//defer resp.Body.Close()
 	bodyBytes,err:= ioutil.ReadAll(resp.Body)
 	if err != nil{
 		utils.Debug(err.Error())
@@ -252,7 +252,8 @@ func GetPlayersFromGID() ([]string,error){
 	t1:=(response["Players"]).([]interface{})
 	tab[0]=t1[0].(string)
 	tab[1]=t1[1].(string)
-	return tab,nil
+	errClose:=resp.Body.Close()
+	return tab,errClose
 }
 
 //Curl method POST/GET, query body ex: mutation{login(email: "gege@hotmail.fr",  password: "un")  }
