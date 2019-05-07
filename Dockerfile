@@ -15,7 +15,7 @@ FROM scratch
 
 COPY --from=build-env /go/bin/server /go/bin/
 
-COPY data/SmallTestMap.json /go/bin/data/SmallTestMap.json
+COPY SmallTestMap.json /go/bin/SmallTestMap.json
 
 WORKDIR /go/bin
 
