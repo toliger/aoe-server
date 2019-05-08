@@ -53,17 +53,17 @@ func main() {
 	//go g.GameLoop()
 	go server.InitListenerServer(&g)
 	log.Println("En attente des joueurs")
-	//<-g.BeginGame //remplacer par 
-	g.GameInitialisationTime=-1 
-	//pour les tests solo en local
+	<-g.BeginGame //remplacer pour les tests solo
+	//pour les tests solo en local:
+	//	g.GetPlayerData()
+	//	d.InitiateActionBuffer()
+	//	g.GameInitialisationTime=-1 
 	log.Println("Démarrage de la partie")
 	startGame(&g)
 }
 
 func startGame(g *game.Game){
-	d.InitiateActionBuffer()
 	data := game.ExtractData()
-	g.GetPlayerData()
 	g.GenerateMap(data)
 	go g.LaunchAutomaticFight()
 	go g.BrokenBuildingsCollector()

@@ -355,6 +355,8 @@ func (s *Arguments) Authentificate(ctx context.Context, in *pb.AuthentificateReq
 	log.Println("le joueur ",id.UID, "a rejoint la partie")
 	if len(data.Players)==2{
 		//On démare la partie
+		s.g.GetPlayerData()
+		data.InitiateActionBuffer()
 		s.g.BeginTimer<-true
 	}else if len(data.Players)==1{
 		go s.g.ExpiringTimer()
