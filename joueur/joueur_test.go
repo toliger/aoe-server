@@ -26,7 +26,10 @@ func TestCreation(t *testing.T) {
 	(&player1).AddBuilding(&auberge1)
 	(&player2).AddBuilding(&auberge2)
 	log.Printf("le joueur1 a commencé avec %v de nourriture", player1.GetFood())
-	(&player1).AddAndCreateNpcByBuilding(&c, &auberge1)
+	if &auberge1 == nil {
+		t.Error("auberge non existante")
+	}
+	(&player1).AddAndCreateNpcByBuilding(&c, auberge1.GetX(), auberge1.GetY())
 	time.Sleep(time.Duration(1 * time.Second))
 	if player1.GetBuildings() == nil {
 		t.Error("le building n'a pas été bien ajouté au joueur")

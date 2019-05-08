@@ -26,7 +26,7 @@ type Npc struct {
 	pv               *safeNumberInt
 	vitesse          int
 	vue              int
-	portee           int
+	portee           float32
 	offensive        bool //true=soldier else harvester
 	size             int
 	damage           int
@@ -59,7 +59,7 @@ type safeNumberInt struct {
 }
 
 //New : new NPC
-func New(x *safeNumberFloat, y *safeNumberFloat, pv *safeNumberInt, vitesse int, vue int, portee int, offensive bool, size int, damage int, tauxRecolte int, selectable bool, typ int, flag int, channel *chan []int) Npc {
+func New(x *safeNumberFloat, y *safeNumberFloat, pv *safeNumberInt, vitesse int, vue int, portee float32, offensive bool, size int, damage int, tauxRecolte int, selectable bool, typ int, flag int, channel *chan []int) Npc {
 	active := &safeNumberBool{}
 	active.val = false
 	moveA := make(map[int](chan bool))
@@ -111,7 +111,7 @@ func (pnj Npc) Stringify(typ int) map[string]string {
 		res["type"] = strconv.Itoa(pnj.typ)
 		res["damage"] = strconv.Itoa(pnj.damage)
 		res["vue"] = strconv.Itoa(pnj.vue)
-		res["portee"] = strconv.Itoa(pnj.portee)
+		res["portee"] = fmt.Sprintf("%f", pnj.portee)
 		res["PlayerUUID"] = pnj.PlayerUUID
 	case constants.ActionDelNpc:
 		res["PlayerUUID"] = pnj.PlayerUUID
@@ -123,7 +123,7 @@ func (pnj Npc) Stringify(typ int) map[string]string {
 		res["destY"] = fmt.Sprintf("%f", pnj.Get32DestY())
 		res["vitesse"] = strconv.Itoa(pnj.vitesse)
 		res["vue"] = strconv.Itoa(pnj.vue)
-		res["portee"] = strconv.Itoa(pnj.portee)
+		res["portee"] = fmt.Sprintf("%f", pnj.portee)
 		res["PlayerUUID"] = pnj.PlayerUUID
 	}
 	return res
@@ -304,7 +304,7 @@ func (pnj Npc) GetSpeed() int {
 }
 
 //GetPortee : return the npc's portee
-func (pnj Npc) GetPortee() int {
+func (pnj Npc) GetPortee() float32 {
 	return pnj.portee
 }
 
@@ -393,7 +393,7 @@ func (pnj *Npc) MoveTo(c carte.Carte, destx float32, desty float32, wg *sync.Wai
 }
 
 //Abs : utility function
-func Abs(x int) int {
+func Abs(x float32) float32 {
 	if x < 0 {
 		return -x
 	}
@@ -529,11 +529,12 @@ func (pnj *Npc) StaticFightBuilding(target *batiment.Batiment) {
 
 //MoveTargetNpc : move to a target to be able to attack him
 func (pnj *Npc) MoveTargetNpc(c carte.Carte, target *Npc, wg *sync.WaitGroup) {
-	var posFightPnjX, posFightPnjY int
+	var posFightPnjX, posFightPnjY float32
 
-	var i, j int
+	var i, j float32
 
-	distance := 2000
+	var distance float32
+	distance = 2000
 
 	if target == nil || pnj.PlayerUUID == target.PlayerUUID {
 		if wg != nil {
@@ -542,16 +543,16 @@ func (pnj *Npc) MoveTargetNpc(c carte.Carte, target *Npc, wg *sync.WaitGroup) {
 		return
 	}
 
-	for i = target.GetX() - pnj.portee; i <= target.GetX()+pnj.portee; i++ {
+	for i = target.Get32X() - pnj.portee; i <= target.Get32X()+pnj.portee; i++ {
 		if i < 0 {
 			i = 0
 		}
-		for j = target.GetY() - pnj.portee; j <= target.GetY()+pnj.portee; j++ {
+		for j = target.Get32Y() - pnj.portee; j <= target.Get32Y()+pnj.portee; j++ {
 			if j < 0 {
 				j = 0
 			}
-			if (Abs(i-pnj.GetX())+Abs(j-pnj.GetY())) < distance && c.IsEmpty(i, j) {
-				distance = Abs(i-pnj.GetX()) + Abs(j-pnj.GetY())
+			if (Abs(i-pnj.Get32X())+Abs(j-pnj.Get32Y())-float32(distance)) < constants.Epsilon && c.IsEmpty(int(i), int(j)) {
+				distance = Abs(i-pnj.Get32X()) + Abs(j-pnj.Get32Y())
 				posFightPnjX = i
 				posFightPnjY = j
 			}
@@ -565,11 +566,12 @@ func (pnj *Npc) MoveTargetNpc(c carte.Carte, target *Npc, wg *sync.WaitGroup) {
 
 //MoveTargetBuilding : move to a target to be able to attack it
 func (pnj *Npc) MoveTargetBuilding(c carte.Carte, target *batiment.Batiment, wg *sync.WaitGroup) {
-	var posFightBuildingX, posFightBuildingY int
+	var posFightBuildingX, posFightBuildingY float32
 
-	var i, j int
+	var i, j float32
 
-	distance := 2000
+	var distance float32
+	distance = 2000
 
 	if target == nil || pnj.PlayerUUID == target.GetPlayerUID() {
 		if wg != nil {
@@ -578,16 +580,16 @@ func (pnj *Npc) MoveTargetBuilding(c carte.Carte, target *batiment.Batiment, wg 
 		log.Print("meme uuid")
 		return
 	}
-	for i = target.GetX() - pnj.portee; i <= target.GetX()+pnj.portee; i++ {
+	for i = float32(target.GetX()) - pnj.portee; i <= float32(target.GetX())+pnj.portee; i++ {
 		if i < 0 {
 			i = 0
 		}
-		for j = target.GetY() - pnj.portee; j <= target.GetY()+pnj.portee; j++ {
+		for j = float32(target.GetY()) - pnj.portee; j <= float32(target.GetY())+pnj.portee; j++ {
 			if j < 0 {
 				j = 0
 			}
-			if (Abs(i-pnj.GetX())+Abs(j-pnj.GetY())) < distance && c.IsEmpty(i, j) {
-				distance = Abs(i-pnj.GetX()) + Abs(j-pnj.GetY())
+			if (Abs(i-pnj.Get32X())+Abs(j-pnj.Get32Y())) < distance && c.IsEmpty(int(i), int(j)) {
+				distance = Abs(i-pnj.Get32X()) + Abs(j-pnj.Get32Y())
 				posFightBuildingX = i
 				posFightBuildingY = j
 			}
@@ -605,7 +607,7 @@ another action or loses vision of the other NPC
 */
 func (pnj *Npc) MoveFight(c carte.Carte, target *Npc, wg *sync.WaitGroup) {
 
-	if pnj.GetVue() < (Abs(target.GetX()-pnj.GetX()) + Abs(target.GetY()-pnj.GetY())) {
+	if float32(pnj.GetVue())-(Abs(target.Get32X()-pnj.Get32X())+Abs(target.Get32Y()-pnj.Get32Y())) < constants.Epsilon {
 		log.Print("Le npc ciblé n'est pas dans la vue du npc")
 		return
 	}
@@ -617,22 +619,23 @@ func (pnj *Npc) MoveFight(c carte.Carte, target *Npc, wg *sync.WaitGroup) {
 	}
 	//initialPosTargetX, initialPosTargetY := target.GetX(), target.GetY()
 	initialTargetDestX, initialTargetDestY := target.GetDestX(), target.GetDestY()
-	var posFightPnjX, posFightPnjY int
+	var posFightPnjX, posFightPnjY float32
 
-	var i, j int
+	var i, j float32
 
-	distance := 2000
+	var distance float32
+	distance = 2000
 
-	for i = target.GetX() - pnj.portee; i <= target.GetX()+pnj.portee; i++ {
+	for i = target.Get32X() - pnj.portee; i <= target.Get32X()+pnj.portee; i++ {
 		if i < 0 {
 			i = 0
 		}
-		for j = target.GetY() - pnj.portee; j <= target.GetY()+pnj.portee; j++ {
+		for j = target.Get32Y() - pnj.portee; j <= target.Get32Y()+pnj.portee; j++ {
 			if j < 0 {
 				j = 0
 			}
-			if (Abs(i-pnj.GetX())+Abs(j-pnj.GetY())) < distance && c.IsEmpty(i, j) {
-				distance = Abs(i-pnj.GetX()) + Abs(j-pnj.GetY())
+			if (Abs(i-pnj.Get32X())+Abs(j-pnj.Get32Y())) < distance && c.IsEmpty(int(i), int(j)) {
+				distance = Abs(i-pnj.Get32X()) + Abs(j-pnj.Get32Y())
 				posFightPnjX = i
 				posFightPnjY = j
 			}
@@ -656,7 +659,7 @@ func (pnj *Npc) MoveFight(c carte.Carte, target *Npc, wg *sync.WaitGroup) {
 		select {
 		case <-uptimeTicker.C:
 			// if the target is not in the aggressor's vision anymore, he stops chasing him
-			if pnj.GetVue() < (Abs(target.GetX()-pnj.GetX()) + Abs(target.GetY()-pnj.GetY())) {
+			if float32(pnj.GetVue())-(Abs(target.Get32X()-pnj.Get32X())+Abs(target.Get32Y()-pnj.Get32Y())) < constants.Epsilon {
 				log.Print("Le npc ciblé n'est pas dans la vue du npc")
 				return
 			}
@@ -664,16 +667,16 @@ func (pnj *Npc) MoveFight(c carte.Carte, target *Npc, wg *sync.WaitGroup) {
 			if initialTargetDestX != target.GetDestX() || initialTargetDestY != target.GetDestY() {
 				distance = 2000
 
-				for i = target.GetDestX() - pnj.portee; i <= target.GetDestX()+pnj.portee; i++ {
+				for i = target.Get32X() - pnj.portee; i <= target.Get32X()+pnj.portee; i++ {
 					if i < 0 {
 						i = 0
 					}
-					for j = target.GetDestY() - pnj.portee; j <= target.GetDestY()+pnj.portee; j++ {
+					for j = target.Get32Y() - pnj.portee; j <= target.Get32Y()+pnj.portee; j++ {
 						if j < 0 {
 							j = 0
 						}
-						if (Abs(i-pnj.GetX())+Abs(j-pnj.GetY())) < distance && c.IsEmpty(i, j) {
-							distance = Abs(i-pnj.GetX()) + Abs(j-pnj.GetY())
+						if (Abs(i-pnj.Get32X())+Abs(j-pnj.Get32Y())) < distance && c.IsEmpty(int(i), int(j)) {
+							distance = Abs(i-pnj.Get32X()) + Abs(j-pnj.Get32Y())
 							posFightPnjX = i
 							posFightPnjY = j
 						}
@@ -690,10 +693,10 @@ func (pnj *Npc) MoveFight(c carte.Carte, target *Npc, wg *sync.WaitGroup) {
 				initialTargetDestY = target.GetDestY()
 			}
 			// The aggressor finished his movement and so can start fighting him
-			if pnj.GetX() == (posFightPnjX) && pnj.GetY() == posFightPnjY {
+			if pnj.Get32X() == (posFightPnjX) && pnj.Get32Y() == posFightPnjY {
 				//chTarget := make(chan bool, 2)
 				//Fight
-				go pnj.Fight(c, target, posFightPnjX, posFightPnjY)
+				//go pnj.Fight(c, target, posFightPnjX, posFightPnjY)
 				//The target fights back after a short delay
 				// on met en suspend cette fonction
 				// time.Sleep(time.Duration((1 * time.Second)/4))
@@ -714,7 +717,7 @@ func (pnj *Npc) Fight(c carte.Carte, target *Npc, posFightPnjX int, posFightPnjY
 	initialPosTargetX, initialPosTargetY := target.GetX(), target.GetY()
 	for {
 		// if the target is not in the aggressor's vision anymore, he stops chasing him
-		if pnj.GetVue() < (Abs(target.GetX()-pnj.GetX()) + Abs(target.GetY()-pnj.GetY())) {
+		if float32(pnj.GetVue())-(Abs(target.Get32X()-pnj.Get32X())+Abs(target.Get32Y()-pnj.Get32Y())) < constants.Epsilon {
 			log.Print("Le npc ciblé n'est pas dans la vue du npc")
 			pnj.SetActive(false)
 			return

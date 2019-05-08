@@ -71,7 +71,7 @@ const (
 	ActionEndOfGame = 10
 
 	//ActionStartOfGame
-	ActionStartOfGame=11
+	ActionStartOfGame = 11
 )
 
 //MaxActions constante maxActions
@@ -79,6 +79,9 @@ const MaxActions = 12
 
 //ActionChannelSize Nombre d'actions simultanées stockées dans le channel
 const ActionChannelSize = 150
+
+//Epsilon : nombre pr comparaison float
+const Epsilon = 0.0000000001
 
 //===== caracteristiques d'une partie =====
 
@@ -210,7 +213,7 @@ const (
 //===== Default PNJ values ======
 
 //HarvesterVillPortee  portee d'un harvester
-const HarvesterVillPortee = 1
+const HarvesterVillPortee = 0.2
 
 //MinimumDmg degats minimum d'un NPC
 const MinimumDmg = 1
@@ -231,7 +234,7 @@ const SoldierVitesse = 1
 const SoldierVue = 10
 
 //SoldierPortee portee d'un soldat
-const SoldierPortee = 1
+const SoldierPortee = 0.2
 
 //SoldierSize taille d'un soldat
 const SoldierSize = 1

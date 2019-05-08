@@ -156,7 +156,6 @@ func TestFightBuilding(t *testing.T){
 }
 */
 
-
 func TestFightNpc(t *testing.T) {
 	d.IDMap = d.NewObjectID()
 	d.InitiateActionBuffer()
@@ -173,13 +172,13 @@ func TestFightNpc(t *testing.T) {
 	go pnj1.MoveFight(c, pnj2, &wg)
 	wg.Wait()
 	time.Sleep(time.Duration(2100 * time.Millisecond))
-	if pnj2.GetPv() != cst.SoldierPv - 2 * cst.SoldierDamage{
+	if pnj2.GetPv() != cst.SoldierPv-2*cst.SoldierDamage {
 		t.Error("La target n'a pas reçu assez de dégats")
 	}
-	go pnj2.MoveTo(c, 17,15, nil)
+	go pnj2.MoveTo(c, 17, 15, nil)
 	time.Sleep(time.Duration(2100 * time.Millisecond))
 
-	if pnj1.GetX() != 16 && pnj1.GetY() != 15{
+	if pnj1.GetX() != 16 && pnj1.GetY() != 15 {
 		t.Error("mauvais deplacement apres un fight")
 		t.Log("pnjX :", pnj1.GetX(), " pnjY :", pnj1.GetY())
 	}

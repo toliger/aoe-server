@@ -175,7 +175,7 @@ func TestMoveTargetNpc(t *testing.T) {
 	wg.Wait()
 	if !pnj1.VerifyPos(pnj2.Get32X()-1, pnj2.Get32Y()-1) {
 		t.Error("mauvais emplacement du pnj1")
-		log.Printf("le pnj1 est à la pos (%v, %v)", pnj1.GetX(), pnj1.GetY())
+		log.Printf("le pnj1 est à la pos (%v, %v)", pnj1.Get32X(), pnj1.Get32Y())
 	}
 	log.Println("-------------------During fight-------------------")
 	// Start fight

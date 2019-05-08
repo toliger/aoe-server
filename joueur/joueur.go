@@ -246,16 +246,18 @@ func (j *Joueur) AddNpc(entity *npc.Npc) {
  */
 func (j *Joueur) AddAndCreateNpcVerification(class string, x int, y int) {
 	for i := range j.batiments {
-		if j.GetPointerBuilding(i).GetX()-1 == x && j.GetPointerBuilding(i).GetY() == y {
-			break
-		} else if j.GetPointerBuilding(i).GetX()+1 == x && j.GetPointerBuilding(i).GetY() == y {
-			break
-		} else if j.GetPointerBuilding(i).GetX() == x && j.GetPointerBuilding(i).GetY()-1 == y {
-			break
-		} else if j.GetPointerBuilding(i).GetX() == x && j.GetPointerBuilding(i).GetY()+1 == y {
-			break
-		} else {
-			return
+		if j.GetPointerBuilding(i) != nil {
+			if j.GetPointerBuilding(i).GetX()-1 == x && j.GetPointerBuilding(i).GetY() == y {
+				break
+			} else if j.GetPointerBuilding(i).GetX()+1 == x && j.GetPointerBuilding(i).GetY() == y {
+				break
+			} else if j.GetPointerBuilding(i).GetX() == x && j.GetPointerBuilding(i).GetY()-1 == y {
+				break
+			} else if j.GetPointerBuilding(i).GetX() == x && j.GetPointerBuilding(i).GetY()+1 == y {
+				break
+			} else {
+				return
+			}
 		}
 	}
 	entity, id := npc.Create(class, float32(x), float32(y), j.faction, &j.ressourceChannel)
@@ -271,43 +273,59 @@ func (j *Joueur) AddAndCreateNpc(class string, x int, y int) {
 }
 
 /*AddAndCreateNpcByBuilding : create and add a new NPC to the player by a building
-* The NPC is created preferably in front of or behind the building and cost ressources
+* The NPC is created preferably at left or at right of the building and cost ressources
  */
-func (j *Joueur) AddAndCreateNpcByBuilding(c *carte.Carte, bat *batiment.Batiment) {
-	if bat.GetPlayerUID() != j.UID {
+func (j *Joueur) AddAndCreateNpcByBuilding(c *carte.Carte, posX int, posY int) {
+	var b *batiment.Batiment
+	b = nil
+	for i := 0; i < len((*j).entities); i++ {
+		if j.batiments[i] == nil {
+			continue
+		}
+		if j.batiments[i].GetX() == posX && j.batiments[i].GetY() == posY {
+			b = (*j).batiments[i]
+			break
+		}
+	}
+	if b == nil {
+		return
+	}
+	if b.GetPlayerUID() != j.UID {
 		utils.Debug("batiment choisi n'appartenant pas au joueur")
 		return
 	}
-	y := bat.GetY()
-	x := bat.GetX()
-	if bat.GetY() > c.GetSize()/2 {
-		if c.IsEmpty(bat.GetX(), bat.GetY()-1) {
-			y = bat.GetY() - 1
-		} else if bat.GetX() > c.GetSize()/2 {
-			if c.IsEmpty(bat.GetX()-1, bat.GetY()) {
-				x = bat.GetX() - 1
-			} else if c.IsEmpty(bat.GetX()+1, bat.GetY()) {
-				x = bat.GetX() + 1
-			} else if c.IsEmpty(bat.GetX(), bat.GetY()+1) && y <= c.GetSize() {
-				y = bat.GetY() + 1
-			} else {
-				utils.Debug("no empty tiles near the building to create NPC")
-				return
-			}
+	y := b.GetY()
+	x := b.GetX()
+	//left->right->before->behind
+	if b.GetX() > c.GetSize()/2 {
+		if c.IsEmpty(b.GetX()-1, b.GetY()) {
+			x = b.GetX() - 1
+		} else if c.IsEmpty(b.GetX()+1, b.GetY()) {
+			x = b.GetX() + 1
+		} else if c.IsEmpty(b.GetX(), b.GetY()+1) {
+			y = b.GetY() + 1
+		} else if c.IsEmpty(b.GetX(), b.GetY()-1) {
+			y = b.GetY() - 1
 		} else {
-			if c.IsEmpty(bat.GetX()+1, bat.GetY()) {
-				x = bat.GetX() + 1
-			} else if c.IsEmpty(bat.GetX()-1, bat.GetY()) {
-				x = bat.GetX() - 1
-			} else if c.IsEmpty(bat.GetX(), bat.GetY()+1) && y <= c.GetSize() {
-				y = bat.GetY() + 1
-			} else {
-				utils.Debug("no empty tiles near the building to create NPC")
-				return
-			}
+			utils.Debug("no empty tiles near the building to create NPC")
+			return
+		}
+		//right->left->before->behind
+	} else {
+		if c.IsEmpty(b.GetX()+1, b.GetY()) {
+			x = b.GetX() + 1
+		} else if c.IsEmpty(b.GetX()-1, b.GetY()) {
+			x = b.GetX() - 1
+		} else if c.IsEmpty(b.GetX(), b.GetY()+1) {
+			x = b.GetY() + 1
+		} else if c.IsEmpty(b.GetX(), b.GetY()-1) {
+			y = b.GetY() - 1
+		} else {
+			utils.Debug("no empty tiles near the building to create NPC")
+			return
 		}
 	}
-	switch bat.GetType() {
+	switch b.GetType() {
 	case 0:
 		entity, id := npc.Create("villager", float32(x), float32(y), j.faction, &j.ressourceChannel)
 		j.AddNpc(entity)
@@ -345,9 +363,10 @@ func (j *Joueur) IsThereNpcInRange(pnj *npc.Npc) *npc.Npc {
 		if (*j).entities[i] == nil {
 			continue
 		}
-		for x := pnj.GetX() - pnj.GetPortee(); x <= pnj.GetX()+pnj.GetPortee(); x++ {
-			for y := pnj.GetY() - pnj.GetPortee(); y <= pnj.GetY()+pnj.GetPortee(); y++ {
-				if ((*j).entities[i].GetX() == x) && ((*j).entities[i].GetY() == y) {
+		for x := pnj.Get32X() - pnj.GetPortee(); x-pnj.Get32X()+pnj.GetPortee() <= constants.Epsilon; x++ {
+			for y := pnj.Get32Y() - pnj.GetPortee(); y-pnj.Get32Y()+pnj.GetPortee() <= constants.Epsilon; y++ {
+				if x-(*j).entities[i].Get32X() <= constants.Epsilon && x-(*j).entities[i].Get32X() >= constants.Epsilon &&
+					y-(*j).entities[i].Get32Y() <= constants.Epsilon && y-(*j).entities[i].Get32Y() >= constants.Epsilon {
 					return (*j).entities[i]
 				}
 			}
@@ -365,10 +384,10 @@ func (j *Joueur) IsThereBuildingInRange(pnj *npc.Npc) *batiment.Batiment {
 		if (*j).batiments[i] == nil {
 			continue
 		}
-		for x := pnj.GetX() - pnj.GetPortee(); x <= pnj.GetX()+pnj.GetPortee(); x++ {
-			for y := pnj.GetY() - pnj.GetPortee(); y <= pnj.GetY()+pnj.GetPortee(); y++ {
+		for x := pnj.Get32X() - pnj.GetPortee(); x-pnj.Get32X()+pnj.GetPortee() <= constants.Epsilon; x++ {
+			for y := pnj.Get32Y() - pnj.GetPortee(); y-pnj.Get32Y()+pnj.GetPortee() <= constants.Epsilon; y++ {
 				if (*j).batiments[i] != nil {
-					if (*j).batiments[i].GetX() == x && j.batiments[i].GetY() == y {
+					if (*j).batiments[i].GetX() == int(x) && j.batiments[i].GetY() == int(y) {
 						return (*j).batiments[i]
 					}
 				}
