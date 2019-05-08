@@ -1,6 +1,7 @@
 package data
 
 import (
+	"log"
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
@@ -265,8 +266,9 @@ func GetPlayersFromGID() ([]string,error){
 		return nil,err
 	}
 	t1:=(response["Players"]).([]interface{})
-	tab[0]=t1[0].(string)
-	tab[1]=t1[1].(string)
+	log.Println(t1)
+	tab[0]=t1[0].(map[string]interface{})["ID"].(string)
+	tab[1]=t1[1].(map[string]interface{})["ID"].(string)
 	errClose:=resp.Body.Close()
 	return tab,errClose
 }

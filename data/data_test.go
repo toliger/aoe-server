@@ -3,6 +3,7 @@ package data
 import (
 	"testing"
 	"git.unistra.fr/AOEINT/server/constants"
+	"time"
 )
 
 func TestActionBuffer(t *testing.T) {
@@ -13,6 +14,7 @@ func TestActionBuffer(t *testing.T) {
 		t.Error("Echec Initialisation ActionBuffer")
 	}
 	AjoutJoueurConcurrent(constants.PlayerUID1, 0, "test", "test2", "test3")
+	time.Sleep(time.Duration(100*time.Millisecond))
 	if ActionBuffer[constants.PlayerUID1][0].Description["test"]["test2"] != "test3" {
 		t.Error("Echec ajout ActionBuffer")
 	}
