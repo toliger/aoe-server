@@ -322,7 +322,6 @@ func (pnj *Npc) actualizeMoveAction(moveA *chan bool) {
 	pnj.wgAction.Add(1)
 	// Cancel the old movement
 	index := len(pnj.MoveAction) - 1
-	log.Println("i=" + strconv.Itoa(index))
 	if index == -1 {
 		pnj.MoveAction[index+1] = *moveA
 		pnj.wgAction.Done()
