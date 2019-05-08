@@ -226,6 +226,7 @@ func (s *Arguments) AskUpdate(ctx context.Context, in *pb.AskUpdateRequest) (*pb
 
 	// Extract data from token to get player's UUID
 	playerUUID := data.ExtractFromToken(in.Token)
+	log.Println("token:",in.Token)
 	if playerUUID == nil{
 		msg := "Token invalide dans AskUpdate: vide"
 		log.Print(msg)
