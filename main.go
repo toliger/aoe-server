@@ -57,7 +57,8 @@ func main() {
 	//pour les tests solo en local:
 	//	g.GetPlayerData()
 	//	d.InitiateActionBuffer()
-	//	g.GameInitialisationTime=-1 
+	//	g.GameInitialisationTime=-1
+	//	g.GameTimeLeft=-1
 	log.Println("Démarrage de la partie")
 	startGame(&g)
 }
