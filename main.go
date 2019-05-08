@@ -53,7 +53,9 @@ func main() {
 	//go g.GameLoop()
 	go server.InitListenerServer(&g)
 	log.Println("En attente des joueurs")
-	<-g.BeginGame //remplacer par g.GameInitialisationTime=-1 pour les tests solo en local
+	//<-g.BeginGame //remplacer par 
+	g.GameInitialisationTime=-1 
+	//pour les tests solo en local
 	log.Println("Démarrage de la partie")
 	startGame(&g)
 }
@@ -61,11 +63,12 @@ func main() {
 func startGame(g *game.Game){
 	d.InitiateActionBuffer()
 	data := game.ExtractData()
+	g.GetPlayerData()
 	g.GenerateMap(data)
 	go g.LaunchAutomaticFight()
 	go g.BrokenBuildingsCollector()
 	// On lance le faux client pour tester les fonctions de liaison
-	go g.GameLoop()
+	g.GameLoop()
 
 
 
