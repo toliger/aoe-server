@@ -353,6 +353,9 @@ func (s *Arguments) Authentificate(ctx context.Context, in *pb.AuthentificateReq
 	if !test{
 		return &pb.AuthentificateReply{IsAuthentificate: false},nil
 	}
+	if data.Players==nil{
+		data.Players=make(map[int]string)
+	}
 	data.Players[len(data.Players)]=id.UID
 	log.Println("le joueur ",id.UID, "a rejoint la partie")
 	if len(data.Players)==2{
