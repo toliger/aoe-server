@@ -31,10 +31,6 @@ message SecretKillReply {}
 ///////////////////////////////////////////////////////////////////////////////
 
 service Interactions {
-
-    // Fonction qui vérifie si le jour appartient bien à la partie
-    rpc Authentificate (AuthentificateRequest) returns (AuthentificateReply) {}
-
     // Fonction transmettant un click du client au serveur
     rpc RightClick (RightClickRequest) returns (RightClickReply) {}
 
@@ -43,30 +39,6 @@ service Interactions {
     
     // Fonction de création(npc ou batiment)
     rpc AskCreation(AskCreationRequest) returns (AskCreationReply) {}
-}
-
-// Message liés à Authentificate
-/*
-== Fonction : Authentificate
-=== Message du Client
-
-* Type : AuthentificateRequest
-* Demande du Client : Demande l'authentification au serveur de jeu
-* Argument donné par Client :
-    ** (string) Token : Suite de caractère permettant d'identifier et authentifier le client au près du serveur.
-
-=== Message du Serveur
-
-* Message du Serveur : AuthentificateReply
-* Reponse du Serveur : Message signalent si la créaton c'est bien passé ou pas.
-* Argument donné par Serveur :
-    ** (bool) IsAuthentificate : Variable disant c'est l'authentification est un succès.
-*/
-message AuthentificateRequest {
-    string Token = 1;
-}
-message AuthentificateReply {
-    bool IsAuthentificate = 1;
 }
 
 // Messages liés à RightClick

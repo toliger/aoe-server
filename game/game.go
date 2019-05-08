@@ -165,7 +165,9 @@ func (g *Game) LaunchAutomaticFight() {
 								pnjToFight := p.IsThereNpcInRange(pnj)
 								if pnjToFight != nil {
 									//log.Printf("staticFight aggressor (%v, %v), target (%v, %v)", pnj.GetX(),pnj.GetY(), pnjToFight.GetX(),pnjToFight.GetY())
-									go pnj.StaticFightNpc(pnjToFight)
+									if atomic.LoadInt32(pnj.MovingOrder) != 1 {
+										go pnj.StaticFightNpc(pnjToFight)
+									}
 								} else {
 									buildingToFight := p.IsThereBuildingInRange(pnj)
 									if buildingToFight != nil {

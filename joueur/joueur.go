@@ -241,6 +241,28 @@ func (j *Joueur) AddNpc(entity *npc.Npc) {
 	entity.PlayerUUID = j.UID
 }
 
+/*AddAndCreateNpcVerification : create and add a new NPC to the player
+* Also verify that the npc is created by a building
+ */
+func (j *Joueur) AddAndCreateNpcVerification(class string, x int, y int) {
+	for i := range j.batiments {
+		if j.GetPointerBuilding(i).GetX()-1 == x && j.GetPointerBuilding(i).GetY() == y {
+			break
+		} else if j.GetPointerBuilding(i).GetX()+1 == x && j.GetPointerBuilding(i).GetY() == y {
+			break
+		} else if j.GetPointerBuilding(i).GetX() == x && j.GetPointerBuilding(i).GetY()-1 == y {
+			break
+		} else if j.GetPointerBuilding(i).GetX() == x && j.GetPointerBuilding(i).GetY()+1 == y {
+			break
+		} else {
+			return
+		}
+	}
+	entity, id := npc.Create(class, float32(x), float32(y), j.faction, &j.ressourceChannel)
+	j.AddNpc(entity)
+	entity.Transmit(id, constants.ActionNewNpc)
+}
+
 //AddAndCreateNpc : create and add a new NPC to the player
 func (j *Joueur) AddAndCreateNpc(class string, x int, y int) {
 	entity, id := npc.Create(class, float32(x), float32(y), j.faction, &j.ressourceChannel)

@@ -5,10 +5,37 @@ import (
 	d "git.unistra.fr/AOEINT/server/data"
 	"git.unistra.fr/AOEINT/server/game"
 	"git.unistra.fr/AOEINT/server/server"
-	"git.unistra.fr/AOEINT/server/constants"
+	"log"
+  "net/http"
+        "time"
+
+        "github.com/prometheus/client_golang/prometheus"
+        "github.com/prometheus/client_golang/prometheus/promauto"
+        "github.com/prometheus/client_golang/prometheus/promhttp"
+)
+
+func recordMetrics() {
+        go func() {
+                for {
+                        opsProcessed.Inc()
+                        time.Sleep(2 * time.Second)
+                }
+        }()
+}
+
+var (
+        opsProcessed = promauto.NewCounter(prometheus.CounterOpts{
+                Name: "players_count",
+                Help: "The total number of players",
+        })
 )
 
 func main() {
+
+  recordMetrics()
+
+  http.Handle("/metrics", promhttp.Handler())
+  go http.ListenAndServe(":2112", nil)
 	var g game.Game
 	g.GameInitialisationTime=constants.ExpiringTime
 	g.GameTimeLeft=constants.MaxGameTime
@@ -38,5 +65,9 @@ func startGame(g *game.Game){
 	g.GenerateMap(data)
 	go g.LaunchAutomaticFight()
 	go g.BrokenBuildingsCollector()
+	// On lance le faux client pour tester les fonctions de liaison
 	go g.GameLoop()
+
+
+
 }

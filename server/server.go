@@ -296,7 +296,7 @@ func (s *Arguments) AskCreation(ctx context.Context, in *pb.AskCreationRequest) 
 
 		// Create NPC into the right player and update ActionBuffer
 		player := s.g.GetPlayerFromUID(playerUUID.UID)
-		player.AddAndCreateNpc(class, int(in.Case.X), int(in.Case.Y))
+		player.AddAndCreateNpcVerification(class, int(in.Case.X), int(in.Case.Y))
 		fmt.Println(int(in.Case.X), int(in.Case.Y))
 
 	case constants.ActionNewBuilding:

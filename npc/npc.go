@@ -318,6 +318,11 @@ func (pnj Npc) SetActive(val bool) {
 	pnj.active.set(val)
 }
 
+//VerifyPos : Verify position of the pnj
+func (pnj Npc) VerifyPos(posX float32, posY float32) bool {
+	return pnj.Get32X() == posX && pnj.Get32Y() == posY
+}
+
 func (pnj *Npc) actualizeMoveAction(moveA *chan bool) {
 	pnj.wgAction.Add(1)
 	// Cancel the old movement
