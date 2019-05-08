@@ -252,6 +252,7 @@ func GetPlayers()([]string,error){
 func GetPlayersFromGID() ([]string,error){
 	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
 	resp, err := http.Get(constants.APIHOST+"/v1/game/"+constants.GameUUID)
+	log.Println("API:",(constants.APIHOST+"/v1/game/"+constants.GameUUID))
 	if err != nil {
 		utils.Debug(err.Error())
 		return nil,err
