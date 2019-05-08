@@ -33,6 +33,9 @@ func New(size int) Carte{
 
 //IsEmpty : Verifie si la cade est vide
 func (c Carte) IsEmpty(x int, y int) bool{
+	if x >len(c.matrice) || y > len(c.matrice[0]) || x<0 || y<0{
+		return true
+	}
 		return c.matrice[x][y].GetType() ==0
 }
 
