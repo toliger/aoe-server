@@ -333,6 +333,9 @@ func (s *Arguments) Authentificate(ctx context.Context, in *pb.AuthentificateReq
 	token:=in.Token
 	id:=data.ExtractFromToken(token)
 	idfromGID,err:=data.GetPlayersFromGID()
+	if idfromGID==nil{
+		return &pb.AuthentificateReply{IsAuthentificate: false},nil
+	}
 	test:=false
 	if err !=nil{
 		s.g.EndOfGame()

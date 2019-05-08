@@ -14,6 +14,7 @@ import (
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/machinebox/graphql"
 	"context"
+	"errors"
 )
 
 //Action classe detaillant une action de ActionBuffer
@@ -268,6 +269,9 @@ func GetPlayersFromGID() ([]string,error){
 	err =json.Unmarshal(bodyBytes,&response)
 	if err!=nil{
 		return nil,err
+	}
+	if response["Players"] == nil{
+		return nil,errors.New("pas de joueurs dans l'api")
 	}
 	t1:=(response["Players"]).([]interface{})
 	log.Println(t1)
