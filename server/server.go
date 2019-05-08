@@ -284,20 +284,15 @@ func (s *Arguments) AskCreation(ctx context.Context, in *pb.AskCreationRequest) 
 
 		// Define class asked
 		var class string
-		if in.TypeUnit == 0 {
-			class = "villager"
-		} else if in.TypeUnit == 1 {
-			class = "harvester"
-		} else if in.TypeUnit == 2 {
-			class = "soldier"
-		} else {
+		if in.TypeUnit >3{
 			log.Print("TypeUnit invalide dans AskCreation")
 			return &pb.AskCreationReply{Validation: false}, nil
 		}
 
 		// Create NPC into the right player and update ActionBuffer
 		player := s.g.GetPlayerFromUID(playerUUID.UID)
-		player.AddAndCreateNpcVerification(class, int(in.Case.X), int(in.Case.Y))
+		//player.AddAndCreateNpcVerification(class, int(in.Case.X), int(in.Case.Y))
+		player.AddAndCreateNpcByBuilding(s.g.Carte,int(in.Case.X), int(in.Case.Y),in.TypeUnit)
 		fmt.Println(int(in.Case.X), int(in.Case.Y))
 
 	case constants.ActionNewBuilding:

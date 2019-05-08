@@ -275,7 +275,7 @@ func (j *Joueur) AddAndCreateNpc(class string, x int, y int) {
 /*AddAndCreateNpcByBuilding : create and add a new NPC to the player by a building
 * The NPC is created preferably at left or at right of the building and cost ressources
  */
-func (j *Joueur) AddAndCreateNpcByBuilding(c *carte.Carte, posX int, posY int) {
+func (j *Joueur) AddAndCreateNpcByBuilding(c carte.Carte, posX int, posY int, class int) {
 	var b *batiment.Batiment
 	b = nil
 	for i := 0; i < len((*j).entities); i++ {
@@ -327,6 +327,10 @@ func (j *Joueur) AddAndCreateNpcByBuilding(c *carte.Carte, posX int, posY int) {
 	}
 	switch b.GetType() {
 	case 0:
+		if class != 0 {
+			utils.Debug("Erreur: Mauvais type npc création")
+			return
+		}
 		entity, id := npc.Create("villager", float32(x), float32(y), j.faction, &j.ressourceChannel)
 		j.AddNpc(entity)
 		entity.Transmit(id, constants.ActionNewNpc)
@@ -334,6 +338,10 @@ func (j *Joueur) AddAndCreateNpcByBuilding(c *carte.Carte, posX int, posY int) {
 		tabRessources[2] = -(constants.VillagerFoodCost)
 		j.ressourceChannel <- tabRessources
 	case 1:
+		if class != 2 {
+			utils.Debug("Erreur: Mauvais type npc création")
+			return
+		}
 		entity, id := npc.Create("soldier", float32(x), float32(y), j.faction, &j.ressourceChannel)
 		j.AddNpc(entity)
 		entity.Transmit(id, constants.ActionNewNpc)
@@ -342,6 +350,10 @@ func (j *Joueur) AddAndCreateNpcByBuilding(c *carte.Carte, posX int, posY int) {
 		tabRessources[0] = -(constants.SoldierWoodCost)
 		j.ressourceChannel <- tabRessources
 	case 2:
+		if class != 1 {
+			utils.Debug("Erreur: Mauvais type npc création")
+			return
+		}
 		entity, id := npc.Create("harvester", float32(x), float32(y), j.faction, &j.ressourceChannel)
 		j.AddNpc(entity)
 		entity.Transmit(id, constants.ActionNewNpc)
