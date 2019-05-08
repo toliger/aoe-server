@@ -85,6 +85,14 @@ func (bat Batiment) Transmit(typ int, id string) {
 	}
 }
 
+//TransmitPlayer Same as transmit for 1 player
+func (bat Batiment) TransmitPlayer(id string,typ int,PlayerUID string){
+	arr := bat.stringify(typ, id)
+	for k, e := range arr {
+		data.AjoutJoueurConcurrent(PlayerUID,typ, id, k, e)
+	}
+}
+
 /*batimentUpdate : Met automatiquement a jour les pv du batiment à partir du channel du batiment
  */
 func (bat *Batiment) batimentUpdate() {

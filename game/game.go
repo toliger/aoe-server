@@ -9,7 +9,7 @@ import (
 	"io/ioutil"
 	"sync/atomic"
 	"encoding/json"
-
+	"reflect"
 	"git.unistra.fr/AOEINT/server/batiment"
 	Carte "git.unistra.fr/AOEINT/server/carte"
 	"git.unistra.fr/AOEINT/server/constants"
@@ -36,6 +36,25 @@ type Data struct {
 	Size       int
 	Buildings  []batiment.Batiment
 	Ressources []ressource.Ressource
+}
+
+//ResendAllObjects renvoie les informations de partie au joueur donné (reconnection)
+func (g *Game)ResendAllObjects(PlayerUID string){
+	tab:=data.IDMap.GetList()
+	for k,obj := range tab{
+		switch reflect.TypeOf(obj) {
+			case reflect.TypeOf(&npc.Npc{}):
+				(obj.(*npc.Npc)).TransmitPlayer(k,constants.ActionNewNpc,PlayerUID)
+			case reflect.TypeOf(&batiment.Batiment{}):
+				(obj.(*batiment.Batiment)).TransmitPlayer(k,constants.ActionNewBuilding,PlayerUID)
+			case reflect.TypeOf(&ressource.Ressource{}):
+				(obj.(*ressource.Ressource)).TransmitPlayer(k,constants.ActionNewRessource,PlayerUID)
+			default: utils.Debug("type inconnu dans Resend")
+		}
+	}
+	ch:=g.GetPlayerFromUID(PlayerUID).GetChannel()
+	res:=[]int{0,0,0}
+	(*ch)<-res //On force l'envoi des montants de ressources
 }
 
 //ExtractData : extract data from a file (ressources, buildings)
@@ -233,10 +252,12 @@ func (g *Game) EndOfGame() {
 
 //GameLoop : fonction contenant la boucle principale du jeu
 func (g *Game) GameLoop() {
+	test:=false
 	uptimeTicker := time.NewTicker(time.Duration(1 * time.Second))
-	for {
+	for !test{
 		select{
 			case <-g.GameRunning:
+				test=true
 				break
 			case <-uptimeTicker.C:
 				g.GameTimeLeft--

@@ -332,11 +332,21 @@ func (s *Arguments) AskCreation(ctx context.Context, in *pb.AskCreationRequest) 
 func (s *Arguments) Authentificate(ctx context.Context, in *pb.AuthentificateRequest) (*pb.AuthentificateReply, error) {
 	token:=in.Token
 	id:=data.ExtractFromToken(token)
+	//Partie en cours
+	if s.g.GameInitialisationTime == -1 {
+		for _,i :=range data.Players{
+			if(id.UID==i){
+				s.g.ResendAllObjects(i)
+				return &pb.AuthentificateReply{IsAuthentificate: true}, nil
+			}
+		}
+	}
 	idfromGID,err:=data.GetPlayersFromGID()
 	if idfromGID==nil{
 		return &pb.AuthentificateReply{IsAuthentificate: false},nil
 	}
 	test:=false
+	test2:=false
 	if err !=nil{
 		s.g.EndOfGame()
 	}
@@ -351,6 +361,16 @@ func (s *Arguments) Authentificate(ctx context.Context, in *pb.AuthentificateReq
 	}
 	if data.Players==nil{
 		data.Players=make(map[int]string)
+	}
+	if len(data.Players)>0{
+		for _,str := range data.Players{
+			if id.UID == str{
+				test2=true
+			}
+		}
+	}
+	if test2{ //Déjà présent dans la partie, revalidé sans ajout
+		return &pb.AuthentificateReply{IsAuthentificate: true},nil
 	}
 	data.Players[len(data.Players)]=id.UID
 	log.Println("le joueur ",id.UID, "a rejoint la partie")

@@ -146,6 +146,17 @@ func (o *ObjectID) AddObject(obj interface{}) string {
 	return key
 }
 
+//GetList Retourne une copie de la map d'id
+func (o *ObjectID) GetList() map[string]interface{}{
+	o.m.RLock()
+	tab:=make(map[string]interface{},len(o.IDArray))
+	for k,obj:=range o.IDArray{
+		tab[k]=obj
+	}
+	o.m.Unlock()
+	return tab
+}
+
 //DeleteObjectFromID Fonction permettant de retirer un objet à partir de son id
 func (o *ObjectID) DeleteObjectFromID(id string) {
 	o.m.Lock()

@@ -96,7 +96,7 @@ func (ress Ressource)stringify(id string)map[string]string{
 }
 
 
-//Transmit :
+//Transmit : puts the information about a ressource into the ActionBuffer
 func (ress Ressource) Transmit(id string,typ int){
 	arr:=ress.stringify(id)
 	for k,e := range arr{
@@ -104,6 +104,13 @@ func (ress Ressource) Transmit(id string,typ int){
 	}
 }
 
+//TransmitPlayer Same as Transmit but for 1 player
+func (ress Ressource) TransmitPlayer(id string,typ int,PlayerUID string){
+	arr:=ress.stringify(id)
+	for k,e := range arr{
+		data.AjoutJoueurConcurrent(PlayerUID,typ,id,k,e)
+	}
+}
 
 //GetType : return the ress type
 func (ress Ressource)GetType() int{

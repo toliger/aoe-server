@@ -137,6 +137,14 @@ func (pnj Npc) Transmit(id string, typ int) {
 	}
 }
 
+//TransmitPlayer Same as Transmit but for only one player
+func (pnj Npc)TransmitPlayer (id string, typ int, PlayerUUID string){
+	arr := pnj.Stringify(typ)
+	for k, e := range arr {
+		data.AjoutJoueurConcurrent(PlayerUUID,typ,id,k,e)
+	}
+}
+
 func (i *safeNumberFloat) get() float32 {
 	i.m.Lock()
 	defer i.m.Unlock()
