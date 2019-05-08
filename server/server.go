@@ -114,7 +114,7 @@ func (s *Arguments) RightClick(ctx context.Context, in *pb.RightClickRequest) (*
 	utils.Debug("Reception d'un RightClickRequest et envoie d'un RightClickReply")
 
 	// For Testing Mode
-	if len(in.EntitySelectionUUID) == 0 {
+	if len(in.EntitySelectionUUID) == 0 || s.g.GameInitialisationTime!=-1{
 		msg := "Erreur, aucune entité envoié à RightClick"
 		log.Println(msg)
 		return &pb.RightClickReply{}, errors.New(msg)
@@ -226,7 +226,7 @@ func (s *Arguments) AskUpdate(ctx context.Context, in *pb.AskUpdateRequest) (*pb
 
 	// Extract data from token to get player's UUID
 	playerUUID := data.ExtractFromToken(in.Token)
-	if playerUUID == nil {
+	if playerUUID == nil || s.g.GameInitialisationTime!=-1{
 		msg := "Token invalide dans AskUpdate: vide"
 		log.Print(msg)
 		return &pb.AskUpdateReply{Array: nil}, errors.New(msg)
@@ -272,7 +272,7 @@ func (s *Arguments) AskCreation(ctx context.Context, in *pb.AskCreationRequest) 
 
 	// Extract data from token to get player's UUID
 	playerUUID := data.ExtractFromToken(in.Token)
-	if playerUUID == nil {
+	if playerUUID == nil || s.g.GameInitialisationTime!=-1{
 		log.Print("Token invalide dans AskCreation")
 		return &pb.AskCreationReply{Validation: false}, nil
 	}
@@ -336,9 +336,30 @@ func (s *Arguments) AskCreation(ctx context.Context, in *pb.AskCreationRequest) 
 // Authentificate :
 // Function of authentification and creation of player
 func (s *Arguments) Authentificate(ctx context.Context, in *pb.AuthentificateRequest) (*pb.AuthentificateReply, error) {
-
+	token:=in.Token
+	id:=data.ExtractFromToken(token)
+	idfromGID,err:=data.GetPlayersFromGID()
+	test:=false
+	if err !=nil{
+		s.g.EndOfGame()
+	}
+	for _,str :=range idfromGID{
+		if str == id.UID{
+			test = true
+		}
+	}
+	if !test{
+		return &pb.AuthentificateReply{IsAuthentificate: false},nil
+	}
+	data.Players[len(data.Players)]=id.UID
+	log.Println("le joueur ",id.UID, "a rejoint la partie")
+	if len(data.Players)==2{
+		//On démare la partie
+		s.g.BeginTimer<-true
+	}else if len(data.Players)==1{
+		go s.g.ExpiringTimer()
+	}
 	// For Debug Mode
 	utils.Debug("Reception d'un AuthentificateRequest et envoie d'un AuthentificateReply")
-
 	return &pb.AuthentificateReply{IsAuthentificate: true}, nil
 }

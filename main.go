@@ -1,40 +1,42 @@
 package main
 
 import (
+	"log"
 	d "git.unistra.fr/AOEINT/server/data"
 	"git.unistra.fr/AOEINT/server/game"
 	"git.unistra.fr/AOEINT/server/server"
-	"log"
+	"git.unistra.fr/AOEINT/server/constants"
 )
 
 func main() {
-	d.ExtractFromToken("aubvfauipva.eyJncm91cCI6InBsYXllciIsIm5hbWUiOiJQaWVycmUgQyIsInV1aWQiOiJiMzNkOTU0Zi1jNjNlLTRiNDgtODhlYi04YjVlODZkOTQyNDYiLCJpYXQiOjE1MTYyMzkwMjJ9.oaougf")
 	var g game.Game
+	g.GameInitialisationTime=constants.ExpiringTime
+	g.GameTimeLeft=constants.MaxGameTime
+	g.BeginGame=make(chan(bool))
+	g.BeginTimer=make(chan(bool))
 	d.IDMap = d.NewObjectID()
 	cExit := make(chan(bool))
 	g.GameRunning = cExit
-	g.GetPlayerData()
+	/*g.GetPlayerData()
 	d.InitiateActionBuffer()
 	data := game.ExtractData()
 	g.GenerateMap(data)
 	go g.LaunchAutomaticFight()
-	go g.BrokenBuildingsCollector()
-	//for _,g.Buildings
+	go g.BrokenBuildingsCollector()*/
 	// Listen
-	go g.GameLoop()
-	log.Println(g.Joueurs[0].UID)
-	log.Println(g.Joueurs[1].UID)
-	server.InitListenerServer(&g)
-	//go initialize(&g)
+	//go g.GameLoop()
+	go server.InitListenerServer(&g)
+	log.Println("En attente des joueurs")
+	<-g.BeginGame //remplacer par g.GameInitialisationTime=-1 pour les tests solo en local
+	log.Println("Démarrage de la partie")
+	go startGame(&g)
 }
 
-func initialize(g *game.Game){
-	g.GetPlayerData()
+func startGame(g *game.Game){
 	d.InitiateActionBuffer()
 	data := game.ExtractData()
 	g.GenerateMap(data)
 	go g.LaunchAutomaticFight()
 	go g.BrokenBuildingsCollector()
-	// On lance le faux client pour tester les fonctions de liaison
 	go g.GameLoop()
 }

@@ -21,6 +21,9 @@ type Action struct {
 	Description map[string]map[string]string
 }
 
+//Players Stocke les ids des joueurs durant l'attente de début de partie
+var Players map[int]string
+
 //ActionBuffer variable détaillant les actions à envoyer au client
 //	Exemple: [type:int].Description["UUID"]["Key"]="value"
 // Modification: ["PlayerUID"]->[type:int].Description["UUID"]["Key"]="value"
@@ -267,8 +270,14 @@ func GetPlayersFromGID() ([]string,error){
 	}
 	t1:=(response["Players"]).([]interface{})
 	log.Println(t1)
-	tab[0]=t1[0].(map[string]interface{})["ID"].(string)
-	tab[1]=t1[1].(map[string]interface{})["ID"].(string)
+	if len(t1)>0{
+		tab[0]=t1[0].(map[string]interface{})["ID"].(string)
+		if len(t1)==2{
+			tab[1]=t1[1].(map[string]interface{})["ID"].(string)
+		}
+	}else{
+		tab=nil
+	}
 	errClose:=resp.Body.Close()
 	return tab,errClose
 }

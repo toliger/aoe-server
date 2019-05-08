@@ -24,6 +24,10 @@ type Game struct {
 	Joueurs     []*joueur.Joueur
 	Carte       Carte.Carte
 	GameRunning chan (bool)
+	BeginGame chan (bool)
+	BeginTimer chan (bool)
+	GameInitialisationTime int
+	GameTimeLeft int
 }
 
 //Data :Structure permettant de stocker les informations recuperees sur le fichier json
@@ -61,6 +65,24 @@ func ExtractData() Data {
 	}
 
 	return newGame
+}
+
+//ExpiringTimer Closes the game if the login timer expires
+func (g *Game)ExpiringTimer(){
+	uptimeTicker := time.NewTicker(time.Duration(g.GameInitialisationTime) * time.Second)
+	for{
+		select {
+			case <-uptimeTicker.C:
+				g.GameInitialisationTime--
+				if g.GameInitialisationTime==0{
+					g.EndOfGame()
+				}
+			case <-g.BeginTimer:
+				g.GameInitialisationTime=-1
+				g.BeginGame<-true
+				return
+		}
+	}
 }
 
 //GetPlayerFromUID : Permet de recuperer l'instance d'un joueur à partir de son uid
@@ -199,11 +221,16 @@ func (g *Game) EndOfGame() {
 
 //GameLoop : fonction contenant la boucle principale du jeu
 func (g *Game) GameLoop() {
-	var test bool
+	uptimeTicker := time.NewTicker(time.Duration(1 * time.Second))
 	for {
-		test = <-g.GameRunning
-		if test == true {
-			break
+		select{
+			case <-g.GameRunning:
+				break
+			case <-uptimeTicker.C:
+				g.GameTimeLeft--
+				if g.GameTimeLeft==0 {
+					g.EndOfGame()
+				}
 		}
 	}
 	time.Sleep(time.Duration(time.Second * constants.TimeBeforeExit))

@@ -69,10 +69,13 @@ const (
 	//GAME
 	//ActionEndOfGame fin de jeu
 	ActionEndOfGame = 10
+
+	//ActionStartOfGame
+	ActionStartOfGame=11
 )
 
 //MaxActions constante maxActions
-const MaxActions = 11
+const MaxActions = 12
 
 //ActionChannelSize Nombre d'actions simultanées stockées dans le channel
 const ActionChannelSize = 150
@@ -174,6 +177,12 @@ var (
 )
 
 const (
+	//ExpiringTime time(in seconds) before the game closes if the correct amount of players is not obtained
+	ExpiringTime = 60
+
+	//MaxGameTime maximum duration of a game in seconds
+	MaxGameTime = 300
+
 	//DataFileName : chemin vers les données de jeu
 	DataFileName = "server/data/Gamedata.json"
 
@@ -216,7 +225,7 @@ const TauxRecolteHarvester = 7
 const SoldierPv = 8
 
 //SoldierVitesse vitesse d'un soldat
-const SoldierVitesse = 3
+const SoldierVitesse = 1
 
 //SoldierVue vue d'un soldat
 const SoldierVue = 10
@@ -234,7 +243,7 @@ const SoldierDamage = 2
 const HarvesterPv = 6
 
 //HarvesterVitesse vitesse d'un harvester
-const HarvesterVitesse = 4
+const HarvesterVitesse = 2
 
 //HarvesterVue vue d'un harvester
 const HarvesterVue = 10
@@ -246,7 +255,7 @@ const HarvesterSize = 1
 const VillagerPv = 4
 
 //VillagerVitesse vitesse d'un villager
-const VillagerVitesse = 4
+const VillagerVitesse = 2
 
 //VillagerVue vue d'un villager
 const VillagerVue = 10
