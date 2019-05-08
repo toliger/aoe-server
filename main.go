@@ -5,13 +5,12 @@ import (
 	d "git.unistra.fr/AOEINT/server/data"
 	"git.unistra.fr/AOEINT/server/game"
 	"git.unistra.fr/AOEINT/server/server"
-	"log"
-  "net/http"
-        "time"
-
-        "github.com/prometheus/client_golang/prometheus"
-        "github.com/prometheus/client_golang/prometheus/promauto"
-        "github.com/prometheus/client_golang/prometheus/promhttp"
+	"git.unistra.fr/AOEINT/server/constants"
+	"net/http"
+    "time"
+    "github.com/prometheus/client_golang/prometheus"
+    "github.com/prometheus/client_golang/prometheus/promauto"
+    "github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 func recordMetrics() {
