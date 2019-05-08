@@ -55,7 +55,7 @@ func main() {
 	log.Println("En attente des joueurs")
 	<-g.BeginGame //remplacer par g.GameInitialisationTime=-1 pour les tests solo en local
 	log.Println("Démarrage de la partie")
-	go startGame(&g)
+	startGame(&g)
 }
 
 func startGame(g *game.Game){
