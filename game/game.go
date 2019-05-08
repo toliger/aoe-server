@@ -79,6 +79,7 @@ func (g *Game)ExpiringTimer(){
 				}
 			case <-g.BeginTimer:
 				g.GameInitialisationTime=-1
+				data.AjoutConcurrent(constants.ActionStartOfGame,"useless","useless","useless")
 				g.BeginGame<-true
 				return
 		}
