@@ -6,6 +6,7 @@ import (
 	"testing"
 	"time"
 
+	"git.unistra.fr/AOEINT/server/constants"
 	cst "git.unistra.fr/AOEINT/server/constants"
 	d "git.unistra.fr/AOEINT/server/data"
 )
@@ -62,6 +63,9 @@ func TestAutoFight(t *testing.T) {
 	(&g).GenerateMap(data)
 	player1 := g.GetPlayerFromUID(cst.PlayerUID1)
 	player2 := g.GetPlayerFromUID(cst.PlayerUID2)
+	pnj1 := player1.GetPointerNpc(0)
+	pnj2 := player2.GetPointerNpc(5)
+	log.Println("-------------------Before fight-------------------")
 	player1.EntityListMutex.RLock()
 	log.Println("Player 1")
 	for _, pnj := range player1.GetEntities() {
@@ -83,21 +87,19 @@ func TestAutoFight(t *testing.T) {
 			pnj.GetType(), pnj.GetPv(), pnj.GetX(), pnj.GetY())
 	}
 	player2.EntityListMutex.RUnlock()
+	log.Println("-------------------Start movement-------------------")
 	var wg sync.WaitGroup
 	wg.Add(1)
-	player1.GetPointerNpc(0).MoveTo(g.Carte, 11, 7, &wg)
+	pnj1.MoveTo(g.Carte, 11, 7, &wg)
 	// Wait for moveTo to finish
 	wg.Wait()
+	log.Println("-------------------During fight-------------------")
 	// Wait for the fight to finish
 	time.Sleep(time.Duration(time.Millisecond * 5550))
 	//(&g).DeleteNpc(player1.GetPointerNpc(2))
-	player1.EntityListMutex.RLock()
-	player2.EntityListMutex.RLock()
-	if player2.GetPointerNpc(5) != nil && player1.GetPointerNpc(0) != nil {
+	if pnj2 != nil && pnj1 != nil {
 		t.Error("au moins un des deux npc devrait etre mort")
 	}
-	player2.EntityListMutex.RUnlock()
-	player1.EntityListMutex.RUnlock()
 	log.Println("-------------------After fight-------------------")
 	//error := 0.
 	log.Println("Player 1")
@@ -139,6 +141,9 @@ func TestMoveTargetNpc(t *testing.T) {
 	(&g).GenerateMap(data)
 	player1 := g.GetPlayerFromUID(cst.PlayerUID1)
 	player2 := g.GetPlayerFromUID(cst.PlayerUID2)
+	pnj1 := player1.GetPointerNpc(0)
+	pnj2 := player2.GetPointerNpc(5)
+	log.Println("-------------------Before fight-------------------")
 	player1.EntityListMutex.RLock()
 	log.Println("Player 1")
 	for _, pnj := range player1.GetEntities() {
@@ -159,29 +164,46 @@ func TestMoveTargetNpc(t *testing.T) {
 		log.Printf("type %v  a : %v pv et est à la position (%v, %v) ",
 			pnj.GetType(), pnj.GetPv(), pnj.GetX(), pnj.GetY())
 	}
+	log.Printf("pnj 5 du player 2 (%v, %v)", pnj2.Get32X(), pnj2.Get32Y())
 	player2.EntityListMutex.RUnlock()
+
+	log.Println("-------------------Start movement-------------------")
 	var wg sync.WaitGroup
 	wg.Add(1)
-	go player1.GetPointerNpc(0).MoveTargetNpc(g.Carte, player2.GetPointerNpc(5), &wg)
+	go pnj1.MoveTargetNpc(g.Carte, pnj2, &wg)
 	// Wait for moveTarget to finish
 	wg.Wait()
-
+	if !pnj1.VerifyPos(pnj2.Get32X()-1, pnj2.Get32Y()-1) {
+		t.Error("mauvais emplacement du pnj1")
+		log.Printf("le pnj1 est à la pos (%v, %v)", pnj1.GetX(), pnj1.GetY())
+	}
+	log.Println("-------------------During fight-------------------")
 	// Start fight
 	time.Sleep(time.Duration(time.Millisecond * 1550))
+	if pnj2.GetPv() == constants.VillagerPv || pnj1.GetPv() == constants.VillagerPv {
+		t.Error("les deux pnj devrait avoir perdu des pv")
+	}
+	if pnj1 == nil || pnj2 == nil {
+		t.Error("les deux pnj ne devraient pas etre morts")
+	}
+	log.Printf("pnj 5 du player 2 (%v, %v)", pnj2.Get32X(), pnj2.Get32Y())
 	// MoveTo During fight
-	player1.GetPointerNpc(0).MoveTo(g.Carte, player2.GetPointerNpc(5).Get32X()-5., player2.GetPointerNpc(5).Get32Y()-2., nil)
+	log.Println("-------------------Pnj1 movement-------------------")
+	wg.Add(1)
+	pnj1.MoveTo(g.Carte, pnj2.Get32X()-3, pnj2.Get32Y()-3., &wg)
+	wg.Wait()
+	//Verify pnj1 position
+	if !pnj1.VerifyPos(pnj2.Get32X()-3, pnj2.Get32Y()-3) {
+		t.Error("mauvaise position du pnj1")
+		log.Printf("le pnj1 est à la pos (%v, %v)", pnj1.GetX(), pnj1.GetY())
+	}
 	// Wait for the fight to finish
 	time.Sleep(time.Duration(time.Millisecond * 4550))
 	//(&g).DeleteNpc(player1.GetPointerNpc(2))
-	player1.EntityListMutex.RLock()
-	player2.EntityListMutex.RLock()
-	if player2.GetPointerNpc(5) != nil && player1.GetPointerNpc(0) != nil {
+	log.Println("-------------------After fight-------------------")
+	if pnj2 != nil && pnj1 != nil {
 		t.Error("au moins un des deux npc devrait etre mort")
 	}
-	player2.EntityListMutex.RUnlock()
-	player1.EntityListMutex.RUnlock()
-	log.Println("-------------------After fight-------------------")
-	//error := 0.
 	log.Println("Player 1")
 	player1.EntityListMutex.RLock()
 	for i, pnj := range (*player1).GetEntities() {
@@ -221,20 +243,25 @@ func TestMoveTargetBuilding(t *testing.T) {
 	(&g).GenerateMap(data)
 	player1 := g.GetPlayerFromUID(cst.PlayerUID1)
 	player2 := g.GetPlayerFromUID(cst.PlayerUID2)
+	pnj1 := player1.GetPointerNpc(5)
+	building1 := player2.GetPointerBuilding(0)
+	log.Println("-------------------Before fight-------------------")
 	for i, building := range player2.GetBuildings() {
 		if building == nil {
 			continue
 		}
 		log.Printf("Le batiment numero %v a la position (%v, %v)", i, building.GetX(), building.GetY())
 	}
+	log.Println("-------------------Start movement-------------------")
 	var wg sync.WaitGroup
 	wg.Add(1)
-	if player1.GetPointerNpc(5) == nil || player2.GetPointerBuilding(0) == nil {
+	if pnj1 == nil || building1 == nil {
 		t.Error("le batiment ou le npc n'existe pas")
 	}
-	go player1.GetPointerNpc(5).MoveTargetBuilding(g.Carte, player2.GetPointerBuilding(20), &wg)
+	go pnj1.MoveTargetBuilding(g.Carte, player2.GetPointerBuilding(20), &wg)
 	// Wait for moveTarget to finish
 	wg.Wait()
+	log.Println("-------------------During fight-------------------")
 	// Wait for the fight to begin
 	time.Sleep(time.Duration(time.Millisecond * 5150))
 	log.Println("-------------------After fight-------------------")
