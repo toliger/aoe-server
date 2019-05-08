@@ -531,7 +531,9 @@ func (pnj *Npc) MoveTargetNpc(c carte.Carte, target *Npc, wg *sync.WaitGroup) {
 	distance := 2000
 
 	if target == nil || pnj.PlayerUUID == target.PlayerUUID {
-		wg.Done()
+		if wg != nil{
+			wg.Done()
+		}
 		return
 	}
 
@@ -565,7 +567,9 @@ func (pnj *Npc) MoveTargetBuilding(c carte.Carte, target *batiment.Batiment, wg 
 	distance := 2000
 
 	if target == nil || pnj.PlayerUUID == target.GetPlayerUID() {
-		wg.Done()
+		if (wg != nil){
+			wg.Done()
+		}
 		log.Print("meme uuid")
 		return
 	}
