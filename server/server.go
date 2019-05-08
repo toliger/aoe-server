@@ -3,6 +3,7 @@
 package server
 
 import (
+	"sync/atomic"
 	"context"
 	"errors"
 	"fmt"
@@ -165,7 +166,7 @@ func (s *Arguments) RightClick(ctx context.Context, in *pb.RightClickRequest) (*
 				data.AjoutConcurrent(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "destX", "-1")
 				data.AjoutConcurrent(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "destY", "-1")
 			}*/
-
+			atomic.StoreInt32(entity.(*npc.Npc).MovingOrder,1)
 			go entity.(*npc.Npc).MoveTo(s.g.Carte, in.Point.X, in.Point.Y, nil)
 			
 		}

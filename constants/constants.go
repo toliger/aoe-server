@@ -147,16 +147,16 @@ const PrixStoneAuberge = -1
 const PrixWoodAuberge = -1
 
 //PrixStoneCaserne cout caserne en stone
-const PrixStoneCaserne = 5
+const PrixStoneCaserne = 50
 
 //PrixWoodCaserne cout caserne en bois
-const PrixWoodCaserne = 5
+const PrixWoodCaserne = 50
 
 //PrixStoneEtabli cout etabli en stone
 const PrixStoneEtabli = 0
 
 //PrixWoodEtabli cout etabli en bois
-const PrixWoodEtabli = 5
+const PrixWoodEtabli = 50
 
 //DataRecup consts
 var (

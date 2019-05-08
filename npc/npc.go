@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"sync"
 	"time"
-
+	"sync/atomic"
 	"git.unistra.fr/AOEINT/server/batiment"
 	"git.unistra.fr/AOEINT/server/carte"
 	"git.unistra.fr/AOEINT/server/constants"
@@ -37,8 +37,9 @@ type Npc struct {
 	hasOrder         bool            //Si un déplacement a dejà été demandé par le joueur (disable auto movement)
 	active           *safeNumberBool // True if active, false if inactive
 	PlayerUUID       string
-	moveAction       map[int](chan bool)
-	wgAction         *sync.WaitGroup
+	MoveAction       map[int](chan bool)
+	wgAction	*sync.WaitGroup
+	MovingOrder	*int32
 }
 
 type safeNumberBool struct {
@@ -66,7 +67,8 @@ func New(x *safeNumberFloat, y *safeNumberFloat, pv *safeNumberInt, vitesse int,
 	sfXD.val = x.get()
 	sfYD := &safeNumberFloat{}
 	sfYD.val = y.get()
-	pnj := Npc{x, y, sfXD, sfYD, pv, vitesse, vue, portee, offensive, size, damage, tauxRecolte, selectable, typ, flag, *channel, false, active, "", moveA, &wgA}
+	val:=int32(0)
+	pnj := Npc{x, y, sfXD, sfYD, pv, vitesse, vue, portee, offensive, size, damage, tauxRecolte, selectable, typ, flag, *channel, false, active, "", moveA, &wgA,&val}
 	return pnj
 }
 
@@ -318,16 +320,17 @@ func (pnj Npc) SetActive(val bool) {
 func (pnj *Npc) actualizeMoveAction(moveA *chan bool) {
 	pnj.wgAction.Add(1)
 	// Cancel the old movement
-	index := len(pnj.moveAction) - 1
+	index := len(pnj.MoveAction) - 1
+	log.Println("i="+strconv.Itoa(index))
 	if index == -1 {
-		pnj.moveAction[index+1] = *moveA
+		pnj.MoveAction[index+1] = *moveA
 		pnj.wgAction.Done()
 		return
 	}
-	pnj.moveAction[index] <- true
-	pnj.moveAction[index] <- true
-	delete(pnj.moveAction, index)
-	pnj.moveAction[index] = *moveA
+	pnj.MoveAction[index] <- true
+	pnj.MoveAction[index] <- true
+	delete(pnj.MoveAction, index)
+	pnj.MoveAction[index] = *moveA
 	pnj.wgAction.Done()
 }
 
@@ -340,6 +343,7 @@ func (pnj *Npc) deplacement(path []carte.Case, wg *sync.WaitGroup) {
 		ndep := len(path) - 1
 		vdep := (1000000000 / pnj.vitesse)
 		for i := 0; i <= ndep; i++ {
+			pnj.SetActive(true)
 			select {
 			case <-moveA:
 				log.Println("moveA")
@@ -350,6 +354,7 @@ func (pnj *Npc) deplacement(path []carte.Case, wg *sync.WaitGroup) {
 				pnj.SetDestY(pnj.GetY())
 				pnj.Transmit(data.IDMap.GetIDFromObject(pnj), constants.ActionAlterationNpc)
 				pnj.SetActive(false)
+				atomic.StoreInt32(pnj.MovingOrder,0)
 				return
 			default:
 				time.Sleep(time.Duration(vdep))
@@ -362,6 +367,7 @@ func (pnj *Npc) deplacement(path []carte.Case, wg *sync.WaitGroup) {
 		}
 		pnj.SetActive(false)
 	}
+	atomic.StoreInt32(pnj.MovingOrder,0)
 }
 
 //MoveTo : move a npc from his position(x,y) to another position(x,y)

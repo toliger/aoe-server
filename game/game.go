@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"sync/atomic"
 	"time"
 	"strconv"
 	"git.unistra.fr/AOEINT/server/batiment"
@@ -145,7 +146,9 @@ func (g *Game) LaunchAutomaticFight() {
 								} else {
 									buildingToFight := p.IsThereBuildingInRange(pnj)
 									if buildingToFight != nil {
-										go pnj.StaticFightBuilding(buildingToFight)
+										if atomic.LoadInt32(pnj.MovingOrder)!=1{
+											go pnj.StaticFightBuilding(buildingToFight)
+										}
 									}
 								}
 							}
@@ -242,15 +245,6 @@ func (g *Game) GenerateMap(data Data) {
 			}
 		}
 	}
-	//ajout de npc pour tester le combat
-	// (*g).Joueurs[0].AddAndCreateNpc("villager", 0, 0)
-	// (*g).Joueurs[0].AddAndCreateNpc("villager", 0, 0)
-	//
-	// (*g).Joueurs[1].AddAndCreateNpc("villager", 0, 1)
-	// (*g).Joueurs[0].AddAndCreateNpc("villager", 15, 15)
-	// (*g).Joueurs[1].AddAndCreateNpc("villager", 15, 16)
-	// (*g).Joueurs[0].AddAndCreateNpc("villager", 30, 31)
-	// (*g).Joueurs[1].AddAndCreateNpc("villager", 31, 30)
 	(*g).Joueurs[0].AddAndCreateNpc("soldier", 5, 5)
 	(*g).Joueurs[1].AddAndCreateNpc("soldier", g.Carte.GetSize()/5-5, g.Carte.GetSize()/5-5)
 
