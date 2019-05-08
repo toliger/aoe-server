@@ -344,6 +344,7 @@ func (s *Arguments) Authentificate(ctx context.Context, in *pb.AuthentificateReq
 	if err !=nil{
 		s.g.EndOfGame()
 	}
+	log.Println("id API: ",idfromGID)
 	for _,str :=range idfromGID{
 		if str == id.UID{
 			test = true
