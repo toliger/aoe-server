@@ -332,13 +332,3 @@ func (s *Arguments) AskCreation(ctx context.Context, in *pb.AskCreationRequest) 
 
 	return &pb.AskCreationReply{Validation: true}, nil
 }
-
-// Authentificate :
-// Function of authentification and creation of player
-func (s *Arguments) Authentificate(ctx context.Context, in *pb.AuthentificateRequest) (*pb.AuthentificateReply, error) {
-
-	// For Debug Mode
-	utils.Debug("Reception d'un AuthentificateRequest et envoie d'un AuthentificateReply")
-
-	return &pb.AuthentificateReply{IsAuthentificate: true}, nil
-}
