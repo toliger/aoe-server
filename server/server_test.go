@@ -7,6 +7,7 @@ import (
 	"time"
 	"context"
 	"testing"
+	"git.unistra.fr/AOEINT/server/game"
 	"git.unistra.fr/AOEINT/server/data"
 	pb "git.unistra.fr/AOEINT/server/grpc"
 	"google.golang.org/grpc"
@@ -43,8 +44,11 @@ func TestSayHello(t *testing.T) {
 func TestRightClick(t *testing.T) {
 	
 	var err error
-
-	s := Arguments{}
+	s := Arguments{
+		g: &game.Game{
+			GameInitialisationTime: 1,
+		},
+	}
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
