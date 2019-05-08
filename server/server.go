@@ -137,7 +137,10 @@ func (s *Arguments) RightClick(ctx context.Context, in *pb.RightClickRequest) (*
 			if entity == nil {
 				msg := "Erreur, une entity n'est pas trouvé dans RightClick"
 				log.Println(msg)
-				return &pb.RightClickReply{}, errors.New(msg)
+				//return &pb.RightClickReply{}, errors.New(msg)
+				log.Println("on tue l'entité fausse coté client...")
+				data.AjoutConcurrent(constants.ActionDelNpc, in.EntitySelectionUUID[i], "useless", "useless")
+				continue
 			}
 
 			// Verify if the asker can move the NPC
