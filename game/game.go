@@ -1,13 +1,14 @@
 package game
 
 import (
-	"encoding/json"
-	"io/ioutil"
-	"log"
 	"os"
-	"strconv"
-	"sync/atomic"
+	"log"
 	"time"
+	"strconv"
+	"net/http"
+	"io/ioutil"
+	"sync/atomic"
+	"encoding/json"
 
 	"git.unistra.fr/AOEINT/server/batiment"
 	Carte "git.unistra.fr/AOEINT/server/carte"
@@ -206,6 +207,13 @@ func (g *Game) BrokenBuildingsCollector() {
 						g.DeleteBuilding(bat)
 						log.Println("bat " + strconv.Itoa(key) + " destroyed")
 						if typ == 0 { //Auberge
+							for i := range g.Joueurs {
+								if g.Joueurs[i].GetFaction() == player.GetFaction() {
+									http.Get("https://ranking.api.archisme.com/v1/ranking/addgame/"+ g.Joueurs[i].UID +"/2")
+								} else {
+									http.Get("https://ranking.api.archisme.com/v1/ranking/addgame/"+ g.Joueurs[i].UID +"/1")
+								}
+							}
 							g.EndOfGame()
 						}
 					}
@@ -219,6 +227,7 @@ func (g *Game) BrokenBuildingsCollector() {
 func (g *Game) EndOfGame() {
 	log.Println("Fin du jeu")
 	data.AjoutConcurrent(constants.ActionEndOfGame, "useless", "useless", "useless")
+	http.Get("https://game.api.archisme.com/v1/game/free/"+ constants.GameUUID)
 	(*g).GameRunning <- true
 }
 
@@ -232,6 +241,9 @@ func (g *Game) GameLoop() {
 			case <-uptimeTicker.C:
 				g.GameTimeLeft--
 				if g.GameTimeLeft==0 {
+					for i := range g.Joueurs {
+						http.Get("https://ranking.api.archisme.com/v1/ranking/addgame/"+ g.Joueurs[i].UID +"/0")
+					}
 					g.EndOfGame()
 				}
 		}
