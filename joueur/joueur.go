@@ -154,14 +154,14 @@ func (j Joueur) GetPointerNpcByPos(x int, y int) *npc.Npc {
 }
 
 //DeleteNpcFromList retire un pnj de la liste du joueur
-func (j *Joueur) DeleteNpcFromList(x float64, y float64, typ int, pv int, id string) bool {
+func (j *Joueur) DeleteNpcFromList(x float32, y float32, typ int, pv int, id string) bool {
 	j.EntityListMutex.RLock()
 	index := -1
 	for i := range j.entities {
 		if j.entities[i] == nil {
 			continue
 		}
-		if j.entities[i].Get64X() == x && j.entities[i].Get64Y() == y && j.entities[i].GetType() == typ && j.entities[i].GetPv() == pv {
+		if j.entities[i].Get32X() == x && j.entities[i].Get32Y() == y && j.entities[i].GetType() == typ && j.entities[i].GetPv() == pv {
 			if data.IDMap.GetIDFromObject(j.entities[i]) == id {
 				index = i
 				break
@@ -190,12 +190,12 @@ func (j *Joueur) DeleteBatimentFromList(x int, y int, typ int) bool {
 		return false
 	}
 	for i := range j.batiments {
-		if j.batiments[i]!=nil{
+		if j.batiments[i] != nil {
 			if j.batiments[i].X == x && j.batiments[i].Y == y && j.batiments[i].Typ == typ {
 				j.batiments[i] = nil
 				return true
 			}
-		}	
+		}
 	}
 	return false
 }
@@ -222,7 +222,7 @@ func (j *Joueur) AddFood(f int) {
 func (j *Joueur) AddBuilding(b *batiment.Batiment) {
 	b.SetPlayerUID(j.UID)
 	(*j).batiments = append(j.batiments, b)
-	b.PlayerUID=j.GetUID()
+	b.PlayerUID = j.GetUID()
 }
 
 //AddNpc : add a new NPC to the player
@@ -243,7 +243,7 @@ func (j *Joueur) AddNpc(entity *npc.Npc) {
 
 //AddAndCreateNpc : create and add a new NPC to the player
 func (j *Joueur) AddAndCreateNpc(class string, x int, y int) {
-	entity, id := npc.Create(class, float64(x), float64(y), j.faction, &j.ressourceChannel)
+	entity, id := npc.Create(class, float32(x), float32(y), j.faction, &j.ressourceChannel)
 	j.AddNpc(entity)
 	entity.Transmit(id, constants.ActionNewNpc)
 }
@@ -287,14 +287,14 @@ func (j *Joueur) AddAndCreateNpcByBuilding(c *carte.Carte, bat *batiment.Batimen
 	}
 	switch bat.GetType() {
 	case 0:
-		entity, id := npc.Create("villager", float64(x), float64(y), j.faction, &j.ressourceChannel)
+		entity, id := npc.Create("villager", float32(x), float32(y), j.faction, &j.ressourceChannel)
 		j.AddNpc(entity)
 		entity.Transmit(id, constants.ActionNewNpc)
 		tabRessources := make([]int, 3) //0 bois 1 pierre 2 nourriture
 		tabRessources[2] = -(constants.VillagerFoodCost)
 		j.ressourceChannel <- tabRessources
 	case 1:
-		entity, id := npc.Create("soldier", float64(x), float64(y), j.faction, &j.ressourceChannel)
+		entity, id := npc.Create("soldier", float32(x), float32(y), j.faction, &j.ressourceChannel)
 		j.AddNpc(entity)
 		entity.Transmit(id, constants.ActionNewNpc)
 		tabRessources := make([]int, 3) //0 bois 1 pierre 2 nourriture
@@ -302,7 +302,7 @@ func (j *Joueur) AddAndCreateNpcByBuilding(c *carte.Carte, bat *batiment.Batimen
 		tabRessources[0] = -(constants.SoldierWoodCost)
 		j.ressourceChannel <- tabRessources
 	case 2:
-		entity, id := npc.Create("harvester", float64(x), float64(y), j.faction, &j.ressourceChannel)
+		entity, id := npc.Create("harvester", float32(x), float32(y), j.faction, &j.ressourceChannel)
 		j.AddNpc(entity)
 		entity.Transmit(id, constants.ActionNewNpc)
 		tabRessources := make([]int, 3) //0 bois 1 pierre 2 nourriture
@@ -345,8 +345,8 @@ func (j *Joueur) IsThereBuildingInRange(pnj *npc.Npc) *batiment.Batiment {
 		}
 		for x := pnj.GetX() - pnj.GetPortee(); x <= pnj.GetX()+pnj.GetPortee(); x++ {
 			for y := pnj.GetY() - pnj.GetPortee(); y <= pnj.GetY()+pnj.GetPortee(); y++ {
-				if((*j).batiments[i]!=nil){
-					if (*j).batiments[i].GetX()==x && j.batiments[i].GetY()==y {
+				if (*j).batiments[i] != nil {
+					if (*j).batiments[i].GetX() == x && j.batiments[i].GetY() == y {
 						return (*j).batiments[i]
 					}
 				}

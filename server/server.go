@@ -3,13 +3,13 @@
 package server
 
 import (
-	"sync/atomic"
 	"context"
 	"errors"
 	"fmt"
 	"log"
 	"net"
 	"reflect"
+	"sync/atomic"
 
 	"git.unistra.fr/AOEINT/server/constants"
 	"git.unistra.fr/AOEINT/server/data"
@@ -97,12 +97,12 @@ func (s *Arguments) SecretKill(ctx context.Context, in *pb.SecretKillRequest) (*
 
 	secret := utils.Getenv("SECRETSTOP", "paul")
 
-	if (secret == in.Sentence) {
+	if secret == in.Sentence {
 		s.g.EndOfGame()
 	} else {
 		utils.Debug("Phrase secret érroné")
 	}
-	
+
 	return &pb.SecretKillReply{}, nil
 }
 
@@ -127,7 +127,7 @@ func (s *Arguments) RightClick(ctx context.Context, in *pb.RightClickRequest) (*
 		log.Print(msg)
 		return &pb.RightClickReply{}, errors.New(msg)
 	}
-	
+
 	if in.Target == "" { // MoveTo request
 		// Loop on each entity
 		for i := 0; i < len(in.EntitySelectionUUID); i++ {
@@ -166,9 +166,9 @@ func (s *Arguments) RightClick(ctx context.Context, in *pb.RightClickRequest) (*
 				data.AjoutConcurrent(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "destX", "-1")
 				data.AjoutConcurrent(constants.ActionAlterationNpc, in.EntitySelectionUUID[i], "destY", "-1")
 			}*/
-			atomic.StoreInt32(entity.(*npc.Npc).MovingOrder,1)
+			atomic.StoreInt32(entity.(*npc.Npc).MovingOrder, 1)
 			go entity.(*npc.Npc).MoveTo(s.g.Carte, in.Point.X, in.Point.Y, nil)
-			
+
 		}
 
 	} else { // Attack request
@@ -213,9 +213,7 @@ func (s *Arguments) RightClick(ctx context.Context, in *pb.RightClickRequest) (*
 				return &pb.RightClickReply{}, errors.New(msg)
 			}
 		}
-
 	}
-
 	return &pb.RightClickReply{}, nil
 }
 
@@ -251,9 +249,9 @@ func (s *Arguments) AskUpdate(ctx context.Context, in *pb.AskUpdateRequest) (*pb
 			}
 		}
 	} else {
-		log.Print("PlayerUUID invalide dans AskUpdate: ",playerUUID.UID)
+		log.Print("PlayerUUID invalide dans AskUpdate: ", playerUUID.UID)
 		log.Print("wanted:")
-		for key:=range data.ActionBuffer{
+		for key := range data.ActionBuffer {
 			log.Print(key)
 		}
 		return &pb.AskUpdateReply{Array: nil}, nil
@@ -320,7 +318,7 @@ func (s *Arguments) AskCreation(ctx context.Context, in *pb.AskCreationRequest) 
 		player := s.g.GetPlayerFromUID(playerUUID.UID)
 		b := batiment.Create(class, int(in.Case.X), int(in.Case.Y))
 		player.AddBuilding(&b)
-		log.Println("création du batiment du joueur: ",b.GetPlayerUID())
+		log.Println("création du batiment du joueur: ", b.GetPlayerUID())
 		if s.g.Carte.AddNewBuilding(&b) != true {
 			log.Print("Erreur, peut pas créer un batiment dans AskCreation")
 			return &pb.AskCreationReply{Validation: false}, nil
@@ -335,7 +333,7 @@ func (s *Arguments) AskCreation(ctx context.Context, in *pb.AskCreationRequest) 
 	return &pb.AskCreationReply{Validation: true}, nil
 }
 
-// Authentificate : 
+// Authentificate :
 // Function of authentification and creation of player
 func (s *Arguments) Authentificate(ctx context.Context, in *pb.AuthentificateRequest) (*pb.AuthentificateReply, error) {
 

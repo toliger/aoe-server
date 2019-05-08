@@ -6,8 +6,9 @@ import (
 	"math"
 	"strconv"
 	"sync"
-	"time"
 	"sync/atomic"
+	"time"
+
 	"git.unistra.fr/AOEINT/server/batiment"
 	"git.unistra.fr/AOEINT/server/carte"
 	"git.unistra.fr/AOEINT/server/constants"
@@ -38,8 +39,8 @@ type Npc struct {
 	active           *safeNumberBool // True if active, false if inactive
 	PlayerUUID       string
 	MoveAction       map[int](chan bool)
-	wgAction	*sync.WaitGroup
-	MovingOrder	*int32
+	wgAction         *sync.WaitGroup
+	MovingOrder      *int32
 }
 
 type safeNumberBool struct {
@@ -48,7 +49,7 @@ type safeNumberBool struct {
 }
 
 type safeNumberFloat struct {
-	val float64
+	val float32
 	m   sync.Mutex
 }
 
@@ -67,13 +68,13 @@ func New(x *safeNumberFloat, y *safeNumberFloat, pv *safeNumberInt, vitesse int,
 	sfXD.val = x.get()
 	sfYD := &safeNumberFloat{}
 	sfYD.val = y.get()
-	val:=int32(0)
-	pnj := Npc{x, y, sfXD, sfYD, pv, vitesse, vue, portee, offensive, size, damage, tauxRecolte, selectable, typ, flag, *channel, false, active, "", moveA, &wgA,&val}
+	val := int32(0)
+	pnj := Npc{x, y, sfXD, sfYD, pv, vitesse, vue, portee, offensive, size, damage, tauxRecolte, selectable, typ, flag, *channel, false, active, "", moveA, &wgA, &val}
 	return pnj
 }
 
 //Create : generate a new NPC
-func Create(class string, x float64, y float64, flag int, channel *chan []int) (*Npc, string) {
+func Create(class string, x float32, y float32, flag int, channel *chan []int) (*Npc, string) {
 	var pnj Npc
 	sfPv := &safeNumberInt{}
 	sfX := &safeNumberFloat{}
@@ -104,8 +105,8 @@ func (pnj Npc) Stringify(typ int) map[string]string {
 	switch typ {
 	case constants.ActionNewNpc:
 		res["pv"] = strconv.Itoa(pnj.GetPv())
-		res["x"] = fmt.Sprintf("%f", pnj.Get64X())
-		res["y"] = fmt.Sprintf("%f", pnj.Get64Y())
+		res["x"] = fmt.Sprintf("%f", pnj.Get32X())
+		res["y"] = fmt.Sprintf("%f", pnj.Get32Y())
 		res["vitesse"] = strconv.Itoa(pnj.vitesse)
 		res["type"] = strconv.Itoa(pnj.typ)
 		res["damage"] = strconv.Itoa(pnj.damage)
@@ -116,10 +117,10 @@ func (pnj Npc) Stringify(typ int) map[string]string {
 		res["PlayerUUID"] = pnj.PlayerUUID
 	case constants.ActionAlterationNpc:
 		res["pv"] = strconv.Itoa(pnj.GetPv())
-		res["x"] = fmt.Sprintf("%f", pnj.Get64X())
-		res["y"] = fmt.Sprintf("%f", pnj.Get64Y())
-		res["destX"] = fmt.Sprintf("%f", pnj.Get64DestX())
-		res["destY"] = fmt.Sprintf("%f", pnj.Get64DestY())
+		res["x"] = fmt.Sprintf("%f", pnj.Get32X())
+		res["y"] = fmt.Sprintf("%f", pnj.Get32Y())
+		res["destX"] = fmt.Sprintf("%f", pnj.Get32DestX())
+		res["destY"] = fmt.Sprintf("%f", pnj.Get32DestY())
 		res["vitesse"] = strconv.Itoa(pnj.vitesse)
 		res["vue"] = strconv.Itoa(pnj.vue)
 		res["portee"] = strconv.Itoa(pnj.portee)
@@ -136,7 +137,7 @@ func (pnj Npc) Transmit(id string, typ int) {
 	}
 }
 
-func (i *safeNumberFloat) get() float64 {
+func (i *safeNumberFloat) get() float32 {
 	i.m.Lock()
 	defer i.m.Unlock()
 	return i.val
@@ -160,7 +161,7 @@ func (i *safeNumberInt) set(val int) {
 	i.val = val
 }
 
-func (i *safeNumberFloat) set(val float64) {
+func (i *safeNumberFloat) set(val float32) {
 	i.m.Lock()
 	defer i.m.Unlock()
 	i.val = val
@@ -172,7 +173,7 @@ func (i *safeNumberBool) set(val bool) {
 	i.val = val
 }
 
-func (i *safeNumberFloat) sub(val float64) {
+func (i *safeNumberFloat) sub(val float32) {
 	i.m.Lock()
 	defer i.m.Unlock()
 	i.val -= val
@@ -209,81 +210,81 @@ func (pnj *Npc) SubPv(val int) {
 
 //GetX : return the position X
 func (pnj Npc) GetX() int {
-	return int(math.Floor(pnj.x.get()))
+	return int(math.Floor(float64(pnj.x.get())))
 }
 
-//Get64X : return float64 position X
-func (pnj Npc) Get64X() float64 {
+//Get32X : return float32 position X
+func (pnj Npc) Get32X() float32 {
 	return pnj.x.get()
 }
 
 //SetX : set the npc's X value
 func (pnj *Npc) SetX(val int) {
-	pnj.x.set(float64(val))
+	pnj.x.set(float32(val))
 }
 
-//Set64X : set the npc's Y value
-func (pnj *Npc) Set64X(val float64) {
+//Set32X : set the npc's Y value
+func (pnj *Npc) Set32X(val float32) {
 	pnj.x.set(val)
 }
 
 //GetY : return the position Y
 func (pnj Npc) GetY() int {
-	return int(math.Floor(pnj.y.get()))
+	return int(math.Floor(float64(pnj.y.get())))
 }
 
-//Get64Y : return the position Y
-func (pnj Npc) Get64Y() float64 {
+//Get32Y : return the position Y
+func (pnj Npc) Get32Y() float32 {
 	return pnj.y.get()
 }
 
 //SetY : set the npc's Y value
 func (pnj *Npc) SetY(val int) {
-	pnj.y.set(float64(val))
+	pnj.y.set(float32(val))
 }
 
-//Set64Y : set the npc's Y value
-func (pnj *Npc) Set64Y(val float64) {
+//Set32Y : set the npc's Y value
+func (pnj *Npc) Set32Y(val float32) {
 	pnj.y.set(val)
 }
 
 //GetDestX : return the position X
 func (pnj Npc) GetDestX() int {
-	return int(math.Floor(pnj.dextX.get()))
+	return int(math.Floor(float64(pnj.dextX.get())))
 }
 
-//Get64DestX : return float64 position X
-func (pnj Npc) Get64DestX() float64 {
+//Get32DestX : return float32 position X
+func (pnj Npc) Get32DestX() float32 {
 	return pnj.dextX.get()
 }
 
 //SetDestX : set the npc's X value
 func (pnj *Npc) SetDestX(val int) {
-	pnj.dextX.set(float64(val))
+	pnj.dextX.set(float32(val))
 }
 
-//Set64DestX : set the npc's Y value
-func (pnj *Npc) Set64DestX(val float64) {
+//Set32DestX : set the npc's Y value
+func (pnj *Npc) Set32DestX(val float32) {
 	pnj.dextX.set(val)
 }
 
 //GetDestY : return the position Y
 func (pnj Npc) GetDestY() int {
-	return int(math.Floor(pnj.destY.get()))
+	return int(math.Floor(float64(pnj.destY.get())))
 }
 
-//Get64DestY : return the position Y
-func (pnj Npc) Get64DestY() float64 {
+//Get32DestY : return the position Y
+func (pnj Npc) Get32DestY() float32 {
 	return pnj.destY.get()
 }
 
 //SetDestY : set the npc's Y value
 func (pnj *Npc) SetDestY(val int) {
-	pnj.destY.set(float64(val))
+	pnj.destY.set(float32(val))
 }
 
-//Set64DestY : set the npc's Y value
-func (pnj *Npc) Set64DestY(val float64) {
+//Set32DestY : set the npc's Y value
+func (pnj *Npc) Set32DestY(val float32) {
 	pnj.destY.set(val)
 }
 
@@ -321,7 +322,7 @@ func (pnj *Npc) actualizeMoveAction(moveA *chan bool) {
 	pnj.wgAction.Add(1)
 	// Cancel the old movement
 	index := len(pnj.MoveAction) - 1
-	log.Println("i="+strconv.Itoa(index))
+	log.Println("i=" + strconv.Itoa(index))
 	if index == -1 {
 		pnj.MoveAction[index+1] = *moveA
 		pnj.wgAction.Done()
@@ -354,7 +355,7 @@ func (pnj *Npc) deplacement(path []carte.Case, wg *sync.WaitGroup) {
 				pnj.SetDestY(pnj.GetY())
 				pnj.Transmit(data.IDMap.GetIDFromObject(pnj), constants.ActionAlterationNpc)
 				pnj.SetActive(false)
-				atomic.StoreInt32(pnj.MovingOrder,0)
+				atomic.StoreInt32(pnj.MovingOrder, 0)
 				return
 			default:
 				time.Sleep(time.Duration(vdep))
@@ -367,7 +368,7 @@ func (pnj *Npc) deplacement(path []carte.Case, wg *sync.WaitGroup) {
 		}
 		pnj.SetActive(false)
 	}
-	atomic.StoreInt32(pnj.MovingOrder,0)
+	atomic.StoreInt32(pnj.MovingOrder, 0)
 }
 
 //MoveTo : move a npc from his position(x,y) to another position(x,y)
@@ -376,11 +377,11 @@ func (pnj *Npc) MoveTo(c carte.Carte, destx float32, desty float32, wg *sync.Wai
 	path = nil
 	if c.GetTile(int(destx), int(desty)).GetType() == 0 {
 		path = c.GetPathFromTo(pnj.GetX(), pnj.GetY(), int(destx), int(desty))
-		if len(path) > 0{
-			pnj.Set64DestX(float64(destx))
-			pnj.Set64DestY(float64(desty))
+		if len(path) > 0 {
+			pnj.Set32DestX(float32(destx))
+			pnj.Set32DestY(float32(desty))
 			//log.Println("Envoi type :",constants.ActionAlterationNpc, " id: ",pnj.PlayerUUID)
-			pnj.Transmit(data.IDMap.GetIDFromObject(pnj),constants.ActionAlterationNpc)
+			pnj.Transmit(data.IDMap.GetIDFromObject(pnj), constants.ActionAlterationNpc)
 		}
 		go pnj.deplacement(path, wg)
 	}
@@ -531,7 +532,7 @@ func (pnj *Npc) MoveTargetNpc(c carte.Carte, target *Npc, wg *sync.WaitGroup) {
 	distance := 2000
 
 	if target == nil || pnj.PlayerUUID == target.PlayerUUID {
-		if wg != nil{
+		if wg != nil {
 			wg.Done()
 		}
 		return
@@ -567,7 +568,7 @@ func (pnj *Npc) MoveTargetBuilding(c carte.Carte, target *batiment.Batiment, wg 
 	distance := 2000
 
 	if target == nil || pnj.PlayerUUID == target.GetPlayerUID() {
-		if (wg != nil){
+		if wg != nil {
 			wg.Done()
 		}
 		log.Print("meme uuid")
@@ -604,10 +605,10 @@ func (pnj *Npc) MoveFight(c carte.Carte, target *Npc, wg *sync.WaitGroup) {
 		log.Print("Le npc ciblé n'est pas dans la vue du npc")
 		return
 	}
-	if pnj.GetPv() == 0{
+	if pnj.GetPv() == 0 {
 		return
 	}
-	if target.GetPv() == 0{
+	if target.GetPv() == 0 {
 		pnj.SetActive(false)
 	}
 	//initialPosTargetX, initialPosTargetY := target.GetX(), target.GetY()
@@ -619,11 +620,11 @@ func (pnj *Npc) MoveFight(c carte.Carte, target *Npc, wg *sync.WaitGroup) {
 	distance := 2000
 
 	for i = target.GetX() - pnj.portee; i <= target.GetX()+pnj.portee; i++ {
-		if i < 0{
+		if i < 0 {
 			i = 0
 		}
 		for j = target.GetY() - pnj.portee; j <= target.GetY()+pnj.portee; j++ {
-			if j < 0{
+			if j < 0 {
 				j = 0
 			}
 			if (Abs(i-pnj.GetX())+Abs(j-pnj.GetY())) < distance && c.IsEmpty(i, j) {
@@ -660,11 +661,11 @@ func (pnj *Npc) MoveFight(c carte.Carte, target *Npc, wg *sync.WaitGroup) {
 				distance = 2000
 
 				for i = target.GetDestX() - pnj.portee; i <= target.GetDestX()+pnj.portee; i++ {
-					if i < 0{
+					if i < 0 {
 						i = 0
 					}
 					for j = target.GetDestY() - pnj.portee; j <= target.GetDestY()+pnj.portee; j++ {
-						if j < 0{
+						if j < 0 {
 							j = 0
 						}
 						if (Abs(i-pnj.GetX())+Abs(j-pnj.GetY())) < distance && c.IsEmpty(i, j) {
@@ -837,7 +838,7 @@ func (pnj *Npc) MoveHarvestTarget(c carte.Carte, ress *ressource.Ressource) {
 		log.Print("Un soldat ne peut pas recolter de ressources")
 		return
 	}
-	if ress.GetType() == 2 && pnj.GetType() != 0 {
+	if ress.GetType() == 2 && pnj.GetType() != 1 {
 		log.Print("Seul un harvester peut recolter de la pierre")
 		return
 	}
@@ -879,8 +880,8 @@ func (pnj *Npc) MoveHarvestTarget(c carte.Carte, ress *ressource.Ressource) {
 	// on attends que le villageois ait fini son déplacement
 	var wg sync.WaitGroup
 	wg.Add(1)
-	pnj.dextX.set(float64(posRecolteVillX))
-	pnj.destY.set(float64(posRecolteVillY))
+	pnj.dextX.set(float32(posRecolteVillX))
+	pnj.destY.set(float32(posRecolteVillY))
 	pnj.Transmit(data.IDMap.GetIDFromObject(pnj), constants.ActionAlterationNpc)
 	go pnj.MoveTo(c, float32(posRecolteVillX), float32(posRecolteVillY), &wg)
 	wg.Wait()

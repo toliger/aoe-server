@@ -5,9 +5,10 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"strconv"
 	"sync/atomic"
 	"time"
-	"strconv"
+
 	"git.unistra.fr/AOEINT/server/batiment"
 	Carte "git.unistra.fr/AOEINT/server/carte"
 	"git.unistra.fr/AOEINT/server/constants"
@@ -98,7 +99,7 @@ func (g *Game) DeleteNpc(pnj *npc.Npc) bool {
 		return false
 	}
 	//On retire le pnj de la liste des pnj du joueur
-	if !g.GetPlayerFromUID(pnj.PlayerUUID).DeleteNpcFromList(pnj.Get64X(), pnj.Get64Y(), pnj.GetType(), pnj.GetPv(), id) {
+	if !g.GetPlayerFromUID(pnj.PlayerUUID).DeleteNpcFromList(pnj.Get32X(), pnj.Get32Y(), pnj.GetType(), pnj.GetPv(), id) {
 		return false
 	}
 	//On retire le pnj de la liste des pnj du jeu
@@ -131,8 +132,8 @@ func (g *Game) LaunchAutomaticFight() {
 				if (*player).GetEntities() == nil {
 					continue
 				}
-				for _,pnj := range player.GetEntities(){
-					if pnj == nil{
+				for _, pnj := range player.GetEntities() {
+					if pnj == nil {
 						continue
 					}
 					if pnj.IsActive() == false {
@@ -146,7 +147,7 @@ func (g *Game) LaunchAutomaticFight() {
 								} else {
 									buildingToFight := p.IsThereBuildingInRange(pnj)
 									if buildingToFight != nil {
-										if atomic.LoadInt32(pnj.MovingOrder)!=1{
+										if atomic.LoadInt32(pnj.MovingOrder) != 1 {
 											go pnj.StaticFightBuilding(buildingToFight)
 										}
 									}
@@ -172,14 +173,14 @@ func (g *Game) BrokenBuildingsCollector() {
 					continue
 				}
 				for key, bat := range list {
-					if bat ==nil{
+					if bat == nil {
 						continue
 					}
 					if bat.GetPv() <= 0 {
-						typ:=bat.Typ
+						typ := bat.Typ
 						g.DeleteBuilding(bat)
-						log.Println("bat "+strconv.Itoa(key)+" destroyed")
-						if typ==0{ //Auberge
+						log.Println("bat " + strconv.Itoa(key) + " destroyed")
+						if typ == 0 { //Auberge
 							g.EndOfGame()
 						}
 					}
@@ -263,17 +264,17 @@ Modification: Changement pour des valeurs statiques (temporaire)
 */
 func (g *Game) GetPlayerData() {
 	(*g).Joueurs = make([]*joueur.Joueur, 2)
-	ids,err:=data.GetPlayersFromGID()
-	if err!=nil{
+	ids, err := data.GetPlayersFromGID()
+	if err != nil {
 		utils.Debug(err.Error())
 		os.Exit(1)
 	}
-	id1:= ids[0]
+	id1 := ids[0]
 	//id1:="907ff305-48da-4b1a-b262-aed1c10363f9"
-	utils.Debug("j1: "+id1)
-	id2:= ids[1]
+	utils.Debug("j1: " + id1)
+	id2 := ids[1]
 	//id2:= "4b462ba3-e594-4d47-aa9d-a9ebd1450db3"
-	utils.Debug("j2: "+id2)
+	utils.Debug("j2: " + id2)
 	j0 := joueur.Create(0, "Bob", id1)
 	j1 := joueur.Create(1, "Alice", id2)
 	(*g).Joueurs[0] = &j0

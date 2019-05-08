@@ -165,8 +165,13 @@ func TestMoveTargetNpc(t *testing.T) {
 	go player1.GetPointerNpc(0).MoveTargetNpc(g.Carte, player2.GetPointerNpc(5), &wg)
 	// Wait for moveTarget to finish
 	wg.Wait()
+
+	// Start fight
+	time.Sleep(time.Duration(time.Millisecond * 1550))
+	// MoveTo During fight
+	player1.GetPointerNpc(0).MoveTo(g.Carte, player2.GetPointerNpc(5).Get32X()-5., player2.GetPointerNpc(5).Get32Y()-2., nil)
 	// Wait for the fight to finish
-	time.Sleep(time.Duration(time.Millisecond * 5550))
+	time.Sleep(time.Duration(time.Millisecond * 4550))
 	//(&g).DeleteNpc(player1.GetPointerNpc(2))
 	player1.EntityListMutex.RLock()
 	player2.EntityListMutex.RLock()
