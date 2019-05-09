@@ -464,8 +464,7 @@ func (pnj *Npc) StaticFightNpc(target *Npc) {
 			target.Transmit(data.IDMap.GetIDFromObject(target), constants.ActionAlterationNpc)
 			// if (!target.IsActive() && !done){
 			// 	target.StaticFightBackNpc(pnj)
-			// 	done = true
-			// }
+			// 	done = true// }
 		}
 	}
 }
@@ -507,37 +506,6 @@ func (pnj *Npc) StaticFightBuilding(target *batiment.Batiment) {
 		}
 	}
 }
-
-//StaticFightBackNpc : The target fights back
-// func (pnj *Npc) StaticFightBackNpc(target *Npc) {
-// 	pnj.SetActive(true)
-// 	moveA := make(chan bool, 2)
-// 	time.Sleep(time.Duration(time.Millisecond * 10))
-// 	pnj.actualizeMoveAction(&moveA)
-// 	initialPosX, initialPosY := pnj.GetX(), pnj.GetY()
-// 	initialPosTargetX, initialPosTargetY := target.GetX(), target.GetY()
-// 	uptimeTicker := time.NewTicker(time.Duration(1 * time.Second))
-// 	for {
-// 		//The attacker is dead or moved
-// 		if pnj.GetPv() <= 0 || pnj.GetX() != initialPosX || pnj.GetY() != initialPosY {
-// 			return
-// 		}
-// 		//The target is dead or moved
-// 		if target.GetX() != initialPosTargetX || target.GetY() != initialPosTargetY || target.GetPv() <= 0 {
-// 			pnj.SetActive(false)
-// 			return
-// 		}
-//
-// 		select {
-// 		case <- moveA:
-// 			pnj.SetActive(false)
-// 			return
-// 		case <-uptimeTicker.C:
-// 			log.Printf("(%v, %v) : fight back(%v, %v)", pnj.GetX(),pnj.GetY(), target.GetX(),target.GetY())
-// 			target.SubPv(pnj.damage)
-// 		}
-// 	}
-// }
 
 //MoveTargetNpc : move to a target to be able to attack him
 func (pnj *Npc) MoveTargetNpc(c carte.Carte, target *Npc, wg *sync.WaitGroup) {
@@ -617,10 +585,9 @@ func (pnj *Npc) MoveTargetBuilding(c carte.Carte, target *batiment.Batiment, wg 
 * Both the aggressor and the target while fight and chase unless the player orders
 another action or loses vision of the other NPC
 */
-/*
 func (pnj *Npc) MoveFight(c carte.Carte, target *Npc, wg *sync.WaitGroup) {
 
-	if float32(pnj.GetVue())-(Abs(target.Get32X()-pnj.Get32X())+Abs(target.Get32Y()-pnj.Get32Y())) < constants.Epsilon {
+	if pnj.GetVue() < (Abs(target.GetX()-pnj.GetX()) + Abs(target.GetY()-pnj.GetY())) {
 		log.Print("Le npc ciblé n'est pas dans la vue du npc")
 		return
 	}
@@ -632,23 +599,23 @@ func (pnj *Npc) MoveFight(c carte.Carte, target *Npc, wg *sync.WaitGroup) {
 	}
 	//initialPosTargetX, initialPosTargetY := target.GetX(), target.GetY()
 	initialTargetDestX, initialTargetDestY := target.GetDestX(), target.GetDestY()
-	var posFightPnjX, posFightPnjY float32
+	var posFightPnjX, posFightPnjY int
 
-	var i, j float32
+	var i, j int
 
-	var distance float32
+	var distance int
 	distance = 2000
 
-	for i = target.Get32X() - pnj.portee; i <= target.Get32X()+pnj.portee; i++ {
+	for i = target.GetX() - pnj.portee; i <= target.GetX()+pnj.portee; i++ {
 		if i < 0 {
 			i = 0
 		}
-		for j = target.Get32Y() - pnj.portee; j <= target.Get32Y()+pnj.portee; j++ {
+		for j = target.GetY() - pnj.portee; j <= target.GetY()+pnj.portee; j++ {
 			if j < 0 {
 				j = 0
 			}
-			if (Abs(i-pnj.Get32X())+Abs(j-pnj.Get32Y())) < distance && c.IsEmpty(int(i), int(j)) {
-				distance = Abs(i-pnj.Get32X()) + Abs(j-pnj.Get32Y())
+			if (Abs(i-pnj.GetX())+Abs(j-pnj.GetY())) < distance && c.IsEmpty(i, j) {
+				distance = Abs(i-pnj.GetX()) + Abs(j-pnj.GetY())
 				posFightPnjX = i
 				posFightPnjY = j
 			}
@@ -661,19 +628,17 @@ func (pnj *Npc) MoveFight(c carte.Carte, target *Npc, wg *sync.WaitGroup) {
 	}
 	// Wait that the npc is in the range to attack
 	go pnj.MoveTo(c, float32(posFightPnjX), float32(posFightPnjY), wg)
-*/
-/* Verify each x ms that the target didn't move from his initial position
-*  if he did move, do MoveTo to the new position, if not fight him when the
-*  movement is finished
- */
-//if destX or destY change value execute a new moveTo
-/*
+	/* Verify each x ms that the target didn't move from his initial position
+	 *  if he did move, do MoveTo to the new position, if not fight him when the
+	 *  movement is finished
+	 */
+	//if destX or destY change value execute a new moveTo
 	uptimeTicker := time.NewTicker(time.Duration(100 * time.Millisecond))
 	for {
 		select {
 		case <-uptimeTicker.C:
 			// if the target is not in the aggressor's vision anymore, he stops chasing him
-			if float32(pnj.GetVue())-(Abs(target.Get32X()-pnj.Get32X())+Abs(target.Get32Y()-pnj.Get32Y())) < constants.Epsilon {
+			if pnj.GetVue() < (Abs(target.GetX()-pnj.GetX()) + Abs(target.GetY()-pnj.GetY())) {
 				log.Print("Le npc ciblé n'est pas dans la vue du npc")
 				return
 			}
@@ -681,16 +646,16 @@ func (pnj *Npc) MoveFight(c carte.Carte, target *Npc, wg *sync.WaitGroup) {
 			if initialTargetDestX != target.GetDestX() || initialTargetDestY != target.GetDestY() {
 				distance = 2000
 
-				for i = target.Get32X() - pnj.portee; i <= target.Get32X()+pnj.portee; i++ {
+				for i = target.GetX() - pnj.portee; i <= target.GetX()+pnj.portee; i++ {
 					if i < 0 {
 						i = 0
 					}
-					for j = target.Get32Y() - pnj.portee; j <= target.Get32Y()+pnj.portee; j++ {
+					for j = target.GetY() - pnj.portee; j <= target.GetY()+pnj.portee; j++ {
 						if j < 0 {
 							j = 0
 						}
-						if (Abs(i-pnj.Get32X())+Abs(j-pnj.Get32Y())) < distance && c.IsEmpty(int(i), int(j)) {
-							distance = Abs(i-pnj.Get32X()) + Abs(j-pnj.Get32Y())
+						if (Abs(i-pnj.GetX())+Abs(j-pnj.GetY())) < distance && c.IsEmpty(i, j) {
+							distance = Abs(i-pnj.GetX()) + Abs(j-pnj.GetY())
 							posFightPnjX = i
 							posFightPnjY = j
 						}
@@ -707,22 +672,15 @@ func (pnj *Npc) MoveFight(c carte.Carte, target *Npc, wg *sync.WaitGroup) {
 				initialTargetDestY = target.GetDestY()
 			}
 			// The aggressor finished his movement and so can start fighting him
-			if pnj.Get32X() == (posFightPnjX) && pnj.Get32Y() == posFightPnjY {
-				//chTarget := make(chan bool, 2)
-				//Fight
-				//go pnj.Fight(c, target, posFightPnjX, posFightPnjY)
-				//The target fights back after a short delay
-				// on met en suspend cette fonction
-				// time.Sleep(time.Duration((1 * time.Second)/4))
-				// target.Fight(c, pnj, target.GetX(), target.GetY(), &chTarget)
+			if pnj.GetX() == (posFightPnjX) && pnj.GetY() == posFightPnjY {
+				go pnj.Fight(c, target, posFightPnjX, posFightPnjY)
 				break
 			}
 		}
 	}
 }
-*/
+
 //Fight : attack a npc
-/*
 func (pnj *Npc) Fight(c carte.Carte, target *Npc, posFightPnjX int, posFightPnjY int) {
 	pnj.SetActive(true)
 	moveA := make(chan bool, 2)
@@ -732,11 +690,11 @@ func (pnj *Npc) Fight(c carte.Carte, target *Npc, posFightPnjX int, posFightPnjY
 	initialPosTargetX, initialPosTargetY := target.GetX(), target.GetY()
 	for {
 		// if the target is not in the aggressor's vision anymore, he stops chasing him
-		if float32(pnj.GetVue())-(Abs(target.Get32X()-pnj.Get32X())+Abs(target.Get32Y()-pnj.Get32Y())) < constants.Epsilon {
+		if pnj.GetVue() < (Abs(target.GetX()-pnj.GetX()) + Abs(target.GetY()-pnj.GetY())) {
 			log.Print("Le npc ciblé n'est pas dans la vue du npc")
-			pnj.SetActive(false)
 			return
 		}
+
 		// if the target moved start chasing him again
 		if initialPosTargetX != target.GetX() || initialPosTargetY != target.GetY() {
 			go pnj.MoveFight(c, target, nil)
@@ -762,7 +720,6 @@ func (pnj *Npc) Fight(c carte.Carte, target *Npc, posFightPnjX int, posFightPnjY
 		}
 	}
 }
-*/
 
 /*
 //MoveHarvest : (move to the neareast ressource in the villagers's vision)

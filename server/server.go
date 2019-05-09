@@ -114,7 +114,7 @@ func (s *Arguments) RightClick(ctx context.Context, in *pb.RightClickRequest) (*
 	utils.Debug("Reception d'un RightClickRequest et envoie d'un RightClickReply")
 
 	// For Testing Mode
-	if len(in.EntitySelectionUUID) == 0 || s.g.GameInitialisationTime!=-1{
+	if len(in.EntitySelectionUUID) == 0 || s.g.GameInitialisationTime != -1 {
 		msg := "Erreur, aucune entité envoié à RightClick"
 		log.Println(msg)
 		return &pb.RightClickReply{}, errors.New(msg)
@@ -202,7 +202,8 @@ func (s *Arguments) RightClick(ctx context.Context, in *pb.RightClickRequest) (*
 
 			switch reflect.TypeOf(target) {
 			case reflect.TypeOf(&npc.Npc{}):
-				go entity.(*npc.Npc).MoveTargetNpc(s.g.Carte, target.(*npc.Npc), nil)
+				go entity.(*npc.Npc).MoveFight(s.g.Carte, target.(*npc.Npc), nil)
+				//go entity.(*npc.Npc).MoveTargetNpc(s.g.Carte, target.(*npc.Npc), nil)
 
 			case reflect.TypeOf(&batiment.Batiment{}):
 				go entity.(*npc.Npc).MoveTargetBuilding(s.g.Carte, target.(*batiment.Batiment), nil)
@@ -229,8 +230,8 @@ func (s *Arguments) AskUpdate(ctx context.Context, in *pb.AskUpdateRequest) (*pb
 
 	// Extract data from token to get player's UUID
 	playerUUID := data.ExtractFromToken(in.Token)
-	log.Println("token:",in.Token)
-	if playerUUID == nil{
+	log.Println("token:", in.Token)
+	if playerUUID == nil {
 		msg := "Token invalide dans AskUpdate: vide"
 		log.Print(msg)
 		return &pb.AskUpdateReply{Array: nil}, errors.New(msg)
@@ -276,7 +277,7 @@ func (s *Arguments) AskCreation(ctx context.Context, in *pb.AskCreationRequest) 
 
 	// Extract data from token to get player's UUID
 	playerUUID := data.ExtractFromToken(in.Token)
-	if playerUUID == nil || s.g.GameInitialisationTime!=-1{
+	if playerUUID == nil || s.g.GameInitialisationTime != -1 {
 		log.Print("Token invalide dans AskCreation")
 		return &pb.AskCreationReply{Validation: false}, nil
 	}
@@ -285,7 +286,7 @@ func (s *Arguments) AskCreation(ctx context.Context, in *pb.AskCreationRequest) 
 	switch actionType {
 	case constants.ActionNewNpc:
 
-		if in.TypeUnit >3{
+		if in.TypeUnit > 3 {
 			log.Print("TypeUnit invalide dans AskCreation")
 			return &pb.AskCreationReply{Validation: false}, nil
 		}
@@ -293,7 +294,7 @@ func (s *Arguments) AskCreation(ctx context.Context, in *pb.AskCreationRequest) 
 		// Create NPC into the right player and update ActionBuffer
 		player := s.g.GetPlayerFromUID(playerUUID.UID)
 		//player.AddAndCreateNpcVerification(class, int(in.Case.X), int(in.Case.Y))
-		player.AddAndCreateNpcByBuilding(s.g.Carte,int(in.Case.X), int(in.Case.Y),int(in.TypeUnit))
+		player.AddAndCreateNpcByBuilding(s.g.Carte, int(in.Case.X), int(in.Case.Y), int(in.TypeUnit))
 		fmt.Println(int(in.Case.X), int(in.Case.Y))
 
 	case constants.ActionNewBuilding:
@@ -333,56 +334,56 @@ func (s *Arguments) AskCreation(ctx context.Context, in *pb.AskCreationRequest) 
 // Authentificate :
 // Function of authentification and creation of player
 func (s *Arguments) Authentificate(ctx context.Context, in *pb.AuthentificateRequest) (*pb.AuthentificateReply, error) {
-	token:=in.Token
-	id:=data.ExtractFromToken(token)
+	token := in.Token
+	id := data.ExtractFromToken(token)
 	//Partie en cours
 	if s.g.GameInitialisationTime == -1 {
-		for _,i :=range data.Players{
-			if(id.UID==i){
+		for _, i := range data.Players {
+			if id.UID == i {
 				s.g.ResendAllObjects(i)
 				return &pb.AuthentificateReply{IsAuthentificate: true}, nil
 			}
 		}
 	}
-	idfromGID,err:=data.GetPlayersFromGID()
-	if idfromGID==nil{
-		return &pb.AuthentificateReply{IsAuthentificate: false},nil
+	idfromGID, err := data.GetPlayersFromGID()
+	if idfromGID == nil {
+		return &pb.AuthentificateReply{IsAuthentificate: false}, nil
 	}
-	test:=false
-	test2:=false
-	if err !=nil{
+	test := false
+	test2 := false
+	if err != nil {
 		s.g.EndOfGame()
 	}
-	log.Println("id API: ",idfromGID)
-	for _,str :=range idfromGID{
-		if str == id.UID{
+	log.Println("id API: ", idfromGID)
+	for _, str := range idfromGID {
+		if str == id.UID {
 			test = true
 		}
 	}
-	if !test{
-		return &pb.AuthentificateReply{IsAuthentificate: false},nil
+	if !test {
+		return &pb.AuthentificateReply{IsAuthentificate: false}, nil
 	}
-	if data.Players==nil{
-		data.Players=make(map[int]string)
+	if data.Players == nil {
+		data.Players = make(map[int]string)
 	}
-	if len(data.Players)>0{
-		for _,str := range data.Players{
-			if id.UID == str{
-				test2=true
+	if len(data.Players) > 0 {
+		for _, str := range data.Players {
+			if id.UID == str {
+				test2 = true
 			}
 		}
 	}
-	if test2{ //Déjà présent dans la partie, revalidé sans ajout
-		return &pb.AuthentificateReply{IsAuthentificate: true},nil
+	if test2 { //Déjà présent dans la partie, revalidé sans ajout
+		return &pb.AuthentificateReply{IsAuthentificate: true}, nil
 	}
-	data.Players[len(data.Players)]=id.UID
-	log.Println("le joueur ",id.UID, "a rejoint la partie")
-	if len(data.Players)==2{
+	data.Players[len(data.Players)] = id.UID
+	log.Println("le joueur ", id.UID, "a rejoint la partie")
+	if len(data.Players) == 2 {
 		//On démare la partie
 		s.g.GetPlayerData()
 		data.InitiateActionBuffer()
-		s.g.BeginTimer<-true
-	}else if len(data.Players)==1{
+		s.g.BeginTimer <- true
+	} else if len(data.Players) == 1 {
 		go s.g.ExpiringTimer()
 	}
 	// For Debug Mode
