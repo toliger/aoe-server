@@ -36,6 +36,7 @@ func main() {
   http.Handle("/metrics", promhttp.Handler())
   go http.ListenAndServe(":2112", nil)
 	var g game.Game
+	g.Loser="0"
 	g.GameInitialisationTime=constants.ExpiringTime
 	g.GameTimeLeft=constants.MaxGameTime
 	g.BeginGame=make(chan(bool))

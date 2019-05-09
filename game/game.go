@@ -30,6 +30,7 @@ type Game struct {
 	BeginTimer             chan (bool)
 	GameInitialisationTime int
 	GameTimeLeft           int
+	Loser	string
 }
 
 //Data :Structure permettant de stocker les informations recuperees sur le fichier json
@@ -231,8 +232,10 @@ func (g *Game) BrokenBuildingsCollector() {
 							for i := range g.Joueurs {
 								if g.Joueurs[i].GetFaction() == player.GetFaction() {
 									http.Get("https://ranking.api.archisme.com/v1/ranking/addgame/" + g.Joueurs[i].UID + "/2")
+									g.Loser=g.Joueurs[i].UID
 								} else {
 									http.Get("https://ranking.api.archisme.com/v1/ranking/addgame/" + g.Joueurs[i].UID + "/1")
+									g.Loser=g.Joueurs[i].UID
 								}
 							}
 							g.EndOfGame()
@@ -247,7 +250,7 @@ func (g *Game) BrokenBuildingsCollector() {
 //EndOfGame : Interromps la boucle principale du jeu
 func (g *Game) EndOfGame() {
 	log.Println("Fin du jeu")
-	data.AjoutConcurrent(constants.ActionEndOfGame, "useless", "useless", "useless")
+	data.AjoutConcurrent(constants.ActionEndOfGame, g.Loser, "useless", "useless")
 	http.Get("https://game.api.archisme.com/v1/game/free/" + constants.GameUUID)
 	(*g).GameRunning <- true
 }
