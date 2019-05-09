@@ -41,6 +41,8 @@ func Create(faction int, nom string, uid string) Joueur {
 	var m sync.RWMutex
 	res := Joueur{faction, nom, uid, 0, make([](*batiment.Batiment), constants.MaxBuildings), 0, make([](*npc.Npc), constants.MaxEntities), constants.StartingStone, constants.StartingWood, constants.StartingFood, buffer, &m}
 	go (&res).ressourceUpdate()
+	tab := []int{0,0,0}
+	buffer<-tab
 	return res
 }
 
