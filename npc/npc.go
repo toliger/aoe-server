@@ -608,11 +608,11 @@ func (pnj *Npc) MoveFight(c carte.Carte, target *Npc, wg *sync.WaitGroup) {
 	var distance int
 	distance = 2000
 
-	for i = target.GetX() - pnj.portee; i <= target.GetX()+pnj.portee; i++ {
+	for i = target.GetDestX() - pnj.portee; i <= target.GetDestX()+pnj.portee; i++ {
 		if i < 0 {
 			i = 0
 		}
-		for j = target.GetY() - pnj.portee; j <= target.GetY()+pnj.portee; j++ {
+		for j = target.GetDestY() - pnj.portee; j <= target.GetDestY()+pnj.portee; j++ {
 			if j < 0 {
 				j = 0
 			}
@@ -648,11 +648,11 @@ func (pnj *Npc) MoveFight(c carte.Carte, target *Npc, wg *sync.WaitGroup) {
 			if initialTargetDestX != target.GetDestX() || initialTargetDestY != target.GetDestY() {
 				distance = 2000
 
-				for i = target.GetX() - pnj.portee; i <= target.GetX()+pnj.portee; i++ {
+				for i = target.GetDestX() - pnj.portee; i <= target.GetDestX()+pnj.portee; i++ {
 					if i < 0 {
 						i = 0
 					}
-					for j = target.GetY() - pnj.portee; j <= target.GetY()+pnj.portee; j++ {
+					for j = target.GetDestY() - pnj.portee; j <= target.GetDestY()+pnj.portee; j++ {
 						if j < 0 {
 							j = 0
 						}
