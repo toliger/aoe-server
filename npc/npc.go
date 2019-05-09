@@ -589,6 +589,7 @@ func (pnj *Npc) MoveFight(c carte.Carte, target *Npc, wg *sync.WaitGroup) {
 
 	if pnj.GetVue() < (Abs(target.GetX()-pnj.GetX()) + Abs(target.GetY()-pnj.GetY())) {
 		log.Print("Le npc ciblé n'est pas dans la vue du npc")
+		pnj.SetActive(false)
 		return
 	}
 	if pnj.GetPv() == 0 {
@@ -596,6 +597,7 @@ func (pnj *Npc) MoveFight(c carte.Carte, target *Npc, wg *sync.WaitGroup) {
 	}
 	if target.GetPv() == 0 {
 		pnj.SetActive(false)
+		return
 	}
 	//initialPosTargetX, initialPosTargetY := target.GetX(), target.GetY()
 	initialTargetDestX, initialTargetDestY := target.GetDestX(), target.GetDestY()
@@ -692,6 +694,7 @@ func (pnj *Npc) Fight(c carte.Carte, target *Npc, posFightPnjX int, posFightPnjY
 		// if the target is not in the aggressor's vision anymore, he stops chasing him
 		if pnj.GetVue() < (Abs(target.GetX()-pnj.GetX()) + Abs(target.GetY()-pnj.GetY())) {
 			log.Print("Le npc ciblé n'est pas dans la vue du npc")
+			pnj.SetActive(false)
 			return
 		}
 

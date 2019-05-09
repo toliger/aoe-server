@@ -155,7 +155,7 @@ func TestFightBuilding(t *testing.T){
 	}
 }
 */
-/*
+
 func TestFightNpc(t *testing.T) {
 	d.IDMap = d.NewObjectID()
 	d.InitiateActionBuffer()
@@ -200,4 +200,3 @@ func TestFightNpc(t *testing.T) {
 	// 	t.Log("pv de l'agresseur': ", pnj1.GetPv())
 	// }
 }
-*/
