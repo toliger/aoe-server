@@ -92,7 +92,7 @@ const MaxEntities = 100
 const MaxBuildings = 20
 
 //StartingSoldier nb soldats en debut de partie
-const StartingSoldier = 6
+const StartingSoldier = 0
 
 //StartingHarvester nb harvester en debut de partie
 const StartingHarvester = 0

@@ -306,16 +306,14 @@ func (g *Game) GenerateMap(data Data) {
 	}
 	//ajout des npc de base
 	for i := 0; i < len((*g).Joueurs); i++ {
-		for j := 0; j < 5; j++ {
+		for j := 0; j < constants.StartingVillager; j++ {
 			if i%2 == 0 {
-				(*g).Joueurs[i].AddAndCreateNpc("villager", i, j)
+				(*g).Joueurs[i].AddAndCreateNpc("villager", 1, 1+j) //haut gauche
 			} else {
-				(*g).Joueurs[i].AddAndCreateNpc("villager", g.Carte.GetSize()/5-i, g.Carte.GetSize()/5-j)
+				(*g).Joueurs[i].AddAndCreateNpc("villager", g.Carte.GetSize()-1, g.Carte.GetSize()-j-1) //bas droite
 			}
 		}
 	}
-	(*g).Joueurs[0].AddAndCreateNpc("soldier", 5, 5)
-	(*g).Joueurs[1].AddAndCreateNpc("soldier", g.Carte.GetSize()/5-5, g.Carte.GetSize()/5-5)
 
 	//Ajout des ressources
 	for i := 0; i < len(data.Ressources); i++ {
