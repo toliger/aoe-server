@@ -334,7 +334,7 @@ func (s *Arguments) AskCreation(ctx context.Context, in *pb.AskCreationRequest) 
 // Authentificate :
 // Function of authentification and creation of player
 func (s *Arguments) Authentificate(ctx context.Context, in *pb.AuthentificateRequest) (*pb.AuthentificateReply, error) {
-	token := in.Token
+	/*token := in.Token
 	id := data.ExtractFromToken(token)
 	//Partie en cours
 	if s.g.GameInitialisationTime == -1 {
@@ -388,5 +388,42 @@ func (s *Arguments) Authentificate(ctx context.Context, in *pb.AuthentificateReq
 	}
 	// For Debug Mode
 	utils.Debug("Reception d'un AuthentificateRequest et envoie d'un AuthentificateReply")
-	return &pb.AuthentificateReply{IsAuthentificate: true}, nil
+	return &pb.AuthentificateReply{IsAuthentificate: true}, nil*/
+
+	token := in.Token
+	id := data.ExtractFromToken(token)
+	if s.g.GameInitialisationTime == -1 {
+		for _, i := range data.Players {
+			if id.UID == i {
+				s.g.ResendAllObjects(i)
+				return &pb.AuthentificateReply{IsAuthentificate: true}, nil
+			}
+		}
+	}
+	if data.Players == nil {
+		data.Players = make(map[int]string)
+	}
+	if len(data.Players) > 0 {
+		for _, str := range data.Players {
+			if id.UID == str {
+				test2 = true
+			}
+		}
+	}
+	if test2 { //Déjà présent dans la partie, revalidé sans ajout
+		return &pb.AuthentificateReply{IsAuthentificate: true}, nil
+	}
+	data.Players[len(data.Players)] = id.UID
+	log.Println("le joueur ", id.UID, "a rejoint la partie")
+	if len(data.Players) == 2 {
+		//On démare la partie
+		s.g.GetPlayerData()
+		data.InitiateActionBuffer()
+		s.g.BeginTimer <- true
+	} else if len(data.Players) == 1 {
+		go s.g.ExpiringTimer()
+	}
+	// For Debug Mode
+	utils.Debug("Reception d'un AuthentificateRequest et envoie d'un AuthentificateReply")
+	return &pb.AuthentificateReply{IsAuthentificate: true}, nil*/
 }
