@@ -403,6 +403,7 @@ func (s *Arguments) Authentificate(ctx context.Context, in *pb.AuthentificateReq
 	if data.Players == nil {
 		data.Players = make(map[int]string)
 	}
+	test2:=false
 	if len(data.Players) > 0 {
 		for _, str := range data.Players {
 			if id.UID == str {
@@ -425,5 +426,5 @@ func (s *Arguments) Authentificate(ctx context.Context, in *pb.AuthentificateReq
 	}
 	// For Debug Mode
 	utils.Debug("Reception d'un AuthentificateRequest et envoie d'un AuthentificateReply")
-	return &pb.AuthentificateReply{IsAuthentificate: true}, nil*/
+	return &pb.AuthentificateReply{IsAuthentificate: true}, nil
 }
