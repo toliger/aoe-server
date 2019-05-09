@@ -184,7 +184,7 @@ const (
 	ExpiringTime = 60
 
 	//MaxGameTime maximum duration of a game in seconds
-	MaxGameTime = 300
+	MaxGameTime = 600
 
 	//DataFileName : chemin vers les données de jeu
 	DataFileName = "server/data/Gamedata.json"

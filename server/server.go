@@ -226,11 +226,11 @@ func (s *Arguments) RightClick(ctx context.Context, in *pb.RightClickRequest) (*
 func (s *Arguments) AskUpdate(ctx context.Context, in *pb.AskUpdateRequest) (*pb.AskUpdateReply, error) {
 
 	// For Debug Mode
-	utils.Debug("Reception d'un AskUpdateRequest et envoie d'un AskUpdateReply")
+	//utils.Debug("Reception d'un AskUpdateRequest et envoie d'un AskUpdateReply")
 
 	// Extract data from token to get player's UUID
 	playerUUID := data.ExtractFromToken(in.Token)
-	log.Println("token:", in.Token)
+	//log.Println("token:", in.Token)
 	if playerUUID == nil {
 		msg := "Token invalide dans AskUpdate: vide"
 		log.Print(msg)
