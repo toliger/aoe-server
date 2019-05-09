@@ -62,7 +62,7 @@ func (g *Game) ResendAllObjects(PlayerUID string) {
 
 //ExtractData : extract data from a file (ressources, buildings)
 func ExtractData() Data {
-	datafileName := "data/GameData.json"
+	datafileName := "GameData.json"
 	if constants.UseSmallMap {
 		datafileName = "SmallTestMap.json"
 	}
