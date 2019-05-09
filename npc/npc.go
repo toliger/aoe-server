@@ -347,7 +347,7 @@ func (pnj *Npc) actualizeMoveAction(moveA *chan bool) {
 	pnj.wgAction.Done()
 }
 
-func (pnj *Npc) deplacement(path []carte.Case, wg *sync.WaitGroup, moveA *chan bool) {
+func (pnj *Npc) deplacement(path []carte.Case, wg *sync.WaitGroup, moveA *chan bool, destX float32, destY float32) {
 	if path != nil {
 		// moveA := make(chan bool, 2)
 		// pnj.wgAction.Wait()
@@ -375,6 +375,8 @@ func (pnj *Npc) deplacement(path []carte.Case, wg *sync.WaitGroup, moveA *chan b
 				pnj.SetY(path[i].GetPathY())
 			}
 		}
+		pnj.Set32X(destX)
+		pnj.Set32Y(destY)
 		if wg != nil {
 			wg.Done()
 		}
@@ -398,7 +400,7 @@ func (pnj *Npc) MoveTo(c carte.Carte, destx float32, desty float32, wg *sync.Wai
 			//log.Println("Envoi type :",constants.ActionAlterationNpc, " id: ",pnj.PlayerUUID)
 			pnj.Transmit(data.IDMap.GetIDFromObject(pnj), constants.ActionAlterationNpc)
 		}
-		go pnj.deplacement(path, wg, &moveA)
+		go pnj.deplacement(path, wg, &moveA, destx, desty)
 	}
 	return path
 }

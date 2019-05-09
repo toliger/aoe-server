@@ -331,6 +331,10 @@ func (j *Joueur) AddAndCreateNpcByBuilding(c carte.Carte, posX int, posY int, cl
 			utils.Debug("Erreur: Mauvais type npc création")
 			return
 		}
+		if j.GetFood() < constants.VillagerFoodCost {
+			utils.Debug("Pas assez de ressources pour créer un villageois")
+			return
+		}
 		entity, id := npc.Create("villager", float32(x), float32(y), j.faction, &j.ressourceChannel)
 		j.AddNpc(entity)
 		entity.Transmit(id, constants.ActionNewNpc)
@@ -342,6 +346,9 @@ func (j *Joueur) AddAndCreateNpcByBuilding(c carte.Carte, posX int, posY int, cl
 			utils.Debug("Erreur: Mauvais type npc création")
 			return
 		}
+		if j.GetFood() < constants.SoldierFoodCost || j.GetWood() < constants.SoldierWoodCost {
+			utils.Debug("Pas assez de ressources pour créer un soldat")
+		}
 		entity, id := npc.Create("soldier", float32(x), float32(y), j.faction, &j.ressourceChannel)
 		j.AddNpc(entity)
 		entity.Transmit(id, constants.ActionNewNpc)
@@ -352,6 +359,10 @@ func (j *Joueur) AddAndCreateNpcByBuilding(c carte.Carte, posX int, posY int, cl
 	case 2:
 		if class != 1 {
 			utils.Debug("Erreur: Mauvais type npc création")
+			return
+		}
+		if j.GetFood() < constants.HarvesterFoodCost || j.GetWood() < constants.HarvesterWoodCost {
+			utils.Debug("Pas assez de ressources pour créer un villageois")
 			return
 		}
 		entity, id := npc.Create("harvester", float32(x), float32(y), j.faction, &j.ressourceChannel)
