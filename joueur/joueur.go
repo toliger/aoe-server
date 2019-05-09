@@ -375,14 +375,14 @@ func (j *Joueur) IsThereNpcInRange(pnj *npc.Npc) *npc.Npc {
 		if (*j).entities[i] == nil {
 			continue
 		}
-		for x := pnj.Get32X() - pnj.GetPortee(); x-pnj.Get32X()+pnj.GetPortee() <= constants.Epsilon; x++ {
-			for y := pnj.Get32Y() - pnj.GetPortee(); y-pnj.Get32Y()+pnj.GetPortee() <= constants.Epsilon; y++ {
-				if x-(*j).entities[i].Get32X() <= constants.Epsilon && x-(*j).entities[i].Get32X() >= constants.Epsilon &&
-					y-(*j).entities[i].Get32Y() <= constants.Epsilon && y-(*j).entities[i].Get32Y() >= constants.Epsilon {
+		for x := pnj.GetX() - pnj.GetPortee(); x <= pnj.GetX()+pnj.GetPortee(); x++ {
+			for y := pnj.GetY() - pnj.GetPortee(); y <= pnj.GetY()+pnj.GetPortee(); y++ {
+				if ((*j).entities[i].GetX() == x) && ((*j).entities[i].GetY() == y) {
 					return (*j).entities[i]
 				}
 			}
 		}
+
 	}
 	return nil
 }
@@ -396,10 +396,10 @@ func (j *Joueur) IsThereBuildingInRange(pnj *npc.Npc) *batiment.Batiment {
 		if (*j).batiments[i] == nil {
 			continue
 		}
-		for x := pnj.Get32X() - pnj.GetPortee(); x-pnj.Get32X()+pnj.GetPortee() <= constants.Epsilon; x++ {
-			for y := pnj.Get32Y() - pnj.GetPortee(); y-pnj.Get32Y()+pnj.GetPortee() <= constants.Epsilon; y++ {
+		for x := pnj.GetX() - pnj.GetPortee(); x <= pnj.GetX()+pnj.GetPortee(); x++ {
+			for y := pnj.GetY() - pnj.GetPortee(); y <= pnj.GetY()+pnj.GetPortee(); y++ {
 				if (*j).batiments[i] != nil {
-					if (*j).batiments[i].GetX() == int(x) && j.batiments[i].GetY() == int(y) {
+					if (*j).batiments[i].GetX() == x && j.batiments[i].GetY() == y {
 						return (*j).batiments[i]
 					}
 				}

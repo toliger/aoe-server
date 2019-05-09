@@ -213,7 +213,7 @@ const (
 //===== Default PNJ values ======
 
 //HarvesterVillPortee  portee d'un harvester
-const HarvesterVillPortee = 0.2
+const HarvesterVillPortee = 1
 
 //MinimumDmg degats minimum d'un NPC
 const MinimumDmg = 1
@@ -234,7 +234,7 @@ const SoldierVitesse = 1
 const SoldierVue = 10
 
 //SoldierPortee portee d'un soldat
-const SoldierPortee = 0.2
+const SoldierPortee = 1
 
 //SoldierSize taille d'un soldat
 const SoldierSize = 1

@@ -1,15 +1,16 @@
 package game
 
 import (
-	"os"
-	"log"
-	"time"
-	"strconv"
-	"net/http"
-	"io/ioutil"
-	"sync/atomic"
 	"encoding/json"
+	"io/ioutil"
+	"log"
+	"net/http"
+	"os"
 	"reflect"
+	"strconv"
+	"sync/atomic"
+	"time"
+
 	"git.unistra.fr/AOEINT/server/batiment"
 	Carte "git.unistra.fr/AOEINT/server/carte"
 	"git.unistra.fr/AOEINT/server/constants"
@@ -22,13 +23,13 @@ import (
 
 //Game : Structure contenant les donnees principales d'une partie
 type Game struct {
-	Joueurs     []*joueur.Joueur
-	Carte       Carte.Carte
-	GameRunning chan (bool)
-	BeginGame chan (bool)
-	BeginTimer chan (bool)
+	Joueurs                []*joueur.Joueur
+	Carte                  Carte.Carte
+	GameRunning            chan (bool)
+	BeginGame              chan (bool)
+	BeginTimer             chan (bool)
 	GameInitialisationTime int
-	GameTimeLeft int
+	GameTimeLeft           int
 }
 
 //Data :Structure permettant de stocker les informations recuperees sur le fichier json
@@ -39,22 +40,23 @@ type Data struct {
 }
 
 //ResendAllObjects renvoie les informations de partie au joueur donné (reconnection)
-func (g *Game)ResendAllObjects(PlayerUID string){
-	tab:=data.IDMap.GetList()
-	for k,obj := range tab{
+func (g *Game) ResendAllObjects(PlayerUID string) {
+	tab := data.IDMap.GetList()
+	for k, obj := range tab {
 		switch reflect.TypeOf(obj) {
-			case reflect.TypeOf(&npc.Npc{}):
-				(obj.(*npc.Npc)).TransmitPlayer(k,constants.ActionNewNpc,PlayerUID)
-			case reflect.TypeOf(&batiment.Batiment{}):
-				(obj.(*batiment.Batiment)).TransmitPlayer(k,constants.ActionNewBuilding,PlayerUID)
-			case reflect.TypeOf(&ressource.Ressource{}):
-				(obj.(*ressource.Ressource)).TransmitPlayer(k,constants.ActionNewRessource,PlayerUID)
-			default: utils.Debug("type inconnu dans Resend")
+		case reflect.TypeOf(&npc.Npc{}):
+			(obj.(*npc.Npc)).TransmitPlayer(k, constants.ActionNewNpc, PlayerUID)
+		case reflect.TypeOf(&batiment.Batiment{}):
+			(obj.(*batiment.Batiment)).TransmitPlayer(k, constants.ActionNewBuilding, PlayerUID)
+		case reflect.TypeOf(&ressource.Ressource{}):
+			(obj.(*ressource.Ressource)).TransmitPlayer(k, constants.ActionNewRessource, PlayerUID)
+		default:
+			utils.Debug("type inconnu dans Resend")
 		}
 	}
-	ch:=g.GetPlayerFromUID(PlayerUID).GetChannel()
-	res:=[]int{0,0,0}
-	(*ch)<-res //On force l'envoi des montants de ressources
+	ch := g.GetPlayerFromUID(PlayerUID).GetChannel()
+	res := []int{0, 0, 0}
+	(*ch) <- res //On force l'envoi des montants de ressources
 }
 
 //ExtractData : extract data from a file (ressources, buildings)
@@ -88,20 +90,20 @@ func ExtractData() Data {
 }
 
 //ExpiringTimer Closes the game if the login timer expires
-func (g *Game)ExpiringTimer(){
+func (g *Game) ExpiringTimer() {
 	uptimeTicker := time.NewTicker(time.Duration(g.GameInitialisationTime) * time.Second)
-	for{
+	for {
 		select {
-			case <-uptimeTicker.C:
-				g.GameInitialisationTime--
-				if g.GameInitialisationTime==0{
-					g.EndOfGame()
-				}
-			case <-g.BeginTimer:
-				g.GameInitialisationTime=-1
-				data.AjoutConcurrent(constants.ActionStartOfGame,"useless","useless","useless")
-				g.BeginGame<-true
-				return
+		case <-uptimeTicker.C:
+			g.GameInitialisationTime--
+			if g.GameInitialisationTime == 0 {
+				g.EndOfGame()
+			}
+		case <-g.BeginTimer:
+			g.GameInitialisationTime = -1
+			data.AjoutConcurrent(constants.ActionStartOfGame, "useless", "useless", "useless")
+			g.BeginGame <- true
+			return
 		}
 	}
 }
@@ -228,9 +230,9 @@ func (g *Game) BrokenBuildingsCollector() {
 						if typ == 0 { //Auberge
 							for i := range g.Joueurs {
 								if g.Joueurs[i].GetFaction() == player.GetFaction() {
-									http.Get("https://ranking.api.archisme.com/v1/ranking/addgame/"+ g.Joueurs[i].UID +"/2")
+									http.Get("https://ranking.api.archisme.com/v1/ranking/addgame/" + g.Joueurs[i].UID + "/2")
 								} else {
-									http.Get("https://ranking.api.archisme.com/v1/ranking/addgame/"+ g.Joueurs[i].UID +"/1")
+									http.Get("https://ranking.api.archisme.com/v1/ranking/addgame/" + g.Joueurs[i].UID + "/1")
 								}
 							}
 							g.EndOfGame()
@@ -246,27 +248,27 @@ func (g *Game) BrokenBuildingsCollector() {
 func (g *Game) EndOfGame() {
 	log.Println("Fin du jeu")
 	data.AjoutConcurrent(constants.ActionEndOfGame, "useless", "useless", "useless")
-	http.Get("https://game.api.archisme.com/v1/game/free/"+ constants.GameUUID)
+	http.Get("https://game.api.archisme.com/v1/game/free/" + constants.GameUUID)
 	(*g).GameRunning <- true
 }
 
 //GameLoop : fonction contenant la boucle principale du jeu
 func (g *Game) GameLoop() {
-	test:=false
+	test := false
 	uptimeTicker := time.NewTicker(time.Duration(1 * time.Second))
-	for !test{
-		select{
-			case <-g.GameRunning:
-				test=true
-				break
-			case <-uptimeTicker.C:
-				g.GameTimeLeft--
-				if g.GameTimeLeft==0 {
-					for i := range g.Joueurs {
-						http.Get("https://ranking.api.archisme.com/v1/ranking/addgame/"+ g.Joueurs[i].UID +"/0")
-					}
-					g.EndOfGame()
+	for !test {
+		select {
+		case <-g.GameRunning:
+			test = true
+			break
+		case <-uptimeTicker.C:
+			g.GameTimeLeft--
+			if g.GameTimeLeft == 0 {
+				for i := range g.Joueurs {
+					http.Get("https://ranking.api.archisme.com/v1/ranking/addgame/" + g.Joueurs[i].UID + "/0")
 				}
+				g.EndOfGame()
+			}
 		}
 	}
 	time.Sleep(time.Duration(time.Second * constants.TimeBeforeExit))
@@ -327,17 +329,17 @@ Modification: Changement pour des valeurs statiques (temporaire)
 */
 func (g *Game) GetPlayerData() {
 	(*g).Joueurs = make([]*joueur.Joueur, 2)
-	ids:= data.Players
-	id1:=ids[0]
-	id2:=ids[1]
-	if g.GameTimeLeft==-1{
-		idsbis,err:=data.GetPlayersFromGID()
-		if err != nil{
-			log.Println("erreur GetPlayerFromGID: ",err.Error())
+	ids := data.Players
+	id1 := ids[0]
+	id2 := ids[1]
+	if g.GameTimeLeft == -1 {
+		idsbis, err := data.GetPlayersFromGID()
+		if err != nil {
+			log.Println("erreur GetPlayerFromGID: ", err.Error())
 			os.Exit(1)
 		}
-		id1=idsbis[0]
-		id2=idsbis[1]
+		id1 = idsbis[0]
+		id2 = idsbis[1]
 	}
 	//id1:="907ff305-48da-4b1a-b262-aed1c10363f9"
 	utils.Debug("j1: " + id1)
