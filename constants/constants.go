@@ -167,7 +167,7 @@ const PrixWoodEtabli = 50
 //DataRecup consts
 var (
 	//GameUUID id de partie
-	GameUUID string = utils.Getenv("GAMEUUID", "2b6a0353-6a88-4060-93bc-f1208c623e80")
+	GameUUID string = utils.Getenv("GAME_UUID", "2b6a0353-6a88-4060-93bc-f1208c623e80")
 
 	//APIHost API
 	APIHost string = utils.Getenv("APIHOST", "DEFAULT")
